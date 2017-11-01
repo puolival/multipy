@@ -13,3 +13,11 @@ program code</a>, install <a href="https://jupyter.org/">Jupyter</a> and do
 our interactive exercises! You can use the supplied data or your own. A preview 
 of the first exercise is available 
 <a href="https://github.com/puolival/multipy/blob/master/exercise1.ipynb">here</a>.
+
+## Dependencies
+
+The required packages are 
+<a href="http://www.numpy.org/">NumPy</a>,
+<a href="https://www.scipy.org/">SciPy</a>,
+<a href="https://matplotlib.org/>Matplotlib</a>, and
+<a href="https://seaborn.pydata.org">Seaborn</a>.
