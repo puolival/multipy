@@ -10,6 +10,6 @@ family-wise error rate (FWER) and the false discovery rate (FDR).
 
 Download the <a href="https://github.com/puolival/multipy/archive/master.zip">
 program code</a>, install <a href="https://jupyter.org/">Jupyter</a> and do 
-our interactive exercises! You can use the supplied data or use own. A preview 
+our interactive exercises! You can use the supplied data or your own. A preview 
 of the first exercise is available 
 <a href="https://github.com/puolival/multipy/blob/master/exercise1.ipynb">here</a>.
