@@ -19,5 +19,5 @@ of the first exercise is available
 The required packages are 
 <a href="http://www.numpy.org/">NumPy</a>,
 <a href="https://www.scipy.org/">SciPy</a>,
-<a href="https://matplotlib.org/>Matplotlib</a>, and
+<a href="https://matplotlib.org/">Matplotlib</a>, and
 <a href="https://seaborn.pydata.org">Seaborn</a>.
