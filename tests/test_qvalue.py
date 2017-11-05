@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Functions for testing the adaptive false discovery rate
-procedures
+"""Unit tests for the q-value procedure suggested by Storey and
+Tibshirani.
 
-Last modified: 5th November 2017.
 Author: Tuomas Puoliväli
 Email: tuomas.puolivali@helsinki.fi
-License: Revised 3-clause BSD
+Last modified: 5th November 2017.
+License: Revised 3-clause BSD.
 """
 
 import sys
@@ -18,7 +18,7 @@ import unittest
 from data import neuhaus
 from adaptive import lsu, tst, orc, abh
 
-class TestAdaptive(unittest.TestCase):
+class TestQvalue(unittest.TestCase):
 
     def test_lsu_neuhaus(self):
         pass

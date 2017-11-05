@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+"""Functions for testing the procedures for controlling the family-wise
+error rate (FWER).
+
+Last modified: 5th November 2017
+Author: Tuomas Puoliväli
+Email: tuomas.puolivali@helsinki.fi
+License: Revised 3-clause BSD
+"""
+
 import sys
 sys.path.append('../')
 
