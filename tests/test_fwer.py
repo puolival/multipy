@@ -6,7 +6,7 @@ import numpy as np
 import unittest
 
 from data import neuhaus
-from fwer import bonferroni
+from fwer import bonferroni, holm_bonferroni, sidak
 
 class TestFWER(unittest.TestCase):
 
@@ -30,6 +30,24 @@ class TestFWER(unittest.TestCase):
         significant = bonferroni(pvals, alpha=0.05)
         for i in range(0, len(pvals)):
             self.assertFalse(significant[i])
+
+    def test_sidak_neuhaus(self):
+        """The Sidak's procedure using data from Neuhaus et al."""
+        pvals = neuhaus()
+        significant = sidak(pvals)
+        for i in range(0, 3):
+            self.assertTrue(significant[i])
+        for i in range(3, 15):
+            self.assertFalse(significant[i])
+
+    def test_sidak_nonsig(self):
+        pass
+
+    def test_holm_bonferroni_neuhaus(self):
+        pass
+
+    def test_holm_bonferroni_nonsig(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()
