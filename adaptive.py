@@ -23,9 +23,13 @@ Educational and Behavioral Statistics 25:60-83.
 A practical and powerful approach to multiple testing. Journal of Royal 
 Statistical Society. Series B (Methodological): 57(1):289-300.
 
+[4] Reiss PT, Schwartzman A, Lu F, Huang L, Proal E (2012): Paradoxical 
+results of adaptive false discovery rate procedures in neuroimaging studies
+63(4):1833-1840.
+
 WARNING: This program code has not been thoroughly tested yet.
 
-Last modified 10th October 2017
+Last modified 6th November 2017
 """
 
 import numpy as np
@@ -119,3 +123,20 @@ def tst(pvals, q=0.05):
         # Step 3.
         qstar = qprime*m / mhat0
         return lsu(pvals, qstar)
+
+def paradoxical(pvals, q, significant):
+    """Validate results for paradoxical effects. Here, paradoxical refers to 
+    a case where an adaptive procedures rejects more null hypotheses than 
+    there would have been rejections if multiple testing was not accounted 
+    for. See discussion by Reiss et al. in [4] for more information.
+
+    Input arguments:
+    pvals       - P-values corresponding to a family of hypotheses
+    q           - The false discovery rate
+    significant - Indicator vector showing which p-values are significant
+                  after adjustment for multiple testing.
+    """
+    nocor_significant = pvals<q
+    """The results are paradoxical if there are *more* significant p-values
+    *after* the correction for multiple testing has been performed."""
+    return np.sum(nocor_significant) < np.sum(significant)
