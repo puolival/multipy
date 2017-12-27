@@ -6,22 +6,6 @@ methods are yet to be implemented into a coherent Python package. This package
 sets out to fill this gap by implementing methods for controlling the 
 family-wise error rate (FWER) and the false discovery rate (FDR).
 
-## Learn by trying it yourself
-
-Download the <a href="https://github.com/puolival/multipy/archive/master.zip">
-program code</a>, install <a href="https://jupyter.org/">Jupyter</a> and do 
-our interactive exercises! You can use the supplied data or your own. A preview 
-of the first exercise is available 
-<a href="https://github.com/puolival/multipy/blob/master/exercise1.ipynb">here</a>.
-
-## Dependencies
-
-The required packages are 
-<a href="http://www.numpy.org/">NumPy</a>,
-<a href="https://www.scipy.org/">SciPy</a>,
-<a href="https://matplotlib.org/">Matplotlib</a>, and
-<a href="https://seaborn.pydata.org">Seaborn</a>.
-
 ## Quick example
 
 ```python
@@ -43,3 +27,19 @@ plt.show() # show figure
  ('0.0459', False), ('0.3240', False), ('0.4262', False), ('0.5719', False), 
  ('0.6528', False), ('0.7590', False), ('1.0000', False)]
 ```
+
+## Learn by trying it yourself
+
+Download the <a href="https://github.com/puolival/multipy/archive/master.zip">
+program code</a>, install <a href="https://jupyter.org/">Jupyter</a> and do 
+our interactive exercises! You can use the supplied data or your own. A preview 
+of the first exercise is available 
+<a href="https://github.com/puolival/multipy/blob/master/exercise1.ipynb">here</a>.
+
+## Dependencies
+
+The required packages are 
+<a href="http://www.numpy.org/">NumPy</a>,
+<a href="https://www.scipy.org/">SciPy</a>,
+<a href="https://matplotlib.org/">Matplotlib</a>, and
+<a href="https://seaborn.pydata.org">Seaborn</a>.
