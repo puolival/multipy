@@ -38,7 +38,11 @@ plt.show() # show figure
 ```
 
 ```python
-[('0.0001', True), ('0.0004', True), ('0.0019', True), ('0.0095', True), ('0.0201', False), ('0.0278', False), ('0.0298', False), ('0.0344', False), ('0.0459', False), ('0.3240', False), ('0.4262', False), ('0.5719', False), ('0.6528', False), ('0.7590', False), ('1.0000', False)]
+[('0.0001',  True), ('0.0004',  True), ('0.0019',  True), 
+ ('0.0095',  True), ('0.0201', False), ('0.0278', False), 
+ ('0.0298', False), ('0.0344', False), ('0.0459', False), 
+ ('0.3240', False), ('0.4262', False), ('0.5719', False), 
+ ('0.6528', False), ('0.7590', False), ('1.0000', False)]
 ```
 
-<img src="https://github.com/puolival/multipy/blob/master/figs/neuhaus.png" alt="neuhaus.png" />
+<img src="/figs/neuhaus.png" alt="neuhaus.png" />
