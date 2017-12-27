@@ -30,8 +30,12 @@ def bonferroni(pvals, alpha=0.05):
     classical Bonferroni procedure.
 
     Input arguments:
-    pvals - P-values corresponding to a family of hypotheses.
-    alpha - The desired family-wise error rate.
+    pvals       - P-values corresponding to a family of hypotheses.
+    alpha       - The desired family-wise error rate.
+
+    Output arguments:
+    significant - An array of flags indicating which p-values are significant
+                  after correcting for multiple comparisons.
     """
     n, pvals = len(pvals), np.asarray(pvals)
     return pvals < alpha/float(n)
@@ -40,8 +44,12 @@ def hochberg(pvals, alpha=0.05):
     """A function for controlling the FWER using Hochberg's procedure [1].
 
     Input arguments:
-    pvals - P-values corresponding to a family of hypotheses.
-    alpha - The desired family-wise error rate.
+    pvals       - P-values corresponding to a family of hypotheses.
+    alpha       - The desired family-wise error rate.
+
+    Output arguments:
+    significant - An array of flags indicating which p-values are significant
+                  after correcting for multiple comparisons.
     """
     m, pvals = len(pvals), np.asarray(pvals)
     ind = np.argsort(pvals)
@@ -60,8 +68,12 @@ def holm_bonferroni(pvals, alpha=0.05):
     procedure [2].
 
     Input arguments:
-    pvals - P-values corresponding to a family of hypotheses.
-    alpha - The desired family-wise error rate.
+    pvals       - P-values corresponding to a family of hypotheses.
+    alpha       - The desired family-wise error rate.
+
+    Output arguments:
+    significant - An array of flags indicating which p-values are significant
+                  after correcting for multiple comparisons.
     """
     m, pvals = len(pvals), np.asarray(pvals)
     ind = np.argsort(pvals)
@@ -84,8 +96,12 @@ def sidak(pvals, alpha=0.05):
     procedure by Sidak [3].
 
     Input arguments:
-    pvals - P-values corresponding to a family of hypotheses.
-    alpha - The desired family-wise error rate.
+    pvals       - P-values corresponding to a family of hypotheses.
+    alpha       - The desired family-wise error rate.
+
+    Output arguments:
+    significant - An array of flags indicating which p-values are significant
+                  after correcting for multiple comparisons.
     """
     n, pvals = len(pvals), np.asarray(pvals)
     return pvals < 1. - (1.-alpha) ** (1./n)
