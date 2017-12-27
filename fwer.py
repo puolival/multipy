@@ -37,8 +37,8 @@ def bonferroni(pvals, alpha=0.05):
     significant - An array of flags indicating which p-values are significant
                   after correcting for multiple comparisons.
     """
-    n, pvals = len(pvals), np.asarray(pvals)
-    return pvals < alpha/float(n)
+    m, pvals = len(pvals), np.asarray(pvals)
+    return pvals < alpha/float(m)
 
 def hochberg(pvals, alpha=0.05):
     """A function for controlling the FWER using Hochberg's procedure [1].
@@ -52,16 +52,14 @@ def hochberg(pvals, alpha=0.05):
                   after correcting for multiple comparisons.
     """
     m, pvals = len(pvals), np.asarray(pvals)
+    # Sort the p-values into ascending order
     ind = np.argsort(pvals)
+    """Here we have k+1 (and not just k) since Python uses zero-based
+    indexing."""
     test = [p <= alpha/(m+1-(k+1)) for k, p in enumerate(pvals[ind])]
-    if (np.all(test) is True):
-        return np.ones(m, dtype='bool')
-    elif (np.all(test) is False):
-        return np.zeros(m, dtype='bool')
-    else:
-        h = np.zeros(m, dtype='bool')
-        h[ind[0:np.sum(test)]] = True
-        return h
+    significant = np.zeros(np.shape(pvals), dtype='bool')
+    significant[ind[0:np.sum(test)]] = True
+    return significant
 
 def holm_bonferroni(pvals, alpha=0.05):
     """A function for controlling the FWER using the Holm-Bonferroni
