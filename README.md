@@ -6,6 +6,13 @@ methods are yet to be implemented into a coherent Python package. This package
 sets out to fill this gap by implementing methods for controlling the 
 family-wise error rate (FWER) and the false discovery rate (FDR).
 
+## Implemented methods for controlling the FWER
+
+- Bonferroni correction
+- Šidák correction
+- Hochberg's procedure
+- Holm-Bonferroni procedure
+
 ## Quick example
 
 ```python
