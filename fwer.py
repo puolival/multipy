@@ -76,18 +76,11 @@ def holm_bonferroni(pvals, alpha=0.05):
     m, pvals = len(pvals), np.asarray(pvals)
     ind = np.argsort(pvals)
     test = [p > alpha/(m+1-k) for k, p in enumerate(pvals[ind])]
-    if (np.all(test) is True):
-        """If the comparison is true for every test (all p-values are too
-        large) then return a vector of falses."""
-        return np.zeros(m, dtype='bool')
-    elif (np.all(test) is False):
-        """If the comparison is false for every test (all p-values survive)
-        return a vector of trues."""
-        return np.ones(m, dtype='bool')
-    else:
-        h = np.zeros(m, dtype='bool')
-        h[0:m-np.sum(test)] = True
-        return h
+    """The minimal index k is m-np.sum(test)+1 and the hypotheses 1, ..., k-1
+    are rejected. Hence m-np.sum(test) gives the correct number."""
+    significant = np.zeros(np.shape(pvals), dtype='bool')
+    significant[ind[0:m-np.sum(test)]] = True
+    return significant
 
 def sidak(pvals, alpha=0.05):
     """A function for controlling the FWER at some level alpha using the
@@ -103,4 +96,3 @@ def sidak(pvals, alpha=0.05):
     """
     n, pvals = len(pvals), np.asarray(pvals)
     return pvals < 1. - (1.-alpha) ** (1./n)
-
