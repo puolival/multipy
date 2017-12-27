@@ -21,3 +21,18 @@ The required packages are
 <a href="https://www.scipy.org/">SciPy</a>,
 <a href="https://matplotlib.org/">Matplotlib</a>, and
 <a href="https://seaborn.pydata.org">Seaborn</a>.
+
+## Quick example
+
+```python
+from adaptive import lsu
+from data import neuhaus
+import matplotlib.pyplot as plt
+from viz import plot_pval_hist
+
+pvals = neuhaus()
+significant_pvals = lsu(pvals, q=0.05)
+print zip(['{:.4f}'.format(p) for p in pvals], significant_pvals)
+fig = plot_pval_hist(pvals)
+plt.show() # show figure
+```
