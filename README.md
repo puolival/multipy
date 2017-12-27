@@ -44,5 +44,4 @@ plt.show() # show figure
  ('0.3240', False), ('0.4262', False), ('0.5719', False), 
  ('0.6528', False), ('0.7590', False), ('1.0000', False)]
 ```
-
-<img src="/figs/neuhaus.png" alt="neuhaus.png" />
+<img src="https://puolival.github.io/multipy/figs/neuhaus.png" alt="neuhaus.png" />
