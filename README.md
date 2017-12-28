@@ -13,6 +13,13 @@ family-wise error rate (FWER) and the false discovery rate (FDR).
 - Hochberg's procedure
 - Holm-Bonferroni procedure
 
+## Implemented methods for controlling the FDR
+
+- Benjamini-Hochberg procedure (the classic FDR procedure)
+- Storey-Tibshirani q-value procedure
+- Adaptive linear step-up procedure
+- Two-stage linear step-up procedure
+
 ## Quick example
 
 ```python
