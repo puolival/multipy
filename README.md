@@ -13,6 +13,21 @@ family-wise error rate (FWER) and the false discovery rate (FDR).
 - Hochberg's procedure
 - Holm-Bonferroni procedure
 
+### Quick example
+```python
+from data import neuhaus
+from fwer import sidak
+
+pvals = neuhaus()
+significant_pvals = sidak(pvals, alpha=0.05)
+print zip(['{:.4f}'.format(p) for p in pvals], significant_pvals)
+```
+```python
+[('0.0001',  True), ('0.0004',  True), ('0.0019',  True), ('0.0095', False), ('0.0201', False), 
+ ('0.0278', False), ('0.0298', False), ('0.0344', False), ('0.0459', False), ('0.3240', False), 
+ ('0.4262', False), ('0.5719', False), ('0.6528', False), ('0.7590', False), ('1.0000', False)]
+```
+
 ## Implemented methods for controlling the FDR
 
 - Benjamini-Hochberg procedure (the classic FDR procedure)
@@ -20,21 +35,15 @@ family-wise error rate (FWER) and the false discovery rate (FDR).
 - Adaptive linear step-up procedure
 - Two-stage linear step-up procedure
 
-## Quick example
-
+### Quick example
 ```python
 from adaptive import lsu
 from data import neuhaus
-import matplotlib.pyplot as plt
-from viz import plot_pval_hist
 
 pvals = neuhaus()
 significant_pvals = lsu(pvals, q=0.05)
 print zip(['{:.4f}'.format(p) for p in pvals], significant_pvals)
-fig = plot_pval_hist(pvals)
-plt.show() # show figure
 ```
-
 ```python
 [('0.0001',  True), ('0.0004',  True), ('0.0019',  True), ('0.0095',  True), 
  ('0.0201', False), ('0.0278', False), ('0.0298', False), ('0.0344', False), 
