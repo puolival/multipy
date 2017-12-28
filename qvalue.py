@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from numpy.random import normal
 
-from scipy import interpolate
+from scipy.interpolate import UnivariateSpline
 from scipy.stats import ttest_ind
 
 import seaborn as sb
@@ -94,15 +94,25 @@ def _plot_qvalue_significant_features(qvals):
     ax.set_ylabel('Number of significant features')
     plt.show()
 
-def qvals(pvals):
-    """Function for estimating q-values from p-values."""
+def qvals(pvals, threshold=0.05):
+    """Function for estimating q-values from p-values using the
+    Storey-Tibshirani method [1].
+
+    Input arguments:
+    pvals       - P-values corresponding to a family of hypotheses.
+    threshold   - Threshold for deciding which q-values are significant.
+
+    Output arguments:
+    significant - An array of flags indicating which p-values are significant.
+    qvals       - Q-values corresponding to the p-values.
+    """
     # Count and sort the p-values into ascending order.
     m, pvals = len(pvals), np.sort(pvals)
 
     # Estimate proportion of features that are truly null.
     kappa = np.arange(0, 0.96, 0.01)
     pik = [sum(pvals > k) / (m*(1-k)) for k in kappa]
-    cs = interpolate.UnivariateSpline(kappa, pik, k=3, s=None, ext=0)
+    cs = UnivariateSpline(kappa, pik, k=3, s=None, ext=0)
     pi0 = float(cs(1.))
     print 'The estimated proportion of truly null features is %.3f' % pi0
 
@@ -118,7 +128,8 @@ def qvals(pvals):
         qvals[i] = min(pi0*m*pvals[i]/float(i+1), qvals[i+1])
 
     # Print number of significant features
-    print 'There are %d significant features' % np.sum(qvals<0.05)
+    significant = qvals<threshold
+    print 'There are %d significant features' % np.sum(significant)
 
     # Make plots
     _plot_pval_hist(pvals)
@@ -126,6 +137,8 @@ def qvals(pvals):
     _plot_pi0_fit(kappa, pik, cs)
     _plot_qvalue_significant_features(qvals)
     _plot_statistic_qvalue(stats, 't', qvals)
+
+    return significant, qvals
 
 stats, pvals = _make_test_data(1000, 20)
 
