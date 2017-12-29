@@ -1,6 +1,15 @@
 # -*- coding: utf-8 -*-
 """Functions for generating test data.
 
+This program code is part of the MultiPy (Multiple Hypothesis Testing in
+Python) package.
+
+Author: Tuomas Puoliväli
+Email: tuomas.puolivali@helsinki.fi
+License: Revised 3-clause BSD
+Source: https://github.com/puolival/multipy/blob/master/data.py
+Last modified: 29th December 2017.
+
 References:
 
 [1] Neuhaus KL, von Essen R, Tebbe U, Vogt A, Roth M, Riess M, Niederer W,
@@ -12,8 +21,6 @@ References:
 [2] Benjamini Y, Hochberg Y (1995): Controlling the false discovery rate:
     A practical and powerful approach to multiple testing. Journal of Royal
     Statistical Society. Series B (Methodological): 57(1):289-300.
-
-Last modified: 12th October 2017.
 """
 
 import numpy as np
