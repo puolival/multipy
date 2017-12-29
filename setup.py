@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from setuptools import setup
 
 setup(name='multipy',
@@ -9,5 +10,4 @@ setup(name='multipy',
       license='Revised 3-clause BSD',
       packages=['multipy'],
       zip_safe=False)
-
 
