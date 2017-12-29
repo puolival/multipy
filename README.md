@@ -32,7 +32,7 @@ print zip(['{:.4f}'.format(p) for p in pvals], significant_pvals)
 
 - Benjamini-Hochberg procedure (the classic FDR procedure) [4]
 - Storey-Tibshirani q-value procedure [5]
-- Adaptive linear step-up procedure [6, 7]
+- Adaptive linear step-up procedure [6–7]
 - Two-stage linear step-up procedure [7]
 
 ### Quick example
