@@ -8,6 +8,5 @@ setup(name='multipy',
       author='Tuomas Puoliväli',
       author_email='tuomas.puolivali@helsinki.fi',
       license='Revised 3-clause BSD',
-      packages=['multipy'],
-      zip_safe=False)
+      packages=['multipy'])
 
