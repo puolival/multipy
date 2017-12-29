@@ -94,7 +94,7 @@ def _plot_qvalue_significant_features(qvals):
     ax.set_ylabel('Number of significant features')
     plt.show()
 
-def qvals(pvals, threshold=0.05):
+def qvals(pvals, threshold=0.05, verbose=True):
     """Function for estimating q-values from p-values using the
     Storey-Tibshirani method [1].
 
@@ -106,8 +106,13 @@ def qvals(pvals, threshold=0.05):
     significant - An array of flags indicating which p-values are significant.
     qvals       - Q-values corresponding to the p-values.
     """
-    # Count and sort the p-values into ascending order.
-    m, pvals = len(pvals), np.sort(pvals)
+
+    """Count the p-values. Find indices for sorting the p-values into
+    ascending order and for reversing the order back to original."""
+    m, pvals = len(pvals), np.asarray(pvals)
+    ind = np.argsort(pvals)
+    rev_ind = np.argsort(ind)
+    pvals = pvals[ind]
 
     # Estimate proportion of features that are truly null.
     kappa = np.arange(0, 0.96, 0.01)
@@ -117,30 +122,23 @@ def qvals(pvals, threshold=0.05):
     print 'The estimated proportion of truly null features is %.3f' % pi0
 
     # Sanity check
+    # TODO: check whether orig. paper has recommendations how to handle
     if pi0 < 0 or pi0 > 1:
         pi0 = 1
-        print 'The proportion was not in [0, 1] and was set as 1.'
+        if (verbose):
+            print 'The proportion was not in [0, 1] and was set as 1.'
 
-    # Calculate the q-values.
+    # Compute the q-values.
     qvals = np.zeros(np.shape(pvals))
     qvals[-1] = pi0*pvals[-1]
     for i in xrange(m-2, -1, -1):
         qvals[i] = min(pi0*m*pvals[i]/float(i+1), qvals[i+1])
 
-    # Print number of significant features
-    significant = qvals<threshold
-    print 'There are %d significant features' % np.sum(significant)
+    # Test which p-values are significant.
+    significant = np.zeros(np.shape(pvals), dtype='bool')
+    significant[ind] = qvals<threshold
 
-    # Make plots
-    _plot_pval_hist(pvals)
-    _plot_pval_qval_scatter(pvals, qvals)
-    _plot_pi0_fit(kappa, pik, cs)
-    _plot_qvalue_significant_features(qvals)
-    _plot_statistic_qvalue(stats, 't', qvals)
-
+    """Order the q-values according to the original order of the p-values."""
+    qvals = qvals[rev_ind]
     return significant, qvals
-
-stats, pvals = _make_test_data(1000, 20)
-
-qvals(pvals)
 
