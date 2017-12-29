@@ -65,3 +65,9 @@ The required packages are
 <a href="https://www.scipy.org/">SciPy</a>,
 <a href="https://matplotlib.org/">Matplotlib</a>, and
 <a href="https://seaborn.pydata.org">Seaborn</a>.
+
+## References
+
+[1] Sidak Z (1967): Confidence regions for the means of multivariate normal 
+distributions. *Journal of the American Statistical Association* 
+62(318):626–633.
