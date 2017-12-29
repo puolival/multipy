@@ -9,9 +9,9 @@ family-wise error rate (FWER) and the false discovery rate (FDR).
 ## Implemented methods for controlling the FWER
 
 - Bonferroni correction
-- Šidák correction
-- Hochberg's procedure
-- Holm-Bonferroni procedure
+- Šidák correction [1]
+- Hochberg's procedure [2]
+- Holm-Bonferroni procedure [3]
 
 ### Quick example
 ```python
@@ -71,3 +71,10 @@ The required packages are
 [1] Sidak Z (1967): Confidence regions for the means of multivariate normal 
 distributions. *Journal of the American Statistical Association* 
 62(318):626–633.
+
+[2] Hochberg Y (1988): A sharper Bonferroni procedure for multiple tests of 
+significance. *Biometrika* 75(4):800–802.
+
+[3] Holm S (1979): A simple sequentially rejective multiple test procedure. 
+*Scandinavian Journal of Statistics* 6(2):65–70.
+
