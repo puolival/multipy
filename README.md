@@ -6,6 +6,21 @@ methods are yet to be implemented into a coherent Python package. This package
 sets out to fill this gap by implementing methods for controlling the 
 family-wise error rate (FWER) and the false discovery rate (FDR).
 
+## Installation
+```
+pip install multipy
+```
+
+### Dependencies
+
+The required packages are 
+<a href="http://www.numpy.org/">NumPy</a> (version 1.10.2 or later),
+<a href="https://www.scipy.org/">SciPy</a> (version 0.17.0 or later),
+<a href="https://matplotlib.org/">Matplotlib</a> (version 2.1.0 or later), and
+<a href="https://seaborn.pydata.org">Seaborn</a> (version 0.8.0 or later). 
+The program codes also probably work with recent earlier versions of these 
+packages but this has not been tested.
+
 ## Implemented methods for controlling the FWER
 
 - Bonferroni correction
@@ -57,16 +72,6 @@ program code</a>, install <a href="https://jupyter.org/">Jupyter</a> and do
 our interactive exercises! You can use the supplied data or your own. A preview 
 of the first exercise is available 
 <a href="https://github.com/puolival/multipy/blob/master/exercise1.ipynb">here</a>.
-
-## Dependencies
-
-The required packages are 
-<a href="http://www.numpy.org/">NumPy</a> (version 1.10.2 or later),
-<a href="https://www.scipy.org/">SciPy</a> (version 0.17.0 or later),
-<a href="https://matplotlib.org/">Matplotlib</a> (version 2.1.0 or later), and
-<a href="https://seaborn.pydata.org">Seaborn</a> (version 0.8.0 or later). 
-The program codes also probably work with recent earlier versions of these 
-packages but this has not been tested.
 
 ## References
 
