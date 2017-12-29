@@ -15,8 +15,8 @@ family-wise error rate (FWER) and the false discovery rate (FDR).
 
 ### Quick example
 ```python
-from data import neuhaus
-from fwer import sidak
+from multipy.data import neuhaus
+from multipy.fwer import sidak
 
 pvals = neuhaus()
 significant_pvals = sidak(pvals, alpha=0.05)
@@ -37,8 +37,8 @@ print zip(['{:.4f}'.format(p) for p in pvals], significant_pvals)
 
 ### Quick example
 ```python
-from adaptive import lsu
-from data import neuhaus
+from multipy.adaptive import lsu
+from multipy.data import neuhaus
 
 pvals = neuhaus()
 significant_pvals = lsu(pvals, q=0.05)
