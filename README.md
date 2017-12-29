@@ -61,10 +61,12 @@ of the first exercise is available
 ## Dependencies
 
 The required packages are 
-<a href="http://www.numpy.org/">NumPy</a>,
-<a href="https://www.scipy.org/">SciPy</a>,
-<a href="https://matplotlib.org/">Matplotlib</a>, and
-<a href="https://seaborn.pydata.org">Seaborn</a>.
+<a href="http://www.numpy.org/">NumPy</a> (version 1.10.2 or later),
+<a href="https://www.scipy.org/">SciPy</a> (version 0.17.0 or later),
+<a href="https://matplotlib.org/">Matplotlib</a> (version 2.1.0 or later), and
+<a href="https://seaborn.pydata.org">Seaborn</a> (version 0.8.0 or later). 
+The program codes also probably work with recent earlier versions of these 
+packages but this has not been tested.
 
 ## References
 
