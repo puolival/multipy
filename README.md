@@ -30,10 +30,10 @@ print zip(['{:.4f}'.format(p) for p in pvals], significant_pvals)
 
 ## Implemented methods for controlling the FDR
 
-- Benjamini-Hochberg procedure (the classic FDR procedure)
-- Storey-Tibshirani q-value procedure
-- Adaptive linear step-up procedure
-- Two-stage linear step-up procedure
+- Benjamini-Hochberg procedure (the classic FDR procedure) [4]
+- Storey-Tibshirani q-value procedure [5]
+- Adaptive linear step-up procedure [6, 7]
+- Two-stage linear step-up procedure [7]
 
 ### Quick example
 ```python
@@ -78,3 +78,17 @@ significance. *Biometrika* 75(4):800–802.
 [3] Holm S (1979): A simple sequentially rejective multiple test procedure. 
 *Scandinavian Journal of Statistics* 6(2):65–70.
 
+[4] Benjamini Y, Hochberg Y (1995): Controlling the false discovery rate: 
+A practical and powerful approach to multiple testing. *Journal of Royal 
+Statistical Society. Series B (Methodological)*: 57(1):289–300.
+
+[5] Storey JD, Tibshirani R (2003): Statistical significance for genomewide
+studies. *The Proceedings of the National Academy of the United States of 
+America* 100(16):9440–9445.
+
+[6] Benjamini Y, Hochberg Y (2000): On the adaptive control of the false 
+discovery rate in multiple testing with independent statistics. *Journal of 
+Educational and Behavioral Statistics* 25:60–83.
+
+[7] Benjamini Y, Krieger AM, Yekutieli D (2006): Adaptive linear step-up 
+procedures that control the false discovery rate. *Biometrika* 93(3):491–507.
