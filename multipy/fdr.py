@@ -147,7 +147,7 @@ def paradoxical(pvals, q, significant):
     *after* the correction for multiple testing has been performed."""
     return np.sum(nocor_significant) < np.sum(significant)
 
-def qvalues(pvals, threshold=0.05, verbose=True):
+def qvalue(pvals, threshold=0.05, verbose=True):
     """Function for estimating q-values from p-values using the
     Storey-Tibshirani method [1].
 
