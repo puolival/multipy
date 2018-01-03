@@ -30,46 +30,12 @@ from scipy.stats import ttest_ind
 
 import seaborn as sb
 
-def _plot_statistic_qvalue(stats, stat_name, qvals):
-    """Plot q-values as a function of the underlying test statistics.
-    stats     - The test statistics, e.g. Student's t's
-    stat_name - Name of the test statistic, e.g. t for Student's t test
-    qvals     - The q-values corresponding to the test statistics.
-    """
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ind = np.argsort(stats)
-    ax.plot(stats[ind], qvals, '.', markersize=10)
-    ax.set_xlabel(stat_name)
-    ax.set_ylabel('Q-value')
-    plt.show()
-
 def _make_test_data(n_tests, sample_size):
     """Make some test data."""
     X = normal(loc=2.5, scale=4., size=(n_tests, sample_size))
     Y = normal(loc=4.0, scale=4., size=(n_tests, sample_size))
     stat, p = ttest_ind(X, Y, axis=1, equal_var=True)
     return stat, p
-
-def _plot_pval_hist(pvals):
-    """Plot a probability density histogram of the given p-values."""
-    fig = plt.figure(facecolor='white', edgecolor='white')
-    ax = fig.add_subplot(111)
-    ax.hist(pvals, range=(0., 1.), bins=20, normed=True)
-    ax.hlines(1., xmin=0, xmax=1, colors='gray', linestyles='dotted')
-    ax.set_xlabel('P-value')
-    ax.set_ylabel('Probability density')
-    ax.legend(['Uniform density'])
-    plt.show()
-
-def _plot_pval_qval_scatter(pvals, qvals):
-    """Make a scatter plot of the p-values and q-values."""
-    fig = plt.figure(facecolor='white', edgecolor='white')
-    ax = fig.add_subplot(111)
-    ax.plot(pvals, qvals, '.', markersize=10)
-    ax.set_xlabel('P-value')
-    ax.set_ylabel('Q-value')
-    plt.show()
 
 def _plot_pi0_fit(kappa, pik, cs):
     """Make a diagnostic plot of the estimate of pi0."""
@@ -82,19 +48,60 @@ def _plot_pi0_fit(kappa, pik, cs):
     ax.set_ylabel('$\pi_{0}(\lambda)$')
     plt.show()
 
-def _plot_qvalue_significant_features(qvals):
-    """Plot the number of significant features as a function of q-value
-    threshold."""
-    fig = plt.figure(facecolor='white', edgecolor='white')
-    ax = fig.add_subplot(111)
-    thresholds = np.arange(0., 0.1, 0.001)
-    significant_features = [np.sum(qvals<t) for t in thresholds]
-    ax.plot(thresholds, significant_features, '.', markersize=10)
-    ax.set_xlabel('Q-value')
-    ax.set_ylabel('Number of significant features')
-    plt.show()
+def plot_qvalue_diagnostics(stats, pvals, qvals, show_plot=True):
+    """Visualize q-values similar to Storey and Tibshirani [1].
 
-def qvals(pvals, threshold=0.05, verbose=True):
+    Input arguments:
+    stats     - Test statistics (e.g. Student's t-values)
+    pvals     - P-values corresponding to the test statistics
+    qvals     - Q-values corresponding to the p-values
+    show_plot - A flag for deciding whether the figure should be opened
+                immediately after being drawn.
+
+    Output arguments:
+    fig       - The drawn figure.
+    """
+    # Sort the p-values into ascending order for improved visualization.
+    stat_sort_ind, pval_sort_ind = np.argsort(stats), np.argsort(pvals)
+    thresholds = np.arange(0., 0.1, 0.001)
+    significant_tests = np.asarray([np.sum(qvals<t) for t in thresholds])
+
+    fig = plt.figure(figsize=(8, 6))
+    fig.subplots_adjust(top=0.95, bottom=0.1, left=0.09, right=0.96)
+
+    """Show q-values corresponding to the test statistics."""
+    ax1 = fig.add_subplot(221)
+    ax1.plot(stats[stat_sort_ind], qvals[stat_sort_ind])
+    ax1.set_xlabel('Test statistic')
+    ax1.set_ylabel('Q-value')
+
+    """Show q-values corresponding to the p-values."""
+    ax2 = fig.add_subplot(222)
+    ax2.plot(pvals[pval_sort_ind], qvals[pval_sort_ind])
+    ax2.set_xlabel('P-value')
+    ax2.set_ylabel('Q-value')
+
+    """Show the number of significant tests as a function of q-value
+    threshold."""
+    ax3 = fig.add_subplot(223)
+    ax3.plot(thresholds, significant_tests)
+    ax3.set_xlabel('Q-value')
+    ax3.set_ylabel('Number of significant tests')
+
+    """Show the number of expected false positives as a function of the
+    number of significant tests."""
+    ax4 = fig.add_subplot(224)
+    ax4.plot(significant_tests, thresholds*significant_tests)
+    ax4.set_xlabel('Number of significant tests')
+    ax4.set_ylabel('Number of expected false positives')
+
+    """Return the drawn figure."""
+    if (show_plot):
+        plt.show() # Open the figure.
+    return fig
+
+
+def qvalues(pvals, threshold=0.05, verbose=True):
     """Function for estimating q-values from p-values using the
     Storey-Tibshirani method [1].
 
@@ -123,7 +130,7 @@ def qvals(pvals, threshold=0.05, verbose=True):
 
     # Sanity check
     # TODO: check whether orig. paper has recommendations how to handle
-    if pi0 < 0 or pi0 > 1:
+    if (pi0 < 0 or pi0 > 1):
         pi0 = 1
         if (verbose):
             print 'The proportion was not in [0, 1] and was set as 1.'
@@ -141,4 +148,3 @@ def qvals(pvals, threshold=0.05, verbose=True):
     """Order the q-values according to the original order of the p-values."""
     qvals = qvals[rev_ind]
     return significant, qvals
-
