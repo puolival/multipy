@@ -52,7 +52,7 @@ print zip(['{:.4f}'.format(p) for p in pvals], significant_pvals)
 
 ### Quick example
 ```python
-from multipy.adaptive import lsu
+from multipy.fdr import lsu
 from multipy.data import neuhaus
 
 pvals = neuhaus()
