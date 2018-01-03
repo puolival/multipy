@@ -9,6 +9,12 @@ Last modified: 27th December 2017.
 License: Revised 3-clause BSD
 Source: https://github.com/puolival/multipy/blob/master/viz.py
 
+References:
+
+[1] Storey JD, Tibshirani R (2003): Statistical significance for genomewide
+    studies. The Proceedings of the National Academy of the United States of
+    America 100(16):9440-9445. DOI: 10.1073/pnas.1530509100
+
 WARNING: These functions have not been entirely validated yet.
 
 """

@@ -13,19 +13,23 @@ tst - The two-stage linear step-up procedure, which is defined on page 495
 References:
 
 [1] Benjamini Y, Krieger AM, Yekutieli D (2006): Adaptive linear step-up
-procedures that control the false discovery rate. Biometrika 93(3):491-507.
+    procedures that control the false discovery rate. Biometrika 93(3):491-507.
 
 [2] Benjamini Y, Hochberg Y (2000): On the adaptive control of the false
-discovery rate in multiple testing with independent statistics. Journal of
-Educational and Behavioral Statistics 25:60-83.
+    discovery rate in multiple testing with independent statistics. Journal of
+    Educational and Behavioral Statistics 25:60-83.
 
 [3] Benjamini Y, Hochberg Y (1995): Controlling the false discovery rate:
-A practical and powerful approach to multiple testing. Journal of Royal
-Statistical Society. Series B (Methodological): 57(1):289-300.
+    A practical and powerful approach to multiple testing. Journal of Royal
+    Statistical Society. Series B (Methodological): 57(1):289-300.
 
 [4] Reiss PT, Schwartzman A, Lu F, Huang L, Proal E (2012): Paradoxical
-results of adaptive false discovery rate procedures in neuroimaging studies
-63(4):1833-1840.
+    results of adaptive false discovery rate procedures in neuroimaging studies
+    63(4):1833-1840.
+
+[5] Storey JD, Tibshirani R (2003): Statistical significance for genomewide
+    studies. The Proceedings of the National Academy of the United States of
+    America 100(16):9440-9445. DOI: 10.1073/pnas.1530509100
 
 WARNING: This program code has not been thoroughly tested yet.
 
