@@ -13,19 +13,20 @@ tst - The two-stage linear step-up procedure, which is defined on page 495
 References:
 
 [1] Benjamini Y, Krieger AM, Yekutieli D (2006): Adaptive linear step-up
-    procedures that control the false discovery rate. Biometrika 93(3):491-507.
+    procedures that control the false discovery rate. Biometrika 93(3):
+    491-507.
 
 [2] Benjamini Y, Hochberg Y (2000): On the adaptive control of the false
-    discovery rate in multiple testing with independent statistics. Journal of
-    Educational and Behavioral Statistics 25:60-83.
+    discovery rate in multiple testing with independent statistics. Journal
+    of Educational and Behavioral Statistics 25:60-83.
 
 [3] Benjamini Y, Hochberg Y (1995): Controlling the false discovery rate:
     A practical and powerful approach to multiple testing. Journal of Royal
     Statistical Society. Series B (Methodological): 57(1):289-300.
 
 [4] Reiss PT, Schwartzman A, Lu F, Huang L, Proal E (2012): Paradoxical
-    results of adaptive false discovery rate procedures in neuroimaging studies
-    63(4):1833-1840.
+    results of adaptive false discovery rate procedures in neuroimaging
+    studies 63(4):1833-1840.
 
 [5] Storey JD, Tibshirani R (2003): Statistical significance for genomewide
     studies. The Proceedings of the National Academy of the United States of
@@ -148,8 +149,8 @@ def paradoxical(pvals, q, significant):
     return np.sum(nocor_significant) < np.sum(significant)
 
 def qvalue(pvals, threshold=0.05, verbose=True):
-    """Function for estimating q-values from p-values using the
-    Storey-Tibshirani method [1].
+    """Function for estimating q-values from p-values using the Storey-
+    Tibshirani q-value method (2003).
 
     Input arguments:
     pvals       - P-values corresponding to a family of hypotheses.
@@ -172,7 +173,8 @@ def qvalue(pvals, threshold=0.05, verbose=True):
     pik = [sum(pvals > k) / (m*(1-k)) for k in kappa]
     cs = UnivariateSpline(kappa, pik, k=3, s=None, ext=0)
     pi0 = float(cs(1.))
-    print 'The estimated proportion of truly null features is %.3f' % pi0
+    if (verbose):
+        print 'The estimated proportion of truly null features is %.3f' % pi0
 
     # Sanity check
     # TODO: check whether orig. paper has recommendations how to handle
@@ -194,4 +196,3 @@ def qvalue(pvals, threshold=0.05, verbose=True):
     """Order the q-values according to the original order of the p-values."""
     qvals = qvals[rev_ind]
     return significant, qvals
-
