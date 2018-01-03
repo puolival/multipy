@@ -25,7 +25,7 @@ import numpy as np
 
 import seaborn as sb
 
-def plot_pval_hist(pvals, hist_bins=1e2):
+def plot_pval_hist(pvals, hist_bins=1e2, show_plot=True):
     """Plot a simple density histogram of P-values.
 
     Input arguments:
@@ -45,6 +45,8 @@ def plot_pval_hist(pvals, hist_bins=1e2):
     ax1.set_xlim([-0.05, 1.05])
     ax1.set_xlabel('P-value')
     ax1.set_ylabel('Density')
+    if (show_plot):
+        plt.show()
     return fig
 
 def plot_qvalue_diagnostics(stats, pvals, qvals, show_plot=True):
@@ -99,7 +101,7 @@ def plot_qvalue_diagnostics(stats, pvals, qvals, show_plot=True):
         plt.show() # Open the figure.
     return fig
 
-def plot_qvalue_pi0_fit(kappa, pik, cs):
+def plot_qvalue_pi0_fit(kappa, pik, cs, show_plot=True):
     """Make a diagnostic plot of the estimate of pi0."""
     fig = plt.figure(facecolor='white', edgecolor='white')
     ax = fig.add_subplot(111)
@@ -108,5 +110,7 @@ def plot_qvalue_pi0_fit(kappa, pik, cs):
             '-', markersize=10)
     ax.set_xlabel('$\lambda$')
     ax.set_ylabel('$\pi_{0}(\lambda)$')
-    plt.show()
+    if (show_plot):
+        plt.show()
+    return fig
 
