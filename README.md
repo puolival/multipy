@@ -73,6 +73,11 @@ our interactive exercises! You can use the supplied data or your own. A preview
 of the first exercise is available 
 <a href="https://github.com/puolival/multipy/blob/master/exercise1.ipynb">here</a>.
 
+## Citation
+
+Puoliväli T, Lobier M, Palva S, Palva JM (2018): MultiPy: Multiple hypothesis 
+testing in Python. https://puolival.github.io/multipy/
+
 ## References
 
 [1] Sidak Z (1967): Confidence regions for the means of multivariate normal 
