@@ -78,7 +78,7 @@ _, qvals = qvalue(pvals)
 plot_qvalue_diagnostics(tstats, pvals, qvals)
 ```
 
-<img src="./multipy/figs/qvalue_example.png" alt="qvalue_example.png" style="display: block; margin-left: auto; margin-right: auto;" />
+<img src="https://github.com/puolival/multipy/blob/master/multipy/figs/qvalue_example.png" alt="qvalue_example.png" style="display: block; margin-left: auto; margin-right: auto;" />
 
 ## Learn by trying it yourself
 
