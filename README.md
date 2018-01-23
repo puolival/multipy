@@ -82,14 +82,6 @@ plot_qvalue_diagnostics(tstats, pvals, qvals)
 ```
 <img src="./multipy/figs/qvalue_example.png" alt="qvalue_example.png" style="display: block; margin-left: auto; margin-right: auto;" />
 
-## Learn by trying it yourself
-
-Download the <a href="https://github.com/puolival/multipy/archive/master.zip">
-program code</a>, install <a href="https://jupyter.org/">Jupyter</a> and do 
-our interactive exercises! You can use the supplied data or your own. A preview 
-of the first exercise is available 
-<a href="https://github.com/puolival/multipy/blob/master/exercise1.ipynb">here</a>.
-
 ## Citation
 
 Puoliväli T, Lobier M, Palva S, Palva JM (2018): MultiPy: Multiple hypothesis 
