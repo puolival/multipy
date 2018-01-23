@@ -1,4 +1,4 @@
- -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """Script for reproducing the result in Figure 2. of Reiss et al. (2012)
 
 Author: Tuomas Puoliväli
@@ -12,7 +12,9 @@ results of adaptive false discovery rate procedures in neuroimaging studies.
 NeuroImage 63(4):1833-1840.
 """
 
-from adaptive import lsu, tst
+from data import two_group_model
+
+from fdr import lsu, tst
 
 import matplotlib.pyplot as plt
 
@@ -23,24 +25,6 @@ from scipy.stats import ttest_ind
 
 import seaborn as sb
 
-def reiss_simulation(N=25, m=1000, pi0=0.1, delta=2):
-    """Function for reproducing one iteration of the simulation performed by
-    Reiss et al.
-
-    Input arguments:
-    N     - Number of samples in each group or condition
-    m     - Total number of variables
-    pi0   - The proportion of true null effects among the m variables
-    delta - The location parameter of the non-null part of the distribution
-            of Y, which controls the effect size.
-    """
-    X = normal(loc=0, scale=1, size=(N, m))
-    Y = np.hstack([normal(loc=0, scale=1, size=(N, int(pi0*m))),
-                   normal(loc=delta, scale=1, size=(N, int(round((1-pi0)*m, 1))))])
-    # two-sample t-test
-    tstat, pval = ttest_ind(X, Y, axis=0)
-    return tstat, pval
-
 """Reproduce the simulation in Figure 2. panel C."""
 m = 100
 n_iter = 99
@@ -50,7 +34,7 @@ n_rejected_lsu, n_rejected_tst = (np.ndarray([len(delta), n_iter]),
 n_rejected_nc = np.ndarray([len(delta), n_iter])
 for i in range(0, n_iter):
     for j, d in enumerate(delta):
-        _, pvals = reiss_simulation(N=20, m=m, pi0=0, delta=d)
+        _, pvals = two_group_model(N=20, m=m, pi0=0, delta=d)
         n_rejected_lsu[j, i] = np.sum(lsu(pvals))
         n_rejected_tst[j, i] = np.sum(tst(pvals))
         n_rejected_nc[j, i] = np.sum(pvals<0.05)
@@ -84,7 +68,7 @@ n_rejected_lsu, n_rejected_tst = (np.ndarray([len(pi), n_iter]),
                                   np.ndarray([len(pi), n_iter]))
 for i in range(0, n_iter):
     for j, p in enumerate(pi):
-        _, pvals = reiss_simulation(N=20, m=m, pi0=p, delta=0.7)
+        _, pvals = two_group_model(N=20, m=m, pi0=p, delta=0.7)
         n_rejected_lsu[j, i] = np.sum(lsu(pvals))
         n_rejected_tst[j, i] = np.sum(tst(pvals))
     print 'iteration %3d' % i
