@@ -21,7 +21,7 @@ The required packages are
 The program codes also probably work with recent earlier versions of these 
 packages but this has not been tested.
 
-## Implemented methods for controlling the FWER
+## Methods for controlling the FWER
 
 - Bonferroni correction
 - Šidák correction [1]
@@ -43,7 +43,7 @@ print zip(['{:.4f}'.format(p) for p in pvals], significant_pvals)
  ('0.4262', False), ('0.5719', False), ('0.6528', False), ('0.7590', False), ('1.0000', False)]
 ```
 
-## Implemented methods for controlling the FDR
+## Methods for controlling the FDR
 
 - Benjamini-Hochberg procedure (the classic FDR procedure) [4]
 - Storey-Tibshirani q-value procedure [5]
