@@ -65,6 +65,21 @@ print zip(['{:.4f}'.format(p) for p in pvals], significant_pvals)
  ('0.4262', False), ('0.5719', False), ('0.6528', False), ('0.7590', False), ('1.0000', False)]
 ```
 
+## Data visualization
+
+### Quick example
+```python
+from multipy.data import two_group_model
+from multipy.fdr import qvalue
+from multipy.viz import plot_qvalue_diagnostics
+
+tstats, pvals = two_group_model(N=25, m=1000, pi0=0.5, delta=1)
+_, qvals = qvalue(pvals)
+plot_qvalue_diagnostics(tstats, pvals, qvals)
+```
+
+![useful image]({{ site.url }}/multipy/figs/qvalue_example.png)
+
 ## Learn by trying it yourself
 
 Download the <a href="https://github.com/puolival/multipy/archive/master.zip">
