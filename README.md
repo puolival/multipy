@@ -68,6 +68,9 @@ print zip(['{:.4f}'.format(p) for p in pvals], significant_pvals)
 ## Data visualization
 
 ### Quick example
+
+Visualize q-values similar to Storey and Tibshirani (2003).
+
 ```python
 from multipy.data import two_group_model
 from multipy.fdr import qvalue
@@ -77,8 +80,7 @@ tstats, pvals = two_group_model(N=25, m=1000, pi0=0.5, delta=1)
 _, qvals = qvalue(pvals)
 plot_qvalue_diagnostics(tstats, pvals, qvals)
 ```
-
-<img src="https://github.com/puolival/multipy/blob/master/multipy/figs/qvalue_example.png" alt="qvalue_example.png" style="display: block; margin-left: auto; margin-right: auto;" />
+<img src="./multipy/figs/qvalue_example.png" alt="qvalue_example.png" style="display: block; margin-left: auto; margin-right: auto;" />
 
 ## Learn by trying it yourself
 
