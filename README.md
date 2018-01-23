@@ -78,7 +78,7 @@ _, qvals = qvalue(pvals)
 plot_qvalue_diagnostics(tstats, pvals, qvals)
 ```
 
-![useful image]({{ site.url }}/multipy/figs/qvalue_example.png)
+<img src="/multipy/figs/qvalue_example.png" alt="qvalue_example.png" />
 
 ## Learn by trying it yourself
 
