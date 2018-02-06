@@ -1,3 +1,12 @@
+"""Script for visualizing the probability of at least one false positive in
+m tests for different critical levels.
+
+Author: Tuomas Puoliväli
+Email: tuomas.puolivali@helsinki.fi
+Last modified 6th February 2018
+Source: https://github.com/puolival/multipy
+"""
+
 import matplotlib.pyplot as plt
 
 import numpy as np
