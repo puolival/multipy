@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Script for visualizing the probability of at least one false positive in
 m tests for different critical levels.
 
