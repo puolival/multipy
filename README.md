@@ -7,8 +7,22 @@ sets out to fill this gap by implementing methods for controlling the
 family-wise error rate (FWER) and the false discovery rate (FDR).
 
 ## Installation
+
+Install the software manually to get the latest version. The pip version is 
+updated approximately once per month.
+
+### Using pip
+
 ```
 pip install multipy
+```
+
+### Manually
+
+```
+git clone https://github.com/puolival/multipy.git
+cd multipy/
+ipython setup.py install
 ```
 
 ### Dependencies
