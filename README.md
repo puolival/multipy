@@ -13,7 +13,7 @@ updated approximately once per month.
 
 ### Using pip
 
-```
+```bash
 pip install multipy
 ```
 
