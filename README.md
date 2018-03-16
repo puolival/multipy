@@ -35,6 +35,11 @@ The required packages are
 The program codes also probably work with recent earlier versions of these 
 packages but this has not been tested.
 
+## Problems or suggestions?
+
+Please open an <a href="https://github.com/puolival/multipy/issues/new">issue</a>
+if you find a bug or have an idea how the software could be improved.
+
 ## Methods for controlling the FWER
 
 - Bonferroni correction
