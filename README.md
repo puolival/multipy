@@ -63,6 +63,7 @@ print zip(['{:.4f}'.format(p) for p in pvals], significant_pvals)
 - Storey-Tibshirani q-value procedure [5]
 - Adaptive linear step-up procedure [6–7]
 - Two-stage linear step-up procedure [7]
+- Permutation tests [8] (work in progress)
 
 ### Quick example
 ```python
@@ -127,3 +128,6 @@ Educational and Behavioral Statistics* 25:60–83.
 
 [7] Benjamini Y, Krieger AM, Yekutieli D (2006): Adaptive linear step-up 
 procedures that control the false discovery rate. *Biometrika* 93(3):491–507.
+
+[8] Maris E, Oostenveld R (2007): Nonparametric statistical testing of EEG-
+and MEG-data. *Journal of Neuroscience Methods* 164(1):177–190.
