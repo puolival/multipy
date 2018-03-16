@@ -115,19 +115,24 @@ def plot_qvalue_pi0_fit(kappa, pik, cs, show_plot=True):
         plt.show()
     return fig
 
-def plot_permutation_distribution(stat, show_plot=True):
+def plot_permutation_distribution(stat, ref_stat, show_plot=True):
     """Initialize the plot."""
     fig = plt.figure(figsize=(6, 4), facecolor='white', edgecolor='white')
     ax = fig.add_subplot(111)
 
-    """Plot the permutation distribution.
-    TODO: plot reference value."""
+    """Plot the permutation distribution."""
     sb.distplot(stat, hist=True, kde=True, norm_hist=True, ax=ax)
+
+    """Plot the reference value."""
+    ax.plot([ref_stat, ref_stat], [0, ax.dataLim.ymax], '-', color='g')
 
     """Label the axes etc."""
     ax.set_xlabel('Test statistic')
     ax.set_ylabel('Density')
     ax.set_title('Permutation distribution')
+    # Location 1 is the upper right position.
+    # TODO: why the reference value needs to be given first for the legend?
+    ax.legend(['Reference value', 'Permutation distribution'], loc=1)
     fig.tight_layout()
 
     """Return and show the plot."""
