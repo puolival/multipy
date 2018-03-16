@@ -97,10 +97,10 @@ def permutation_test(X, Y, n_permutations=1000, threshold=1, tail='both'):
     Z = np.vstack([X, Y])
 
     """Do the permutations."""
-    cmax = np.zeros(n_permutations)
+    cstat = np.zeros(n_permutations)
 
     for p in arange(0, n_permutations):
-        """Do the random partition."""
+        """Do a random partition of the data."""
         permuted_ind = permutation(arange(n_total))
         T, U = Z[permuted_ind[0:n_samples_x], :], Z[permuted_ind[n_samples_x:], :]
 
@@ -109,15 +109,15 @@ def permutation_test(X, Y, n_permutations=1000, threshold=1, tail='both'):
         clusters = _cluster_by_adjacency(sel)
 
         """Compute cluster-level statistics."""
-        cmax[p] = _cluster_stat(tstat, clusters)
+        cstat[p] = _cluster_stat(tstat, clusters)
 
-    cmax = cmax[~np.isnan(cmax)]
-    pval = np.sum(cmax > ref_cstat) / n_permutations
+    cstat = cstat[~np.isnan(cstat)]
+    pval = np.sum(cstat > ref_cstat) / n_permutations
 
-    return pval
+    return pval, cstat, ref_cstat
 
 """Generate some test data."""
 X = normal(loc=2, scale=1, size=(20, 300))
 Y = normal(loc=0, scale=1, size=(20, 300))
 
-print permutation_test(X, Y)
+pval, cstat, ref_cstat = permutation_test(X, Y)
