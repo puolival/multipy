@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Functions for visualizing P-values.
+"""Functions for visualizing P-values and Q-values, making diagnostic plots,
+and showing permutation distributions etc.
 
 This program code is part of the MultiPy (Multiple Hypothesis Testing in
 Python) package.
 
 Author: Tuomas Puoliväli (tuomas.puolivali@helsinki.fi)
-Last modified: 27th December 2017.
+Last modified: 16th March 2018.
 License: Revised 3-clause BSD
 Source: https://github.com/puolival/multipy/blob/master/viz.py
 
@@ -110,6 +111,26 @@ def plot_qvalue_pi0_fit(kappa, pik, cs, show_plot=True):
             '-', markersize=10)
     ax.set_xlabel('$\lambda$')
     ax.set_ylabel('$\pi_{0}(\lambda)$')
+    if (show_plot):
+        plt.show()
+    return fig
+
+def plot_permutation_distribution(stat, show_plot=True):
+    """Initialize the plot."""
+    fig = plt.figure(figsize=(6, 4), facecolor='white', edgecolor='white')
+    ax = fig.add_subplot(111)
+
+    """Plot the permutation distribution.
+    TODO: plot reference value."""
+    sb.distplot(stat, hist=True, kde=True, norm_hist=True, ax=ax)
+
+    """Label the axes etc."""
+    ax.set_xlabel('Test statistic')
+    ax.set_ylabel('Density')
+    ax.set_title('Permutation distribution')
+    fig.tight_layout()
+
+    """Return and show the plot."""
     if (show_plot):
         plt.show()
     return fig
