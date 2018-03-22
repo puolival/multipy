@@ -10,6 +10,9 @@ References:
 
 [1] Maris E, Oostenveld R (2007): Nonparametric statistical testing of EEG-
     and MEG-data. Journal of Neuroscience Methods 164(1):177-190.
+
+WARNING: work in progress.
+
 """
 
 import matplotlib.pyplot as plt
@@ -45,24 +48,29 @@ def _cluster_by_adjacency(sel_samples):
                 j += 1
     return clusters
 
-def _cluster_stat(tstat, clusters):
+def _cluster_stat(stat, clusters, statistic='cluster_mass'):
     """Function for computing the cluster mass statistic.
 
     Input arguments:
-    tstat    - T-statistic for each variable.
-    clusters - A vector of cluster numbers grouping the t-statistics as
-               returned by the function _cluster_by_adjacency.
+    stat      - Student's T or some other statistic for each variable.
+    clusters  - A vector of cluster numbers grouping the test statistics.
+    statistic - The computed cluster-level statistic. For now the only
+                available option is 'cluster_mass'. TODO: implement
+                alternatives.
 
     Output arguments:
     cstat    - The cluster mass statistic.
     """
-    n_clusters = np.max(clusters)
-    if (n_clusters == 0):
-        return np.nan
+    if (statistic == 'cluster_mass'):
+        n_clusters = np.max(clusters)
+        if (n_clusters == 0):
+            return np.nan
+        else:
+            cstat = [np.sum(stat[clusters == i]) for i in
+                                                 arange(1, n_clusters+1)]
+            return np.max(cstat)
     else:
-        cstat = [np.sum(tstat[clusters == i]) for i in
-                                              arange(1, n_clusters+1)]
-        return np.max(cstat)
+        raise NotImplementedError('Option not available')
 
 def permutation_test(X, Y, n_permutations=1000, threshold=1, tail='both'):
     """Permutation test for a significant difference between two sets of data.
@@ -117,7 +125,13 @@ def permutation_test(X, Y, n_permutations=1000, threshold=1, tail='both'):
     return pval, cstat, ref_cstat
 
 """Generate some test data."""
-X = normal(loc=2, scale=1, size=(20, 300))
+X = normal(loc=0.25, scale=1, size=(20, 300))
 Y = normal(loc=0, scale=1, size=(20, 300))
 
 pval, cstat, ref_cstat = permutation_test(X, Y)
+
+from viz import plot_permutation_distribution
+
+plot_permutation_distribution(cstat, ref_cstat)
+
+
