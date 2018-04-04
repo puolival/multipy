@@ -6,6 +6,8 @@ methods are yet to be implemented into a coherent Python package. This package
 sets out to fill this gap by implementing methods for controlling the 
 family-wise error rate (FWER) and the false discovery rate (FDR).
 
+<img src="./multipy/scripts/fig1.png" alt="fwer" style="display: block; margin-left: auto; margin-right: auto;" />
+
 ## Installation
 
 Install the software manually to get the latest version. The pip version is 
