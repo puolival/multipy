@@ -37,6 +37,12 @@ The required packages are
 The program codes also probably work with recent earlier versions of these 
 packages but this has not been tested.
 
+## News
+
+* (30th May 2018) MultiPy is presented in the Tool of the month seminar (<a href="https://blogs.helsinki.fi/ils-blogs/category/tool-of-the-month-tom/">abstract</a>) at the University of Helsinki, Finland
+
+* (3th May 2018) MultiPy is presented as a poster in the Neuronal circuit dynamics across scales and species <a href="https://www.helsinki.fi/en/conferences/neuronal-circuit-dynamics-across-scales-and-species">symposium at Helsinki, Finland
+
 ## Problems or suggestions?
 
 Please open an <a href="https://github.com/puolival/multipy/issues/new">issue</a>
