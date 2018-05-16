@@ -8,6 +8,12 @@ family-wise error rate (FWER) and the false discovery rate (FDR).
 
 <img src="./multipy/scripts/fig1.png" alt="fwer" style="display: block; margin-left: auto; margin-right: auto;" />
 
+## News
+
+* MultiPy is presented in the Tool of the month seminar (<a href="https://blogs.helsinki.fi/ils-blogs/category/tool-of-the-month-tom/">abstract</a>) at the University of Helsinki, Finland (30th May 2018)
+
+* MultiPy is presented as a poster in the Neuronal circuit dynamics across scales and species <a href="https://www.helsinki.fi/en/conferences/neuronal-circuit-dynamics-across-scales-and-species">symposium</a> at Helsinki, Finland (3-4th May 2018)
+
 ## Installation
 
 Install the software manually to get the latest version. The pip version is 
@@ -36,12 +42,6 @@ The required packages are
 <a href="https://seaborn.pydata.org">Seaborn</a> (version 0.8.0 or later). 
 The program codes also probably work with recent earlier versions of these 
 packages but this has not been tested.
-
-## News
-
-* MultiPy is presented in the Tool of the month seminar (<a href="https://blogs.helsinki.fi/ils-blogs/category/tool-of-the-month-tom/">abstract</a>) at the University of Helsinki, Finland (30th May 2018)
-
-* MultiPy is presented as a poster in the Neuronal circuit dynamics across scales and species <a href="https://www.helsinki.fi/en/conferences/neuronal-circuit-dynamics-across-scales-and-species">symposium</a> at Helsinki, Finland (3-4th May 2018)
 
 ## Problems or suggestions?
 
