@@ -39,9 +39,9 @@ packages but this has not been tested.
 
 ## News
 
-* (30th May 2018) MultiPy is presented in the Tool of the month seminar (<a href="https://blogs.helsinki.fi/ils-blogs/category/tool-of-the-month-tom/">abstract</a>) at the University of Helsinki, Finland
+* MultiPy is presented in the Tool of the month seminar (<a href="https://blogs.helsinki.fi/ils-blogs/category/tool-of-the-month-tom/">abstract</a>) at the University of Helsinki, Finland (30th May 2018)
 
-* (3th May 2018) MultiPy is presented as a poster in the Neuronal circuit dynamics across scales and species <a href="https://www.helsinki.fi/en/conferences/neuronal-circuit-dynamics-across-scales-and-species">symposium at Helsinki, Finland
+* MultiPy is presented as a poster in the Neuronal circuit dynamics across scales and species <a href="https://www.helsinki.fi/en/conferences/neuronal-circuit-dynamics-across-scales-and-species">symposium at Helsinki, Finland (3-4th May 2018)
 
 ## Problems or suggestions?
 
