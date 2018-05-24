@@ -1,5 +1,7 @@
 # Example analyses on the Open Access Series of Imaging Studies (OASIS) data
 
+This is work in progress. Check again later on.
+
 ## Initial preparations
 
 Install a recent version of FreeSurfer from http://surfer.nmr.mgh.harvard.edu/.
