@@ -33,3 +33,7 @@ do
         -no-isrunning -openmp 8
 done
 ```
+
+## References
+
+Marcus DS, Wang TH, Parker J, Csernansky JG, Morris JC, Buckner RL (2007): Open Access Series of Imaging Studies (OASIS): cross-Sectional MRI data in young, middle aged, nondemented, and demented older adults. *Journal of Cognitive Neuroscience* 19(9):1498–1507
