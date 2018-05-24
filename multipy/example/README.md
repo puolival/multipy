@@ -6,13 +6,13 @@ This is work in progress. Check again later on.
 
 Install a recent version of FreeSurfer from http://surfer.nmr.mgh.harvard.edu/.
 
-## Download the data
+### Download the data
 
 To download the OASIS dataset, visit http://www.oasis-brains.org/#data and 
 choose the dataset OASIS-1, which contains magnetic resonance (MR) images 
 from 416 participants aged 18 to 96 years.
 
-## Run the qcache pipeline of recon-all
+### Run the qcache pipeline of recon-all
 
 <a href="https://github.com/puolival/multipy/blob/master/multipy/example/qcache.sh">qcache.sh</a>:
 ```bash
