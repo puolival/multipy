@@ -4,15 +4,22 @@ This is work in progress. Check again later on.
 
 ## Initial preparations
 
-Install a recent version of FreeSurfer from http://surfer.nmr.mgh.harvard.edu/.
+Install FreeSurfer from http://surfer.nmr.mgh.harvard.edu/. These data analyses were
+performed using the version 6.0.0 but newer and relatively recent older versions likely
+work as well. If you have not used FreeSurfer before, we suggest to try their 
+<a href="http://surfer.nmr.mgh.harvard.edu/fswiki/Tutorials">tutorials</a>.
 
 ### Download the data
 
 To download the OASIS dataset, visit http://www.oasis-brains.org/#data and 
-choose the dataset OASIS-1, which contains magnetic resonance (MR) images 
+choose the release OASIS-1, which contains magnetic resonance (MR) images 
 from 416 participants aged 18 to 96 years.
 
 ### Run the qcache pipeline of recon-all
+
+The next step is to compute voxel-level morphometric measures and align data 
+from individual participants to a common space. This can be performed using 
+the qcache pipeline of recon-all.
 
 <a href="https://github.com/puolival/multipy/blob/master/multipy/example/qcache.sh">qcache.sh</a>:
 ```bash
