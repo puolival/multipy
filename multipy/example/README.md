@@ -21,6 +21,11 @@ The next step is to compute voxel-level morphometric measures and align data
 from individual participants to a common space. This can be performed using 
 the qcache pipeline of recon-all.
 
+```bash
+cd /home/local/puolival/multipy-testdata/oasis
+find ./ -name "OAS1_*_MR1" | cut -c 3- > subject_list
+```
+
 <a href="https://github.com/puolival/multipy/blob/master/multipy/example/qcache.sh">qcache.sh</a>:
 ```bash
 # Settings
