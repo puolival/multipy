@@ -46,6 +46,81 @@ do
 done
 ```
 
+### Load and prepare the thickness data for analysis
+
+```python
+from multipy.fdr import lsu
+from multipy.fwer import sidak
+
+import nibabel as nib
+
+import numpy as np
+
+import pandas as ps
+
+from os.path import isfile
+
+from scipy.stats import spearmanr
+
+from surfer import Brain
+```
+
+```python
+"""Read subject demographics from the CSV file. In this example we only
+need to know the CDR score and age of each participant."""
+fpath = '/home/local/puolival/multipy-testdata/oasis'
+fname_demographics = fpath + '/demographics.csv'
+
+column_names = ['session', 'subject', 'gender', 'handedness', 'age',
+                'education','ses', 'cdr', 'mmse', 'etiv', 'nwbv',
+                'asf','scans']
+column_types = {'session': np.str, 'age': np.int, 'cdr': np.float}
+
+df = ps.read_csv(fname_demographics, delimiter=',', header=0,
+                 names=column_names, dtype=column_types)
+```
+
+```python
+"""Discard unnecessary columns. Replace NaNs with zeros. Restrict
+the analysis to non-demented subjects."""
+df = df.filter(column_types.keys()).fillna(0)
+df = df[df.cdr == 0]
+```
+
+```python
+"""Read morphometric data."""
+hemisphere, measure, smoothing = 'rh', 'thickness', 'fwhm10'
+
+surf_data, bad_ind = [], []
+for i, subj in enumerate(df.session):
+    fname = (fpath + '/' + subj + '/surf/' + hemisphere + '.' + measure
+             + '.' + smoothing + '.fsaverage.mgh')
+    if not (isfile(fname)):
+        bad_ind.append(i)
+        continue
+    data = nib.load(fname).get_data()[:, 0, 0]
+    surf_data.append(data)
+
+surf_data = np.asarray(surf_data)
+df = df.drop(df.index[bad_ind])
+```
+
+```python
+"""For each voxel, correlate thickness with age."""
+_, n_voxels = np.shape(surf_data)
+pvals = np.zeros([n_voxels, 1])
+
+for i in np.arange(0, n_voxels):
+    valid_ind = surf_data[:, i] > 0.1
+    pvals[i] = spearmanr(df.age.values[valid_ind],
+                         surf_data[valid_ind, i])[1]
+    print 'voxel %6d' % i
+
+pvals[np.isnan(pvals)] = 1
+pvals = pvals[:, 0]
+```
+
+
 ## References
 
 Marcus DS, Wang TH, Parker J, Csernansky JG, Morris JC, Buckner RL (2007): Open access series of imaging studies (OASIS): cross-sectional MRI data in young, middle aged, nondemented, and demented older adults. *Journal of Cognitive Neuroscience* 19(9):1498–1507 (<a href="https://dash.harvard.edu/handle/1/33896768">full text</a>)
