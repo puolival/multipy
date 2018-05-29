@@ -85,6 +85,10 @@ df = ps.read_csv(fname_demographics, delimiter=',', header=0,
                  names=column_names, dtype=column_types)
 ```
 
+Here we only need to know each participant's age, identifier, and 
+clinical dementia rating (CDR), so we discard other columns from the 
+<a href="https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html">DataFrame</a> object. Participants with a CDR value greater than 0 are 
+demented and the rest are healthy.
 ```python
 """Discard unnecessary columns. Replace NaNs with zeros. Restrict
 the analysis to non-demented subjects."""
