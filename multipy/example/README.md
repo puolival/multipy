@@ -50,8 +50,8 @@ done
 
 To load, process, and visualize the cortical thickness data and 
 participant demographics, we use the following libraries: 
-NiBabel (version 2.2.1), Pandas (version 0.20.3), NumPy (version 1.10.4),
-SciPy (version 0.17.0), and PySurfer (0.9.dev0).
+<a href="http://nipy.org/nibabel/">NiBabel</a> (version 2.2.1), <a href="https://pandas.pydata.org/">Pandas</a> (version 0.20.3), <a href="http://www.numpy.org/">NumPy</a> (version 1.10.4),
+<a href="https://www.scipy.org/">SciPy</a> (version 0.17.0), and <a href="https://pysurfer.github.io/">PySurfer</a> (0.9.dev0).
 
 ```python
 from multipy.fdr import lsu
