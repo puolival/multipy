@@ -48,6 +48,11 @@ done
 
 ### Load and prepare the thickness data for analysis
 
+To load, process, and visualize the cortical thickness data and 
+participant demographics, we use the following libraries: 
+NiBabel (version 2.2.1), Pandas (version 0.20.3), NumPy (version 1.10.4),
+SciPy (version 0.17.0), and PySurfer (0.9.dev0).
+
 ```python
 from multipy.fdr import lsu
 from multipy.fwer import sidak
