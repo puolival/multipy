@@ -70,6 +70,8 @@ from scipy.stats import spearmanr
 from surfer import Brain
 ```
 
+The participant information file includes basic demographic variables (age, gender, handedness, education level, socioeconomic status), clinical variables, and brain volume estimates. The variable names are given on the first row of the CSV file. A more detailed description of the demographic variables is available in the OASIS-1 <a href="https://www.oasis-brains.org/files/oasis_cross-sectional_facts.pdf">fact sheet</a>.
+
 ```python
 """Read subject demographics from the CSV file. In this example we only
 need to know the CDR score and age of each participant."""
