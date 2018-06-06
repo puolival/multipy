@@ -116,6 +116,7 @@ surf_data = np.asarray(surf_data)
 df = df.drop(df.index[bad_ind])
 ```
 
+We are now ready for computing correlation coefficients between cortical thickness and age in each cortical voxel. The cortical thickness estimation may sometimes fail for individual voxels, so we discard samples where the estimated thickness is less than 0.1 mm, which is much less than the MR resolution.
 ```python
 """For each voxel, correlate thickness with age."""
 _, n_voxels = np.shape(surf_data)
