@@ -54,7 +54,9 @@ do
 done
 ```
 
-### Load and prepare the thickness data for analysis
+## Data analysis
+
+### Load and prepare the demographic data for analysis
 
 To load, process, and visualize the cortical thickness data and 
 participant demographics, we use the following libraries: 
@@ -106,6 +108,8 @@ df = df.filter(column_types.keys()).fillna(0)
 df = df[df.cdr == 0]
 ```
 
+### Load and prepare the thickness data for analysis
+
 ```python
 """Read morphometric data."""
 hemisphere, measure, smoothing = 'rh', 'thickness', 'fwhm10'
@@ -124,6 +128,8 @@ surf_data = np.asarray(surf_data)
 df = df.drop(df.index[bad_ind])
 ```
 
+### Compute statistics and perform correction for multiple comparisons
+
 We are now ready for computing correlation coefficients between cortical thickness and age in each cortical voxel. The cortical thickness estimation may sometimes fail for individual voxels, so we discard samples where the estimated thickness is less than 0.1 mm, which is much less than the MR resolution.
 ```python
 """For each voxel, correlate thickness with age."""
@@ -139,6 +145,8 @@ for i in np.arange(0, n_voxels):
 pvals[np.isnan(pvals)] = 1
 pvals = pvals[:, 0]
 ```
+
+### Visualize results
 
 The next step is to correct the p-values for the 163810 comparisons. Here we apply the Šidák correction, which controls the family-wise error rate (FWER), and the Benjamini-Hochberg procedure, which controls the false discovery rate (FDR).
 ```python
