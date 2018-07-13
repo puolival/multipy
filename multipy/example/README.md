@@ -174,6 +174,8 @@ brain.add_data(-rhos, alpha=0.9, min=rho_sig_min, mid=rho_sig_mean,
 # brain.add_annotation('aparc.a2009s', borders=True, alpha=0.25)
 ```
 
+<img src="./result.png" alt="fwer fdr comparison" style="display: block; margin-left: auto; margin-right: auto;" />
+
 ## References
 
 Marcus DS, Wang TH, Parker J, Csernansky JG, Morris JC, Buckner RL (2007): Open access series of imaging studies (OASIS): cross-sectional MRI data in young, middle aged, nondemented, and demented older adults. *Journal of Cognitive Neuroscience* 19(9):1498–1507 (<a href="https://dash.harvard.edu/handle/1/33896768">full text</a>)
