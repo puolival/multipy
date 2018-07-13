@@ -144,6 +144,9 @@ for i in np.arange(0, n_voxels):
 
 pvals[np.isnan(pvals)] = 1
 pvals = pvals[:, 0]
+
+rhos[np.isnan(rhos)] = 0
+rhos = rhos[:, 0]
 ```
 
 The next step is to correct the p-values for the 163810 comparisons. Here we apply the Šidák correction, which controls the family-wise error rate (FWER), and the Benjamini-Hochberg procedure, which controls the false discovery rate (FDR).
@@ -159,6 +162,16 @@ The last step is visualize the results on the cortical surface using PySurfer.
 ```python
 brain = Brain(subject_id='fsaverage', hemi=hemisphere, surf='inflated',
               subjects_dir=fpath, size=640)
+
+rho_fwr_neg = rhos[rhos<0][fwr_sig[rhos<0]]
+rho_sig_min, rho_sig_mean = -np.max(rho_fwr_neg), -np.mean(rho_fwr_neg)
+
+brain.add_data(-rhos, alpha=0.9, min=rho_sig_min, mid=rho_sig_mean,
+               max=1, colormap='Blues', hemi=hemisphere, colorbar=True,
+               transparent=True)
+
+# show Destrieux atlas label boundaries
+# brain.add_annotation('aparc.a2009s', borders=True, alpha=0.25)
 ```
 
 ## References
