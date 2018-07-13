@@ -2,6 +2,9 @@
 
 This is work in progress. Check again later on.
 
+## Introduction
+
+
 ## Initial preparations
 
 Install FreeSurfer from http://surfer.nmr.mgh.harvard.edu/. These data analyses were
@@ -132,6 +135,16 @@ pvals[np.isnan(pvals)] = 1
 pvals = pvals[:, 0]
 ```
 
+The next step is to correct the p-values for the 163810 comparisons. Here we apply the Šidák correction, which controls the family-wise error rate, and the Benjamini-Hochberg FDR procedure.
+```python
+fdr_sig = lsu(pvals, q=0.05)
+fwr_sig = sidak(pvals, alpha=0.05)
+```
+
+The last step is visualize the results on the cortical surface using PySurfer.
+
+```python
+```
 
 ## References
 
