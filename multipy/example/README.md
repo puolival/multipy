@@ -4,6 +4,11 @@ This is work in progress. Check again later on.
 
 ## Introduction
 
+In this example, we perform mass-univariate analyzes on magnetic resonance (MR) images 
+extracted from the open-access series of imaging studies (OASIS) open data initiative
+(Marcus et al, 2007). These data contain T1-weighted images from 416 demented and 
+non-demented participants aged 18 to 96 years, which allows investigating how age and 
+age-related diseases influence brain morphology.
 
 ## Initial preparations
 
@@ -135,7 +140,7 @@ pvals[np.isnan(pvals)] = 1
 pvals = pvals[:, 0]
 ```
 
-The next step is to correct the p-values for the 163810 comparisons. Here we apply the Šidák correction, which controls the family-wise error rate, and the Benjamini-Hochberg FDR procedure.
+The next step is to correct the p-values for the 163810 comparisons. Here we apply the Šidák correction, which controls the family-wise error rate (FWER), and the Benjamini-Hochberg procedure, which controls the false discovery rate (FDR).
 ```python
 fdr_sig = lsu(pvals, q=0.05)
 fwr_sig = sidak(pvals, alpha=0.05)
@@ -144,6 +149,8 @@ fwr_sig = sidak(pvals, alpha=0.05)
 The last step is visualize the results on the cortical surface using PySurfer.
 
 ```python
+brain = Brain(subject_id='fsaverage', hemi=hemisphere, surf='inflated',
+              subjects_dir=fpath, size=640)
 ```
 
 ## References
