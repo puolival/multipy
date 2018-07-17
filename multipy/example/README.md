@@ -157,7 +157,7 @@ fwr_sig = sidak(pvals, alpha=0.05)
 
 ### Visualize results
 
-The last step is visualize the results on the cortical surface using PySurfer.
+The next step is visualize the results on the cortical surface using PySurfer.
 
 ```python
 brain = Brain(subject_id='fsaverage', hemi=hemisphere, surf='inflated',
@@ -175,6 +175,45 @@ brain.add_data(-rhos, alpha=0.9, min=rho_sig_min, mid=rho_sig_mean,
 ```
 
 <img src="./result.png" alt="fwer fdr comparison" style="display: block; margin-left: auto; margin-right: auto;" />
+
+### Validation
+
+It is now interesting to have a closer look at some of the data. The previous 
+figures suggest that some of the largest age-related effects are seen in the 
+central sulcus. Indeed, we have
+
+```python
+import matplotlib.pyplot as plt
+
+import seaborn as sns
+
+label_path = '/home/puolival/multipy/multipy/example/labels'
+label = 'S_central.label'
+label_ind = read_label(label_path + '/' + hemisphere + '.' + label)
+
+sns.set_style('darkgrid')
+fig = plt.figure()
+
+ax = fig.add_subplot(111)
+ax.plot(df.age.values, np.mean(surf_data[:, label_ind], axis=1), '.')
+ax.set_xlabel('Age (years)')
+ax.set_ylabel('Cortical thickness (mm)')
+
+plt.show()
+```
+
+<img src="./s_central.png" alt="central sulcus" style="display: block;" />
+
+and a linear regression gives
+
+```python
+from scipy.stats import linregress
+linregress(df.age.values, np.mean(surf_data[:, label_ind], axis=1))
+
+# LinregressResult(slope=-0.004570918913556374, intercept=2.0037511523607812, rvalue=-0.72803176505920231, pvalue=4.305777707753375e-53, stderr=0.00024367492643875632)
+
+```
+
 
 ## References
 
