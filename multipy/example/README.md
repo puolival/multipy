@@ -210,7 +210,9 @@ and a linear regression gives
 from scipy.stats import linregress
 linregress(df.age.values, np.mean(surf_data[:, label_ind], axis=1))
 
-# LinregressResult(slope=-0.004570918913556374, intercept=2.0037511523607812, rvalue=-0.72803176505920231, pvalue=4.305777707753375e-53, stderr=0.00024367492643875632)
+# LinregressResult(slope=-0.004570918913556374, intercept=2.0037511523607812,
+                   rvalue=-0.72803176505920231, pvalue=4.305777707753375e-53,
+                   stderr=0.00024367492643875632)
 
 ```
 
