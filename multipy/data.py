@@ -25,6 +25,9 @@ References:
 [3] Reiss PT, Schwartzman A, Lu F, Huang L, Proal E (2012): Paradoxical
     results of adaptive false discovery rate procedures in neuroimaging
     studies. NeuroImage 63(4):1833-1840.
+
+[4] Efron B (2008): Simultaneous inference: When should hypothesis testing
+    problems be combined? The Annals of Applied Statistics 2(1):197-223.
 """
 
 import numpy as np
@@ -71,3 +74,12 @@ def two_group_model(N=25, m=1000, pi0=0.1, delta=0.7):
     tstat, pvals = ttest_ind(X, Y, axis=0)
     return tstat, pvals
 
+def separate_class_model(a_N=25, b_N=25, a_m=500, b_m=500, a_pi0=0.25,
+                         b_pi0=0.75, a_delta=0.5, b_delta=0.6):
+    """The separate class model described by Efron [4]."""
+    A_tstat, A_pvals = two_group_model(a_N, a_m, a_pi0, a_delta)
+    B_tstat, B_pvals = two_group_model(b_N, b_m, b_pi0, b_delta)
+    # Combine
+    tstats, pvals = (np.hstack([A_tstat, B_tstat]),
+                     np.hstack([A_pvals, B_pvals]))
+    return tstats, pvals
