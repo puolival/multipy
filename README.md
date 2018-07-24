@@ -54,6 +54,7 @@ if you find a bug or have an idea how the software could be improved.
 - Šidák correction [1]
 - Hochberg's procedure [2]
 - Holm-Bonferroni procedure [3]
+- Random field theory (RFT) based approaches [9]
 
 ### Quick example
 ```python
@@ -144,3 +145,7 @@ procedures that control the false discovery rate. *Biometrika* 93(3):491–507.
 
 [8] Maris E, Oostenveld R (2007): Nonparametric statistical testing of EEG-
 and MEG-data. *Journal of Neuroscience Methods* 164(1):177–190.
+
+[9] Brett M, Penny W, Kiebel S (2003): An introduction to random field 
+theory. Human Brain Function (2nd edition). 
+(<a href="https://www.fil.ion.ucl.ac.uk/spm/doc/books/hbf2/">full text</a>)
