@@ -5,6 +5,8 @@ techniques.
 Author: Tuomas Puoliväli
 Email: tuomas.puolivali@helsinki.fi
 Last modified: 23th July 2018
+License: Revised 3-clause BSD
+Source: https://github.com/puolival/multipy/blob/master/rft.py
 
 References:
 
@@ -15,9 +17,7 @@ Worsley KJ, Evans AC, Marrett S, Neelin P (1992): A three-dimensional
 statistical analysis for CBF activation studies in human brain. Journal of
 Cerebral Blood Flow and Metabolism 12:900-918.
 
-Notes:
-
-Work in progress.
+WARNING: These functions have not been entirely validated yet.
 """
 
 import matplotlib.pyplot as plt
@@ -31,9 +31,20 @@ from skimage.filters import gaussian as gaussian_filter
 from skimage.measure import label
 
 def _n_resels(X, fwhm):
-    """Estimate the number of resolution elements. Here the idea is to
-    simply compute how many FWHM sized block are needed to cover the entire
-    area of X. TODO: Replace with a better (proper?) method."""
+    """Function for estimating the number of resolution elements or resels.
+
+    Input arguments:
+    ================
+    X : ndarray of floats
+      Two-dimensional data array containing the analyzed data.
+    fwhm : float
+      Size of the smoothing kernel measured as full-width at half maximum
+      (FWHM).
+    """
+
+    """Estimate the number of resolution elements. Here the idea is to simply
+    compute how many FWHM sized blocsk are needed to cover the entire area of
+    X. TODO: Replace with a better (proper?) method."""
     R = len(X.flatten()) / float(fwhm ** 2)
     return R
 
@@ -51,7 +62,8 @@ def _expected_ec_2d(R, Z):
     return EC
 
 def _threshold(X, Z):
-    """Function for thresholding arrays.
+    """Function for thresholding smoothed data. The data is z-scored before
+    thresholding.
 
     Input arguments:
     ================
@@ -68,17 +80,19 @@ def _threshold(X, Z):
     Y[X > Z] = 1
     return Y
 
-def _ec_2d(Y):
-    """Function for finding connected components from a two-dimensional
-    data array.
+def _ec_2d(X):
+    """Function for computing the empirical Euler characteristic of a given
+    thresholded data array.
 
     Input arguments:
     ================
     Y : ndarray of floats
       The thresholded image. Ones correspond to activated regions.
+
+    TODO: check for holes in the activated regions.
     """
-    _, n_labels = label(Y, neighbors=4, background=0,
-                       return_num=True, connectivity=1)
+    _, n_labels = label(X, neighbors=4, background=0,
+                        return_num=True, connectivity=1)
     return n_labels
 
 def plot_ec(X, fwhm):
@@ -171,13 +185,26 @@ def _smooth(X, fwhm):
                         multichannel=False, preserve_range=True)
     return Y
 
-def rft_2d(X, fwhm, alpha, verbose=True):
-    """Function for controlling the FWER using random field theory (RFT)
-    when the analyzed data is two-dimensional (e.g. time-frequency or
-    single slice anatomical data).
+def rft_2d(X, fwhm, alpha=0.05, verbose=True):
+    """Function for controlling the FWER using random field theory (RFT) when
+    the analyzed data is two-dimensional (e.g. time-frequency or single slice
+    anatomical data).
 
     Input arguments:
     ================
+    X : ndarray of floats
+      The analyzed two-dimensional data array.
+    fwhm : float
+      Size of the smoothing kernel measured as full-width at half maximum
+      (FWMH).
+    alpha : float
+      The desired critical level. The conventional 0.05 level is used as
+      the default value.
+    verbose : bool
+      Whether to print data intermediate estimation results.
+
+    Output arguments:
+    =================
     """
 
     """Estimate the number of resolution elements."""
@@ -204,7 +231,6 @@ def rft_2d(X, fwhm, alpha, verbose=True):
     if (verbose):
         print('The empirical Euler characteristic is %d' % ec)
 
-    """Visualize the results."""
     return X_thr, X_smooth, ec
 
 def plot_rft_2d(X, X_smooth, X_significant):
@@ -228,4 +254,3 @@ def plot_rft_2d(X, X_smooth, X_significant):
 
     fig.tight_layout()
     plt.show()
-
