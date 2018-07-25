@@ -8,7 +8,7 @@ Author: Tuomas Puoliväli
 Email: tuomas.puolivali@helsinki.fi
 License: Revised 3-clause BSD
 Source: https://github.com/puolival/multipy/blob/master/data.py
-Last modified: 23th January 2018.
+Last modified: 25th July 2018.
 
 References:
 
@@ -76,7 +76,9 @@ def two_group_model(N=25, m=1000, pi0=0.1, delta=0.7):
 
 def separate_class_model(a_N=25, b_N=25, a_m=500, b_m=500, a_pi0=0.25,
                          b_pi0=0.75, a_delta=0.5, b_delta=0.6):
-    """The separate class model described by Efron [4]."""
+    """The separate classes model described by Efron [4]. The prefixes
+    a_ and b_ refer to the two separate classes. See two_group_model() for
+    the definition of the variables."""
     A_tstat, A_pvals = two_group_model(a_N, a_m, a_pi0, a_delta)
     B_tstat, B_pvals = two_group_model(b_N, b_m, b_pi0, b_delta)
     # Combine
