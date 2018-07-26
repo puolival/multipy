@@ -126,7 +126,7 @@ def plot_ec(X, fwhm):
     fig.tight_layout()
     plt.show()
 
-def _plot_expected_ec(R):
+def _plot_expected_ec(R, Z_low=0, Z_high=5):
     """Function for drawing a graph of the expected Euler characteristic
     as a function of Z-score threshold.
 
@@ -134,16 +134,21 @@ def _plot_expected_ec(R):
     ================
     R : float
       The number of resels or resolution elements.
+    Z_low : float
+      The lowest z-score for which to plot the expected Euler characteristic
+      E[EC].
+    Z_high : float
+      The highest z-score for which to plot E[EC].
     """
 
     """Compute the expected Euler characteristic for Z-scores in the
     range [0, 5]."""
-    Z = np.linspace(0, 5, 100)
+    Z = np.linspace(Z_low, Z_high, 100)
     EC = np.asarray([_expected_ec_2d(R, z) for z in Z])
 
+    """Draw the plot."""
     sns.set_style('darkgrid')
     fig = plt.figure()
-
     ax = fig.add_subplot(111)
     ax.plot(Z, EC)
 
