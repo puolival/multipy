@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
-"""Functions for controlling the FWER using random field theory (RFT)
-techniques.
+"""Functions for controlling family-wise error rate (FWER) using random
+field theory (RFT) techniques and drawing diagnostic plots.
 
 Author: Tuomas Puoliväli
 Email: tuomas.puolivali@helsinki.fi
-Last modified: 23th July 2018
+Last modified: 26th July 2018
 License: Revised 3-clause BSD
 Source: https://github.com/puolival/multipy/blob/master/rft.py
 
@@ -89,29 +89,47 @@ def _ec_2d(X):
     Y : ndarray of floats
       The thresholded image. Ones correspond to activated regions.
 
-    TODO: check for holes in the activated regions.
+    Output arguments:
+    =================
+    ec : float
+      The empirical Euler characteristic.
     """
-    _, n_labels = label(X, neighbors=4, background=0,
-                        return_num=True, connectivity=1)
-    return n_labels
+    # TODO: check for holes in the activated regions.
+    _, ec = label(X, neighbors=4, background=0, return_num=True,
+                  connectivity=1)
+    return ec
 
-def plot_ec(X, fwhm):
+def plot_ec(X, fwhm, Z_low=0, Z_high=5):
+    """Plot expected and empirical Euler characteristics (ECs) for a range
+    of different Z-scores.
+
+    Input arguments:
+    ================
+    X : ndarray of floats
+      The analyzed two-dimensional data.
+    fwhm : float
+      Width of the spatial smoothing kernel described as full-width at
+      half maximum (FWHM).
+    Z_low, z_hig : float, float
+      The lowest and highest z-scores for which to compute the EC.
+    """
+
     """Estimate number of resels."""
     R = _n_resels(X, fwhm)
 
     """Compute the expected Euler characteristic for Z-scores in the
     range [0, 5]."""
-    Z = np.linspace(0, 5, 100)
-    expected_ec = np.asarray([_expected_ec_2d(R, z)
-                             for z in Z])
+    Z = np.linspace(Z_low, Z_high, 100)
+    expected_ec = np.asarray([_expected_ec_2d(R, z) for z in Z])
 
     """Compute empirical Euler characteristics for the same Z-scores."""
     empirical_ec = np.zeros(np.shape(Z))
     for i, z in enumerate(Z):
-        Y = _smooth(X, 10)
+        Y = _smooth(X, fwhm)
         Yt = _threshold(Y, z)
         empirical_ec[i] = _ec_2d(Yt)
 
+    """Plot the data."""
     sns.set_style('darkgrid')
     fig = plt.figure(figsize=(8, 6))
     ax = fig.add_subplot(111)
@@ -126,7 +144,7 @@ def plot_ec(X, fwhm):
     fig.tight_layout()
     plt.show()
 
-def _plot_expected_ec(R, Z_low=0, Z_high=5):
+def plot_expected_ec(R, Z_low=0, Z_high=5):
     """Function for drawing a graph of the expected Euler characteristic
     as a function of Z-score threshold.
 
@@ -154,7 +172,7 @@ def _plot_expected_ec(R, Z_low=0, Z_high=5):
 
     ax.set_xlabel('Z-score threshold')
     ax.set_ylabel('Expected Euler characteristic')
-    ax.set_xlim([-0.1, np.max(Z)+0.1])
+    ax.set_xlim([np.min(Z)-0.1, np.max(Z)+0.1])
     # +- 2%
     c = 2*np.max(EC)/100
     ax.set_ylim([-c, np.max(EC)+c])
