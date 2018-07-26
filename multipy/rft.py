@@ -23,7 +23,6 @@ WARNING: These functions have not been entirely validated yet.
 import matplotlib.pyplot as plt
 
 import numpy as np
-from numpy.random import normal
 
 import seaborn as sns
 
@@ -179,11 +178,6 @@ def plot_expected_ec(R, Z_low=0, Z_high=5):
 
     fig.tight_layout()
     plt.show()
-
-def _simulate_data(n_rows, n_cols):
-    """Function for generating test data."""
-    X = normal(loc=0, scale=1, size=(n_rows, n_cols))
-    return X
 
 def _smooth(X, fwhm):
     """Function for spatial smoothing using a Gaussian kernel.
