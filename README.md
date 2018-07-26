@@ -38,8 +38,9 @@ ipython setup.py install
 The required packages are 
 <a href="http://www.numpy.org/">NumPy</a> (version 1.10.2 or later),
 <a href="https://www.scipy.org/">SciPy</a> (version 0.17.0 or later),
-<a href="https://matplotlib.org/">Matplotlib</a> (version 2.1.0 or later), and
-<a href="https://seaborn.pydata.org">Seaborn</a> (version 0.8.0 or later). 
+<a href="https://matplotlib.org/">Matplotlib</a> (version 2.1.0 or later),
+<a href="https://seaborn.pydata.org">Seaborn</a> (version 0.8.0 or later), and
+<a href="http://scikit-image.org/">scikit-image</a> (version 0.13.0 or later). 
 The program codes also probably work with recent earlier versions of these 
 packages but this has not been tested.
 
@@ -147,5 +148,5 @@ procedures that control the false discovery rate. *Biometrika* 93(3):491–507.
 and MEG-data. *Journal of Neuroscience Methods* 164(1):177–190.
 
 [9] Brett M, Penny W, Kiebel S (2003): An introduction to random field 
-theory. Human Brain Function (2nd edition). 
-(<a href="https://www.fil.ion.ucl.ac.uk/spm/doc/books/hbf2/">full text</a>)
+theory. *Human Brain Function* (2nd edition). 
+[<a href="https://www.fil.ion.ucl.ac.uk/spm/doc/books/hbf2/">full text</a>]
