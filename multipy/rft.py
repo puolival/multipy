@@ -158,29 +158,28 @@ def _plot_expected_ec(R):
     plt.show()
 
 def _simulate_data(n_rows, n_cols):
-    """Function for simulating some data."""
+    """Function for generating test data."""
     X = normal(loc=0, scale=1, size=(n_rows, n_cols))
     return X
 
-def _plot_data_2d(X):
-    """Function for visualizing the analyzed two-dimensional data."""
-    sns.set_style('dark')
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.imshow(X, cmap='gray', origin='lower')
-    ax.set_xlabel('Pixel position in X direction')
-    ax.set_ylabel('Pixel position in Y direction')
-    fig.tight_layout()
-    plt.show()
-
 def _smooth(X, fwhm):
-    """Function for smoothing data using a Gaussian kernel."""
+    """Function for spatial smoothing using a Gaussian kernel.
+
+    Input arguments:
+    ================
+    X : ndarray of floats
+      The analyzed two-dimensional data.
+    fwhm : float
+      The width of the smoothing kernel described as full-width at half
+      maximum (FWHM).
+    """
 
     """Compute standard deviation corresponding to the given
     full-width at half maximum value."""
     sd = fwhm / np.sqrt(8*np.log(2))
 
     """Smooth the data."""
+    # TODO: consider which filter mode should be used
     Y = gaussian_filter(X, sigma=sd, mode='wrap',
                         multichannel=False, preserve_range=True)
     return Y
@@ -201,10 +200,18 @@ def rft_2d(X, fwhm, alpha=0.05, verbose=True):
       The desired critical level. The conventional 0.05 level is used as
       the default value.
     verbose : bool
-      Whether to print data intermediate estimation results.
+      Whether to print data on intermediate estimation results.
 
     Output arguments:
     =================
+    X_thr : ndarray of floats
+      An array with with equal dimensions to X indicating which elements are
+      statistically significant. Ones and zeros correspond to significant and
+      non-significant element respectively.
+    X_smooth : ndarray of floats
+      The analyzed data after spatial smoothing.
+    ec : float
+      The empirical Euler characteristic.
     """
 
     """Estimate the number of resolution elements."""
@@ -235,8 +242,19 @@ def rft_2d(X, fwhm, alpha=0.05, verbose=True):
 
 def plot_rft_2d(X, X_smooth, X_significant):
     """Function for visualizing the raw and smoothed data with significant
-    regions highlighted."""
+    regions highlighted in red color.
 
+    Input arguments:
+    X : ndarray of floats
+      The original analyzed data array.
+    X_smooth : ndarray of floats
+      The data after spatial smoothing has been applied.
+    X_significant : ndarray of floats
+      The data after thresholding, showing which elements are significant.
+
+    TODO: let user provide data colormaps and plot only the boundaries of
+    the thresholded regions.
+    """
     sns.set_style('dark')
     fig = plt.figure(figsize=(10, 6))
 
