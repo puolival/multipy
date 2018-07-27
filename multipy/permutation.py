@@ -1,10 +1,20 @@
 # -*- coding: utf-8 -*-
-"""Functions for controlling the FDR using permutation tests.
+"""Permutation test based corrections for multiple testing.
 
 Author: Tuomas Puoliväli
 Email: tuomas.puolivali@helsinki.fi
-Last modified: 14th March 2018
+Last modified: 20th July 2018
 License: 3-clause BSD
+
+TODO:
+
+- Permutation testing for (time, sensor) tuples.
+- Permutation testing for (time, frequency) tuples.
+- Permutation testing for (time, dipole) tuples.
+
+The definition of adjacency can be different in each case and needs to be
+thought first. In [1] the authors chose <= 4 cm distance for two (time,
+sensor) tuples to be adjacent.
 
 References:
 
@@ -25,6 +35,18 @@ from scipy.stats import ttest_ind
 
 import seaborn as sns
 
+from viz import plot_permutation_distribution
+
+def _sensor_adjacency(raw, threshold=4):
+    """Function for computing sensor adjacencies using Euclidean
+    distance. The default 4 cm threshold is the one chosen in
+    reference [1]."""
+
+    """Get channel locations."""
+    loc = np.asarray([ch['loc'][0:3] for ch in raw.info['chs']],
+                     dtype='float')
+    #ch_names = np.asarray([ch['ch_name'] for ch in raw.info['chs']])
+
 def _cluster_by_adjacency(sel_samples):
     """Function for clustering selected samples based on temporal adjacency.
 
@@ -38,14 +60,14 @@ def _cluster_by_adjacency(sel_samples):
                   to samples that were not selected.
     """
     clusters = np.zeros(len(sel_samples), dtype='int')
-    j = 1 # Next cluster number.
+    cluster_number = 1 # Next cluster number.
     for i, s in enumerate(sel_samples):
         if (s == True):
-            clusters[i] = j
+            clusters[i] = cluster_number
         else:
             # Update the cluster number at temporal discontinuities.
             if (i > 0 and sel_samples[i-1] == True):
-                j += 1
+                cluster_number += 1
     return clusters
 
 def _cluster_stat(stat, clusters, statistic='cluster_mass'):
@@ -70,7 +92,8 @@ def _cluster_stat(stat, clusters, statistic='cluster_mass'):
                                                  arange(1, n_clusters+1)]
             return np.max(cstat)
     else:
-        raise NotImplementedError('Option not available')
+        raise NotImplementedError('Option \'%s\' for input argument' +
+                                  ' is not available' % statistic)
 
 def permutation_test(X, Y, n_permutations=1000, threshold=1, tail='both'):
     """Permutation test for a significant difference between two sets of data.
@@ -95,7 +118,7 @@ def permutation_test(X, Y, n_permutations=1000, threshold=1, tail='both'):
     n_total = n_samples_x + n_samples_y
 
     """Do an independent two-sample t-test for each variable using the
-    original (unpermuted) data. Compute the cluster mass statistic that is
+    original unpermuted data. Compute the cluster mass statistic that is
     compared to the permutation distribution."""
     ref_tstat, _ = ttest_ind(X, Y)
     ref_clusters = _cluster_by_adjacency(ref_tstat > threshold)
@@ -120,18 +143,6 @@ def permutation_test(X, Y, n_permutations=1000, threshold=1, tail='both'):
         cstat[p] = _cluster_stat(tstat, clusters)
 
     cstat = cstat[~np.isnan(cstat)]
-    pval = np.sum(cstat > ref_cstat) / n_permutations
+    pval = np.sum(cstat > ref_cstat) / float(n_permutations)
 
     return pval, cstat, ref_cstat
-
-"""Generate some test data."""
-X = normal(loc=0.25, scale=1, size=(20, 300))
-Y = normal(loc=0, scale=1, size=(20, 300))
-
-pval, cstat, ref_cstat = permutation_test(X, Y)
-
-from viz import plot_permutation_distribution
-
-plot_permutation_distribution(cstat, ref_cstat)
-
-
