@@ -6,7 +6,7 @@ This program code is part of the MultiPy (Multiple Hypothesis Testing in
 Python) package.
 
 Author: Tuomas Puoliväli (tuomas.puolivali@helsinki.fi)
-Last modified: 16th March 2018.
+Last modified: 27th July 2018.
 License: Revised 3-clause BSD
 Source: https://github.com/puolival/multipy/blob/master/viz.py
 
@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
-import seaborn as sb
+import seaborn as sns
 
 def plot_pval_hist(pvals, hist_bins=1e2, show_plot=True):
     """Plot a simple density histogram of P-values.
@@ -34,12 +34,13 @@ def plot_pval_hist(pvals, hist_bins=1e2, show_plot=True):
     hist_bins  - Number of histogram bins.
     """
     # Keep empty space at minimum.
+    sns.set_style('darkgrid')
     fig = plt.figure(figsize=(6, 4))
     plt.subplots_adjust(top=0.925, bottom=0.125, left=0.105, right=0.950)
 
     """Plot the p-value density histogram for the whole data range."""
     ax1 = fig.add_subplot(111)
-    sb.distplot(pvals, bins=hist_bins, rug=True, kde=False)
+    sns.distplot(pvals, bins=hist_bins, rug=True, kde=False)
 
     """P-values are in the range [0, 1] so limit the drawing area
     accordingly. Label the axes etc."""
@@ -68,6 +69,7 @@ def plot_qvalue_diagnostics(stats, pvals, qvals, show_plot=True):
     thresholds = np.arange(0., 0.1, 0.001)
     significant_tests = np.asarray([np.sum(qvals<t) for t in thresholds])
 
+    sns.set_style('darkgrid')
     fig = plt.figure(figsize=(8, 6))
     fig.subplots_adjust(top=0.95, bottom=0.1, left=0.09, right=0.96)
 
@@ -104,6 +106,7 @@ def plot_qvalue_diagnostics(stats, pvals, qvals, show_plot=True):
 
 def plot_qvalue_pi0_fit(kappa, pik, cs, show_plot=True):
     """Make a diagnostic plot of the estimate of pi0."""
+    sns.set_style('darkgrid')
     fig = plt.figure(facecolor='white', edgecolor='white')
     ax = fig.add_subplot(111)
     ax.plot(kappa, pik, '.', markersize=10)
@@ -117,11 +120,12 @@ def plot_qvalue_pi0_fit(kappa, pik, cs, show_plot=True):
 
 def plot_permutation_distribution(stat, ref_stat, show_plot=True):
     """Initialize the plot."""
+    sns.set_style('darkgrid')
     fig = plt.figure(figsize=(6, 4), facecolor='white', edgecolor='white')
     ax = fig.add_subplot(111)
 
     """Plot the permutation distribution."""
-    sb.distplot(stat, hist=True, kde=True, norm_hist=True, ax=ax)
+    sns.distplot(stat, hist=True, kde=True, norm_hist=True, ax=ax)
 
     """Plot the reference value."""
     ax.plot([ref_stat, ref_stat], [0, ax.dataLim.ymax], '-', color='g')
@@ -139,4 +143,3 @@ def plot_permutation_distribution(stat, ref_stat, show_plot=True):
     if (show_plot):
         plt.show()
     return fig
-
