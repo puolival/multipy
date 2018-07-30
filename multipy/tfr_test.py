@@ -1,8 +1,10 @@
-""".
+# -*- encoding: utf8 -*-
+"""Script for testing Efron's separate classes model using parameters that
+one could have in a typical time-frequency M/EEG data analysis situation.
 
 Author: Tuomas Puoliväli
 Email: tuomas.puolivali@helsinki.fi
-Last modified: 25th July 2018
+Last modified: 30th July 2018
 License: Revised 3-clause BSD
 Source: https://github.com/puolival/multipy/blob/master/tfr_test.py
 """
@@ -19,34 +21,37 @@ import seaborn as sns
 fs = 200
 n_iter = 1000
 
+A_pi0, B_pi0 = 0.75, 0.9
+A_delta, B_delta = 1.2, 0.5
+A_m, B_m = 3*fs, 8*fs
+
 power_all, power_separate = [], []
 
 for i in np.arange(0, n_iter):
-    """Generate new simulated data."""
-    m_a, m_g = int(5*fs), int(10*fs)
-    alpha_tstats, alpha_pvals = two_group_model(N=25, m=m_a, pi0=0.7, delta=1.0)
-    gamma_tstats, gamma_pvals = two_group_model(N=25, m=m_g, pi0=0.9, delta=0.7)
+    """Draw random numbers from two different mixture distributions."""
+    _, A_pvals = two_group_model(N=25, m=A_m, pi0=A_pi0, delta=A_delta)
+    _, B_pvals = two_group_model(N=25, m=B_m, pi0=B_pi0, delta=B_delta)
 
-    """Combine the two datasets."""
-    tstats = np.hstack([alpha_tstats, gamma_tstats])
-    pvals = np.hstack([alpha_pvals, alpha_pvals])
+    """Combine the separate classes and perform one FDR."""
+    all_pvals = np.hstack([A_pvals, B_pvals])
+    significant = lsu(all_pvals)
 
-    """Apply FDR on the combined dataset."""
-    significant = lsu(pvals)
-    power_all.append(
-        (np.sum(significant[int(m_a*0.7):m_a]) +
-         np.sum(significant[m_a+int(m_g*0.9):m_g])) / (m_a*0.3+m_g*0.1)
-    )
+    """Compute power of the procedure, i.e. Pr(reject H0 | H1 is true)."""
+    A_rejections = np.sum(significant[int(A_m*A_pi0):A_m])
+    B_rejections = np.sum(significant[A_m+int(B_m*B_pi0):B_m])
 
-    """Apply FDR separately to the two parts."""
-    alpha_significant = lsu(alpha_pvals)
-    gamma_significant = lsu(gamma_pvals)
+    power_all.append((A_rejections+B_rejections) /
+                    ((1-A_pi0)*A_m + (1-B_pi0)*B_m))
 
-    power_separate.append(
-        (np.sum(alpha_significant[int(m_a*0.7):m_a]) +
-         np.sum(gamma_significant[int(m_g*0.9):m_g])) /
-        np.sum(m_a*0.3+m_g*0.1)
-    )
+    """Apply FDR separately to the two parts and perform a similar
+    power calculation."""
+    A_significant, B_significant = lsu(A_pvals), lsu(B_pvals)
+
+    A_rejections = np.sum(A_significant[int(A_m*A_pi0):A_m])
+    B_rejections = np.sum(B_significant[int(B_m*B_pi0):B_m])
+
+    power_separate.append((A_rejections+B_rejections) /
+                          ((1-A_pi0)*A_m + (1-B_pi0)*B_m))
 
     print('iteration %d' % i)
 
