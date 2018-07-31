@@ -16,13 +16,15 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
+from scipy.stats import norm
+
 import seaborn as sns
 
 fs = 200
 n_iter = 1000
 
 A_pi0, B_pi0 = 0.75, 0.9
-A_delta, B_delta = 1.2, 0.5
+A_delta, B_delta = 1.2, 0.7
 A_m, B_m = 3*fs, 8*fs
 
 power_all, power_separate = [], []
@@ -53,7 +55,7 @@ for i in np.arange(0, n_iter):
     power_separate.append((A_rejections+B_rejections) /
                           ((1-A_pi0)*A_m + (1-B_pi0)*B_m))
 
-    print('iteration %d' % i)
+    print('iteration %4d' % i)
 
 """Visualize the results."""
 sns.set_style('darkgrid')
@@ -68,3 +70,25 @@ ax.set_ylabel('Density')
 
 fig.tight_layout()
 plt.show()
+
+"""Plot densities."""
+x = np.linspace(-3, 4, 100)
+
+p_a0 = norm.pdf(x, loc=0.0, scale=1)
+p_a1 = norm.pdf(x, loc=A_delta, scale=1)
+p_b0 = norm.pdf(x, loc=0.0, scale=1)
+p_b1 = norm.pdf(x, loc=B_delta, scale=1)
+
+sns.set_style('darkgrid')
+fig = plt.figure(figsize=(3, 8))
+
+ax = fig.add_subplot(111)
+
+ax.plot(x, 0.75+p_a0, '-')
+ax.plot(x, 1.50+p_a1, '-')
+ax.plot(x, 2.25+p_b0, '-')
+ax.plot(x, 3.00+p_b1, '-')
+
+fig.tight_layout()
+plt.show()
+
