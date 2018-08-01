@@ -21,6 +21,11 @@ References:
 [1] Maris E, Oostenveld R (2007): Nonparametric statistical testing of EEG-
     and MEG-data. Journal of Neuroscience Methods 164(1):177-190.
 
+[2] Bullmore E, Suckling J, Overmeyer S, Rabe-Hesketh S, Taylor E, Brammer M
+    (1999): Global, voxel, and cluster tests, by theory and permutation, for
+    a difference between two groups of structural MR images of the brain.
+    IEEE Transactions on Medical Imaging 18:32-42.
+
 WARNING: work in progress.
 
 """
@@ -77,7 +82,7 @@ def _cluster_stat(stat, clusters, statistic='cluster_mass'):
     stat      - Student's T or some other statistic for each variable.
     clusters  - A vector of cluster numbers grouping the test statistics.
     statistic - The computed cluster-level statistic. For now the only
-                available option is 'cluster_mass'. TODO: implement
+                available option is 'cluster_mass' [2]. TODO: implement
                 alternatives.
 
     Output arguments:
