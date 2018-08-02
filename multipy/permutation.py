@@ -91,16 +91,17 @@ def _cluster_stat(stat, clusters, statistic='cluster_mass'):
     if (statistic == 'cluster_mass'):
         n_clusters = np.max(clusters)
         if (n_clusters == 0):
-            return np.nan
+            return 0
         else:
             cstat = [np.sum(stat[clusters == i]) for i in
                                                  arange(1, n_clusters+1)]
-            return np.max(cstat)
+            return cstat
     else:
         raise NotImplementedError('Option \'%s\' for input argument' +
                                   ' is not available' % statistic)
 
-def permutation_test(X, Y, n_permutations=1000, threshold=1, tail='both'):
+def permutation_test(X, Y, n_permutations=1000, threshold=1, tail='both',
+                     alpha=0.05):
     """Permutation test for a significant difference between two sets of data.
 
     Input arguments:
@@ -113,13 +114,13 @@ def permutation_test(X, Y, n_permutations=1000, threshold=1, tail='both'):
     threshold      -
     tail           - Only two-sided tests are supported for the moment (i.e.
                      tail = 'both').
+    alpha          - The desired critical level.
 
     Output arguments:
-    pval           - Permutation test p-value.
     """
 
     """Find the number of samples in each of the two sets of data."""
-    (n_samples_x, _), (n_samples_y, _) = np.shape(X), np.shape(Y)
+    (n_samples_x, n_vars_x), (n_samples_y, _) = np.shape(X), np.shape(Y)
     n_total = n_samples_x + n_samples_y
 
     """Do an independent two-sample t-test for each variable using the
@@ -132,7 +133,7 @@ def permutation_test(X, Y, n_permutations=1000, threshold=1, tail='both'):
     """Combine the two sets of data."""
     Z = np.vstack([X, Y])
 
-    """Do the permutations."""
+    """Compute the permutation distribution."""
     cstat = np.zeros(n_permutations)
 
     for p in arange(0, n_permutations):
@@ -140,14 +141,21 @@ def permutation_test(X, Y, n_permutations=1000, threshold=1, tail='both'):
         permuted_ind = permutation(arange(n_total))
         T, U = Z[permuted_ind[0:n_samples_x], :], Z[permuted_ind[n_samples_x:], :]
 
+        """Compute the test statistics and perform the clustering."""
         tstat, _ = ttest_ind(T, U)
-        sel = tstat > threshold
-        clusters = _cluster_by_adjacency(sel)
+        clusters = _cluster_by_adjacency(tstat > threshold)
 
         """Compute cluster-level statistics."""
         cstat[p] = _cluster_stat(tstat, clusters)
 
-    cstat = cstat[~np.isnan(cstat)]
-    pval = np.sum(cstat > ref_cstat) / float(n_permutations)
+    """Compute p-values for each cluster. Make a vector indicating which
+    variables are significant."""
+    pvals = [np.sum(cstat > c) / float(n_permutations) for c in ref_cstat]
 
-    return pval, cstat, ref_cstat
+    # Find significant variables.
+    significant_clusters = [i for i, p in enumerate(pvals) if p < alpha]
+    significant = np.zeros([n_vars_x, 1], dtype='bool')
+    for c in significant_clusters:
+        significant[ref_clusters == c] = True
+
+    return significant, pvals, cstat, ref_cstat
