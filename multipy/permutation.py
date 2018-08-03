@@ -47,10 +47,18 @@ def _sensor_adjacency(raw, threshold=4):
     distance. The default 4 cm threshold is the one chosen in
     reference [1]."""
 
-    """Get channel locations."""
+    """Get channel names and locations."""
     loc = np.asarray([ch['loc'][0:3] for ch in raw.info['chs']],
                      dtype='float')
-    #ch_names = np.asarray([ch['ch_name'] for ch in raw.info['chs']])
+    ch_names = np.asarray([ch['ch_name'] for ch in raw.info['chs']])
+
+    """For each channel, find names of the adjacent channels."""
+    adjacent = []
+    for i, _ in enumerate(ch_names):
+        distance = np.sum((loc - loc[i, :]) ** 2, axis=1)
+        adjacent.append(ch_names[(distance < threshold) & (distance > 1e-5)])
+
+    return adjacent
 
 def _cluster_by_adjacency(sel_samples):
     """Function for clustering selected samples based on temporal adjacency.
