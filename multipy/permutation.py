@@ -146,7 +146,7 @@ def permutation_test(X, Y, n_permutations=1000, threshold=1, tail='both',
         clusters = _cluster_by_adjacency(tstat > threshold)
 
         """Compute cluster-level statistics."""
-        cstat[p] = _cluster_stat(tstat, clusters)
+        cstat[p] = np.max(_cluster_stat(tstat, clusters))
 
     """Compute p-values for each cluster. Make a vector indicating which
     variables are significant."""
@@ -158,4 +158,4 @@ def permutation_test(X, Y, n_permutations=1000, threshold=1, tail='both',
     for c in significant_clusters:
         significant[ref_clusters == c] = True
 
-    return significant, pvals, cstat, ref_cstat
+    return significant, pvals, cstat, ref_cstat, ref_clusters

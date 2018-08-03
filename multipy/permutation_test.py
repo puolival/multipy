@@ -5,7 +5,7 @@ from mne.viz import plot_evoked_topo
 import numpy as np
 
 from permutation import permutation_test
-from viz import plot_permutation_distribution
+from viz import plot_permutation_distribution, plot_permutation_result_1d
 
 import seaborn as sns
 
@@ -52,22 +52,23 @@ ch_ind = [i for i, ch_name in enumerate(raw.info['ch_names'])
 lh_data, rh_data = (lh_aud.get_data()[:, ch_ind, :],
                     rh_aud.get_data()[:, ch_ind, :])
 
-pval, cstats, ref_cstat = permutation_test(lh_data, rh_data)
-print('p-value is %f' % pval)
+significant, pvals, cstats, ref_cstat, ref_clusters = permutation_test(lh_data, rh_data)
 plot_permutation_distribution(cstats, ref_cstat, show_plot=True)
-
+plot_permutation_result_1d(lh_data, rh_data, significant, lh_aud.times, ref_clusters)
 
 """Plot trial averages."""
+plot_ave = False
 
-sns.set_style('darkgrid')
-fig = plt.figure()
+if (plot_ave):
+    sns.set_style('darkgrid')
+    fig = plt.figure()
 
-ax = fig.add_subplot(111)
-ax.plot(np.mean(lh_data, axis=0))
-ax.plot(np.mean(rh_data, axis=0))
+    ax = fig.add_subplot(111)
+    ax.plot(np.mean(lh_data, axis=0))
+    ax.plot(np.mean(rh_data, axis=0))
 
-ax.set_xlabel('Time (samples)')
-ax.set_ylabel('Amplitude')
+    ax.set_xlabel('Time (samples)')
+    ax.set_ylabel('Amplitude')
 
-fig.tight_layout()
-plt.show()
+    fig.tight_layout()
+    plt.show()
