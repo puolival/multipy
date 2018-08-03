@@ -3,8 +3,8 @@
 
 Author: Tuomas Puoliväli
 Email: tuomas.puolivali@helsinki.fi
-Last modified: 20th July 2018
-License: 3-clause BSD
+Last modified: 3rd August 2018
+License: Revised 3-clause BSD
 
 TODO:
 
@@ -30,15 +30,11 @@ WARNING: work in progress.
 
 """
 
-import matplotlib.pyplot as plt
-
 import numpy as np
 from numpy import arange
-from numpy.random import normal, permutation
+from numpy.random import permutation
 
 from scipy.stats import ttest_ind
-
-import seaborn as sns
 
 def _sensor_adjacency(raw, threshold=4):
     """Function for computing sensor adjacencies using Euclidean distance.
@@ -64,6 +60,38 @@ def _sensor_adjacency(raw, threshold=4):
         adjacent.append(ch_names[(distance < threshold) & (distance > 1e-5)])
 
     return adjacent
+
+def _cluster_time_frequency():
+    """Cluster time-frequency tuples."""
+
+    clusters = np.zeros([n_frequencies, n_samples])
+    cluster_number = 1
+
+    """Perform the clustering."""
+    for i in np.arange(0, n_frequencies):
+        for j in np.arange(0, n_samples):
+            """If the time-frequency tuple has been already assigned a value
+            earlier, move on."""
+            if (X[i, j] > 0):
+                continue
+
+            """Add the tuple to the search queue. Iterate through neighboring
+            tuples recursively."""
+            q = list([i, j])
+            while q:
+                t = q[0]
+                # TODO: search
+                q = q.remove(t)
+
+            """Update cluster number."""
+            cluster_number += 1
+
+    return clusters
+
+def _cluster_spatiotemporal():
+    """Cluster data based on spatio-temporal adjacency."""
+    clusters = np.zeros([n_sensors, n_samples], dtype='int')
+    adjacent_sensors = _sensor_adjacency(raw, sensor_adjacency_threshold)
 
 def _cluster_by_adjacency(sel_samples):
     """Function for clustering selected samples based on temporal adjacency.
