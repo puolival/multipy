@@ -21,6 +21,7 @@ WARNING: These functions have not been entirely validated yet.
 """
 
 import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
 
 import numpy as np
 
@@ -121,7 +122,7 @@ def plot_qvalue_pi0_fit(kappa, pik, cs, show_plot=True):
 def plot_permutation_distribution(stat, ref_stat, show_plot=True):
     """Initialize the plot."""
     sns.set_style('darkgrid')
-    fig = plt.figure(figsize=(6, 4), facecolor='white', edgecolor='white')
+    fig = plt.figure(figsize=(8, 6), facecolor='white', edgecolor='white')
     ax = fig.add_subplot(111)
 
     """Plot the permutation distribution."""
@@ -143,3 +144,36 @@ def plot_permutation_distribution(stat, ref_stat, show_plot=True):
     if (show_plot):
         plt.show()
     return fig
+
+def plot_permutation_result_1d(X, Y, significant, t, clusters):
+    """Function for visualizing permutation test results."""
+    X_mean, Y_mean = np.mean(X, axis=0), np.mean(Y, axis=0)
+
+    sns.set_style('darkgrid')
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    """Plot locations of significant clusters."""
+    significant_clusters = np.unique(clusters[significant[:, 0]])
+    for c in significant_clusters:
+        # Finding bounding box
+        x1, x2 = t[clusters == c][0], t[clusters == c][-1]
+        y1, y2 = (np.min([np.min(X_mean), np.min(Y_mean)]),
+                  np.max([np.max(X_mean), np.max(Y_mean)]))
+        # Indicate locations with rectangles.
+        ax.patches.append(Rectangle((x1, y1), np.abs(x2-x1), np.abs(y2-y1),
+                          transform=ax.transData, alpha=0.25, linewidth=0))
+
+    """Plot the analyzed data."""
+    ax.plot(t, X_mean, '-', linewidth=1.5)
+    ax.plot(t, Y_mean, '-', linewidth=1.5)
+
+    """Label the axes."""
+    if (t is None):
+        ax.set_xlabel('Time (samples)')
+    else:
+        ax.set_xlabel('Time (s)')
+    ax.set_ylabel('Amplitude')
+
+    fig.tight_layout()
+    plt.show()
