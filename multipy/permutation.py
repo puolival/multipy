@@ -40,12 +40,17 @@ from scipy.stats import ttest_ind
 
 import seaborn as sns
 
-from viz import plot_permutation_distribution
-
 def _sensor_adjacency(raw, threshold=4):
-    """Function for computing sensor adjacencies using Euclidean
-    distance. The default 4 cm threshold is the one chosen in
-    reference [1]."""
+    """Function for computing sensor adjacencies using Euclidean distance.
+    The default 4 cm threshold is the one chosen in reference [1].
+
+    Input arguments:
+    ================
+    raw : mne.io.Raw
+      MNE-Python raw data file object.
+    threshold : float
+      Maximum distance between two sensors for being adjacent.
+    """
 
     """Get channel names and locations."""
     loc = np.asarray([ch['loc'][0:3] for ch in raw.info['chs']],
