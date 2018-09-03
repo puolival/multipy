@@ -1,1 +1,1 @@
-__all__ = ['fwer', 'adaptive', 'data']
+__all__ = ['fwer', 'fdr', 'data', 'permutation', 'rft', 'util', 'viz']
