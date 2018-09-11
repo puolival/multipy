@@ -91,6 +91,18 @@ def separate_class_model(a_N=25, b_N=25, a_m=500, b_m=500, a_pi0=0.25,
     return tstats, pvals
 
 def square_grid_model(nl=100, sl=60, N=25, delta=0.7):
+    """Bennett et al [5] model.
+
+    Input arguments:
+    X : ndarray
+        Array of booleans indicating which p-values were declared
+        significant.
+    nl : int
+        The side length of the noise region.
+    sl : int
+        The side length of the signal region.
+    """
+
     """Generate the noise statistics."""
     noise_tstats, noise_pvals = ttest_ind(
         normal(loc=0, scale=1, size=(nl, nl, N)),

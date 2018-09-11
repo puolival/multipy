@@ -184,7 +184,17 @@ def plot_permutation_result_1d(X, Y, significant, t, clusters):
 
 def plot_grid_model(X, nl, sl):
     """Function for visualizing square grid model data similar
-    to Bennett and colleagues [2]."""
+    to Bennett and colleagues [2].
+
+    Input arguments:
+    X : ndarray
+        Array of booleans indicating which p-values were declared
+        significant.
+    nl : int
+        The side length of the noise region.
+    sl : int
+        The side length of the signal region.
+    """
     sns.set_style('white')
     fig = plt.figure(figsize=(5, 5), facecolor='white')
     ax = fig.add_subplot(111, axisbg='black')
