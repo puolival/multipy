@@ -16,6 +16,10 @@ References:
     studies. The Proceedings of the National Academy of the United States of
     America 100(16):9440-9445. DOI: 10.1073/pnas.1530509100
 
+[2] Bennett CM, Wolford GL, Miller MB (2009): The principled control of
+    false positives in neuroimaging. Social Cognitive and Affective
+    Neuroscience 4(4):417-422.
+
 WARNING: These functions have not been entirely validated yet.
 
 """
@@ -177,3 +181,29 @@ def plot_permutation_result_1d(X, Y, significant, t, clusters):
 
     fig.tight_layout()
     plt.show()
+
+def plot_grid_model(X, nl, sl):
+    """Function for visualizing square grid model data similar
+    to Bennett and colleagues [2]."""
+    sns.set_style('white')
+    fig = plt.figure(figsize=(5, 5), facecolor='white')
+    ax = fig.add_subplot(111, axisbg='black')
+
+    """Plot indices of p-values declared significant."""
+    for i, j in np.ndindex(nl, nl):
+        if (X[i, j]):
+            ax.plot(i, j, 'w.')
+
+    """Plot the signal region borders."""
+    d = (nl-sl) // 2
+    ax.plot([d, d], [d+sl, d], 'g-', alpha=0.75)
+    ax.plot([d+sl, d], [d+sl, d+sl], 'g-', alpha=0.75)
+    ax.plot([d+sl, d+sl], [d, d+sl], 'g-', alpha=0.75)
+    ax.plot([d+sl, d], [d, d], 'g-', alpha=0.75)
+
+    """Reduce the amount of unnecessary empty space."""
+    ax.set_xlim([0, nl])
+    ax.set_ylim([0, nl])
+    fig.tight_layout()
+    plt.show()
+

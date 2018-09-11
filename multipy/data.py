@@ -28,6 +28,10 @@ References:
 
 [4] Efron B (2008): Simultaneous inference: When should hypothesis testing
     problems be combined? The Annals of Applied Statistics 2(1):197-223.
+
+[5] Bennett CM, Wolford GL, Miller MB (2009): The principled control of
+    false positives in neuroimaging. Social Cognitive and Affective
+    Neuroscience 4(4):417-422.
 """
 
 import numpy as np
@@ -85,3 +89,21 @@ def separate_class_model(a_N=25, b_N=25, a_m=500, b_m=500, a_pi0=0.25,
     tstats, pvals = (np.hstack([A_tstat, B_tstat]),
                      np.hstack([A_pvals, B_pvals]))
     return tstats, pvals
+
+def square_grid_model(nl=100, sl=60, N=25, delta=0.7):
+    """Generate the noise statistics."""
+    noise_tstats, noise_pvals = ttest_ind(
+        normal(loc=0, scale=1, size=(nl, nl, N)),
+        normal(loc=0, scale=1, size=(nl, nl, N)), axis=2)
+
+    """Generate the signal statistics."""
+    signal_tstats, signal_pvals = ttest_ind(
+        normal(loc=0, scale=1, size=(sl, sl, N)),
+        normal(loc=delta, scale=1, size=(sl, sl, N)), axis=2)
+
+    """Combine the data so that the desired spatial structure is
+    obtained."""
+    X = noise_pvals
+    d = (nl-sl) // 2
+    X[d:(nl-d), d:(nl-d)] = signal_pvals
+    return X
