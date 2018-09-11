@@ -25,9 +25,9 @@ WARNING: These functions have not been entirely validated yet.
 
 import numpy as np
 
-from logger import log_fwer_analysis
+#from logger import log_fwer_analysis
 
-def bonferroni(pvals, alpha=0.05, write_log=False):
+def bonferroni(pvals, alpha=0.05): #, write_log=False):
     """A function for controlling the FWER at some level alpha using the
     classical Bonferroni procedure.
 
@@ -40,11 +40,11 @@ def bonferroni(pvals, alpha=0.05, write_log=False):
                   after correcting for multiple comparisons.
     """
     m, pvals = len(pvals), np.asarray(pvals)
-    if (write_log):
-        log_fwer_analysis(m, alpha, 'bonferroni', '')
+    #if (write_log):
+    #    log_fwer_analysis(m, alpha, 'bonferroni', '')
     return pvals < alpha/float(m)
 
-def hochberg(pvals, alpha=0.05, write_log=False):
+def hochberg(pvals, alpha=0.05): #, write_log=False):
     """A function for controlling the FWER using Hochberg's procedure [1].
 
     Input arguments:
@@ -63,11 +63,11 @@ def hochberg(pvals, alpha=0.05, write_log=False):
     test = [p <= alpha/(m+1-(k+1)) for k, p in enumerate(pvals[ind])]
     significant = np.zeros(np.shape(pvals), dtype='bool')
     significant[ind[0:np.sum(test)]] = True
-    if (write_log):
-        log_fwer_analysis(m, alpha, 'hochberg', '')
+    #if (write_log):
+    #    log_fwer_analysis(m, alpha, 'hochberg', '')
     return significant
 
-def holm_bonferroni(pvals, alpha=0.05, write_log=False):
+def holm_bonferroni(pvals, alpha=0.05): #, write_log=False):
     """A function for controlling the FWER using the Holm-Bonferroni
     procedure [2].
 
@@ -86,11 +86,11 @@ def holm_bonferroni(pvals, alpha=0.05, write_log=False):
     are rejected. Hence m-np.sum(test) gives the correct number."""
     significant = np.zeros(np.shape(pvals), dtype='bool')
     significant[ind[0:m-np.sum(test)]] = True
-    if (write_log):
-        log_fwer_analysis(m, alpha, 'holm_bonferroni', '')
+    #if (write_log):
+    #    log_fwer_analysis(m, alpha, 'holm_bonferroni', '')
     return significant
 
-def sidak(pvals, alpha=0.05, write_log=False):
+def sidak(pvals, alpha=0.05): #, write_log=False):
     """A function for controlling the FWER at some level alpha using the
     procedure by Sidak [3].
 
@@ -103,6 +103,6 @@ def sidak(pvals, alpha=0.05, write_log=False):
                   after correcting for multiple comparisons.
     """
     n, pvals = len(pvals), np.asarray(pvals)
-    if (write_log):
-        log_fwer_analysis(m, alpha, 'sidak', '')
+    #if (write_log):
+    #    log_fwer_analysis(m, alpha, 'sidak', '')
     return pvals < 1. - (1.-alpha) ** (1./n)
