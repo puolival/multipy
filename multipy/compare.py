@@ -19,19 +19,22 @@ from viz import plot_grid_model
 nl, sl = 100, 60
 N, delta = 25, 0.5
 X = square_grid_model(nl, sl, N, delta)
-
+alpha = 0.05
 
 """Apply each correction technique to the generated dataset."""
-Y_sidak = sidak(X.flatten(), alpha=0.05)
+Y_sidak = sidak(X.flatten(), alpha=alpha)
 Y_sidak = Y_sidak.reshape(nl, nl)
 
-Y_fdr = lsu(X.flatten(), q=0.05)
+Y_fdr = lsu(X.flatten(), q=alpha)
 Y_fdr = Y_fdr.reshape(nl, nl)
 
-Y_qvalue, _ = qvalue(X.flatten(), threshold=0.05)
+Y_qvalue, _ = qvalue(X.flatten(), threshold=alpha)
 Y_qvalue = Y_qvalue.reshape(nl, nl)
 
 """Visualize the results."""
+fig_nocor = plot_grid_model(X<alpha, nl, sl)
+fig_nocor.axes[0].set_title('Uncorrected')
+
 fig_sidak = plot_grid_model(Y_sidak, nl, sl)
 fig_sidak.axes[0].set_title('Sidak')
 
