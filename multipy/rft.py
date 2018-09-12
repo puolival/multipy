@@ -117,7 +117,7 @@ def plot_ec(X, fwhm, Z_low=0, Z_high=5):
     R = _n_resels(X, fwhm)
 
     """Compute the expected Euler characteristic for Z-scores in the
-    range [0, 5]."""
+    desired range."""
     Z = np.linspace(Z_low, Z_high, 100)
     expected_ec = np.asarray([_expected_ec_2d(R, z) for z in Z])
 
@@ -159,7 +159,7 @@ def plot_expected_ec(R, Z_low=0, Z_high=5):
     """
 
     """Compute the expected Euler characteristic for Z-scores in the
-    range [0, 5]."""
+    desired range."""
     Z = np.linspace(Z_low, Z_high, 100)
     EC = np.asarray([_expected_ec_2d(R, z) for z in Z])
 

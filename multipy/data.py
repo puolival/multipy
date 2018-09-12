@@ -94,13 +94,22 @@ def square_grid_model(nl=100, sl=60, N=25, delta=0.7):
     """Bennett et al [5] model.
 
     Input arguments:
-    X : ndarray
-        Array of booleans indicating which p-values were declared
-        significant.
     nl : int
         The side length of the noise region.
     sl : int
         The side length of the signal region.
+    N : int
+        Sample size in each of the two groups.
+    delta : float
+        Effect size. Difference in means between the two normal
+        distributions.
+
+    Output arguments:
+    X : ndarray
+        Array of booleans indicating which p-values were declared
+        significant.
+    tstats : ndarray
+        The corresponding test statistics.
     """
 
     """Generate the noise statistics."""
@@ -110,12 +119,24 @@ def square_grid_model(nl=100, sl=60, N=25, delta=0.7):
 
     """Generate the signal statistics."""
     signal_tstats, signal_pvals = ttest_ind(
-        normal(loc=0, scale=1, size=(sl, sl, N)),
-        normal(loc=delta, scale=1, size=(sl, sl, N)), axis=2)
+        normal(loc=delta, scale=1, size=(sl, sl, N)),
+        normal(loc=0, scale=1, size=(sl, sl, N)), axis=2)
 
     """Combine the data so that the desired spatial structure is
     obtained."""
     X = noise_pvals
     d = (nl-sl) // 2
     X[d:(nl-d), d:(nl-d)] = signal_pvals
-    return X
+    tstats = noise_tstats
+    tstats[d:(nl-d), d:(nl-d)] = signal_tstats
+    return X, tstats
+
+def two_class_grid_model(nl=100, sl=60, N=25):
+    A = square_grid_model(nl=nl//2, sl=sl//2, N=N, delta=0.1)
+    B = square_grid_model(nl=nl//2, sl=sl//2, N=N, delta=0.3)
+    C = square_grid_model(nl=nl//2, sl=sl//2, N=N, delta=0.5)
+    D = square_grid_model(nl=nl//2, sl=sl//2, N=N, delta=0.7)
+
+    Y = np.vstack([np.hstack([A, B]), np.hstack([C, D])])
+    return Y
+
