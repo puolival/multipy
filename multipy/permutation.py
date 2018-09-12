@@ -61,30 +61,40 @@ def _sensor_adjacency(raw, threshold=4):
 
     return adjacent
 
-def _cluster_time_frequency():
+def _cluster_time_frequency(X):
     """Cluster time-frequency tuples."""
+
+    n_frequencies, n_samples = np.shape(X)
 
     clusters = np.zeros([n_frequencies, n_samples])
     cluster_number = 1
 
     """Perform the clustering."""
-    for i in np.arange(0, n_frequencies):
-        for j in np.arange(0, n_samples):
-            """If the time-frequency tuple has been already assigned a value
-            earlier, move on."""
-            if (X[i, j] > 0):
-                continue
+    for i, j in np.ndindex(n_frequencies, n_samples):
+        """If the time-frequency tuple has been already assigned a value
+        earlier, move on."""
+        if (X[i, j] > 0):
+            continue
 
-            """Add the tuple to the search queue. Iterate through neighboring
-            tuples recursively."""
-            q = list([i, j])
-            while q:
-                t = q[0]
-                # TODO: search
-                q = q.remove(t)
+        """Add the tuple to the search queue. Iterate through neighboring
+        tuples recursively."""
+        q = list([i, j])
+        while q:
+            # Process next element in the queue. Mark the corresponding
+            # part in the cluster table.
+            t = q[0]
+            clusters[t] = cluster_number
+            # If the element of the left side of the current position is
+            # not outside of range, and is 1, add it to the queue.
+            if ((t[0]-1 >= 0) & (X[t[0]-1, t[1]] == 1)):
+                q.append([t[0]-1, t[1]])
+            # Do the same for the element above.
+            if ((t[1]-1 >= 0) & (X[t[0], t[1]-1])):
+                q.append([t[0], t[1]-1])
+            q = q.remove(t)
 
-            """Update cluster number."""
-            cluster_number += 1
+        """Update cluster number."""
+        cluster_number += 1
 
     return clusters
 
