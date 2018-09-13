@@ -196,7 +196,9 @@ def tfr_permutation_test(X, Y, n_permutations, alpha=0.05, threshold=1):
         The t-value threshold applied during the first level of analysis.
     """
 
-    n_freqs, n_samples, n_trials = np.shape(X)
+    (n_freqs, n_samples, n_trials_1), (_, _, n_trials_2) = (np.shape(X),
+                                                            np.shape(Y))
+    n_trials = n_trials_1 + n_trials_2
 
     """Compare the two experimental conditions at each (time, frequency)
     pair. Apply t-value threshold to identify candidate effects (see [1]
@@ -205,10 +207,24 @@ def tfr_permutation_test(X, Y, n_permutations, alpha=0.05, threshold=1):
     statistic value."""
     ref_tstats, _ = ttest_ind(X, Y, axis=2)
     ref_clusters = _cluster_time_frequency(ref_tstats > threshold)
+    # TODO: Make the computed cluster statistic a parameter of the
+    # of the function after several are available.
+    ref_cluster_stat = _cluster_stat(ref_tstats, ref_clusters)
 
     """Compute the permutation distribution."""
+    Z = np.concatenate([X, Y], axis=2)
+    dist = np.zeros([n_permutations, 1], dtype='float')
+
     for i in np.arange(0, n_permutations):
-        pass
+        """Permute the trial indices and divide the data accordingly."""
+        ind = permutation(n_trials)
+        T, U = Z[:, :, ind[0:n_trials_1]], Z[:, :, ind[n_trials_2:-1]]
+
+        """Compute the cluster statistic."""
+        tstats, _ = ttest_ind(T, U, axis=2)
+        clusters = _cluster_time_frequency(tstats > threshold)
+        dist[i] = np.max(_cluster_stat(tstats, clusters))
+
 
 
 def permutation_test(X, Y, n_permutations=1000, threshold=1, tail='both',
