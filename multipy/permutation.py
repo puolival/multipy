@@ -3,18 +3,14 @@
 
 Author: Tuomas Puoliväli
 Email: tuomas.puolivali@helsinki.fi
-Last modified: 3rd August 2018
+Last modified: 13th September 2018
 License: Revised 3-clause BSD
 
 TODO:
 
-- Permutation testing for (time, sensor) tuples.
-- Permutation testing for (time, frequency) tuples.
-- Permutation testing for (time, dipole) tuples.
-
-The definition of adjacency can be different in each case and needs to be
-thought first. In [1] the authors chose <= 4 cm distance for two (time,
-sensor) tuples to be adjacent.
+The definition of adjacency can be different in each clustering scenario
+and needs to be carefully considered. In [1] the authors chose <= 4 cm
+distance for two (time, sensor) pairs to be adjacent.
 
 References:
 
@@ -25,6 +21,10 @@ References:
     (1999): Global, voxel, and cluster tests, by theory and permutation, for
     a difference between two groups of structural MR images of the brain.
     IEEE Transactions on Medical Imaging 18:32-42.
+
+[3] Phipson B, Smyth GK (2010): Permutation p-values should never be zero:
+    Calculating exact p-values when permutations are randomly drawn.
+    Statistical Applications in Genetics and Molecular Biology 9:article39.
 
 WARNING: work in progress.
 
@@ -69,6 +69,10 @@ def _cluster_time_frequency(X):
     X : ndarray
         An array indicating which time-frequency pairs were significant
         after thresholding.
+
+    Output arguments:
+    clusters : ndarray
+        Indices mapping elements of X into connected sets.
     """
 
     """Define the neighbourhood a given time-frequency pair."""
@@ -107,11 +111,6 @@ def _cluster_time_frequency(X):
         cluster_number += 1
 
     return clusters
-
-def _cluster_spatiotemporal():
-    """Cluster data based on spatio-temporal adjacency."""
-    clusters = np.zeros([n_sensors, n_samples], dtype='int')
-    adjacent_sensors = _sensor_adjacency(raw, sensor_adjacency_threshold)
 
 def _cluster_by_adjacency(sel_samples):
     """Function for clustering selected samples based on temporal adjacency.
