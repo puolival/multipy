@@ -95,7 +95,8 @@ def _cluster_time_frequency(X):
 
     """Perform the clustering."""
     n_freqs, n_samples = np.shape(X)
-    clusters = np.zeros([n_freqs, n_samples])
+    clusters, visited = (np.zeros([n_freqs, n_samples]),
+                         np.zeros([n_freqs, n_samples], dtype='bool'))
     cluster_number = 1
 
     for i, j in np.ndindex(n_freqs, n_samples):
@@ -106,12 +107,16 @@ def _cluster_time_frequency(X):
             continue
 
         """Otherwise add the pair to the search queue. Iterate through
-        neighboring tuples recursively."""
+        neighboring pairs recursively."""
         q = list([[i, j]])
         while q:
             """Process the next element in the queue. Mark the corresponding
             part in the cluster table."""
             x, y = q.pop(0)
+            if (visited[x, y]):
+                continue
+            else:
+                visited[x, y] = True
             clusters[x, y] = cluster_number
 
             """Iterate through the neighbourhood of the current position."""
@@ -119,7 +124,7 @@ def _cluster_time_frequency(X):
                 if ((x+dx < 0) | (x+dx >= n_freqs) |
                     (y+dy < 0) | (y+dy >= n_samples)):
                     continue
-                if (X[x+dx, y+dy] & (clusters[x+dx, y+dy] == 0)):
+                if ((X[x+dx, y+dy] == 1) & (clusters[x+dx, y+dy] == 0)):
                     q.append([x+dx, y+dy])
 
         """Update cluster number."""
@@ -175,6 +180,37 @@ def _cluster_stat(stat, clusters, statistic='cluster_mass'):
         raise NotImplementedError('Option \'%s\' for input argument' +
                                   ' is not available' % statistic)
 
+def tfr_permutation_test(X, Y, n_permutations, alpha=0.05, threshold=1):
+    """Permutation test for time-frequency data.
+
+    Input arguments:
+    ================
+    X, Y : ndarray
+        F-by-S-by-N array where F is the number of frequencies, S is the
+        number of samples, and N is the number of trials or participants.
+    n_permutations : int
+        Number of permutations.
+    alpha : float
+        The desired family-wise error rate.
+    threshold : float
+        The t-value threshold applied during the first level of analysis.
+    """
+
+    n_freqs, n_samples, n_trials = np.shape(X)
+
+    """Compare the two experimental conditions at each (time, frequency)
+    pair. Apply t-value threshold to identify candidate effects (see [1]
+    for discussion on the relationship between this threshold and what
+    kind of effects can be identified). Compute the reference cluster
+    statistic value."""
+    ref_tstats, _ = ttest_ind(X, Y, axis=2)
+    ref_clusters = _cluster_time_frequency(ref_tstats > threshold)
+
+    """Compute the permutation distribution."""
+    for i in np.arange(0, n_permutations):
+        pass
+
+
 def permutation_test(X, Y, n_permutations=1000, threshold=1, tail='both',
                      alpha=0.05):
     """Permutation test for a significant difference between two sets of data.
@@ -184,8 +220,7 @@ def permutation_test(X, Y, n_permutations=1000, threshold=1, tail='both',
                      of samples and m is the number of variables. The first
                      group of data.
     Y              - An N_2-by-m matrix. The second group of data.
-    n_permutations - Number of permutations. Consider how accurate p-value
-                     is needed.
+    n_permutations - Number of permutations.
     threshold      -
     tail           - Only two-sided tests are supported for the moment (i.e.
                      tail = 'both').
