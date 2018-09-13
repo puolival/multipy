@@ -36,6 +36,21 @@ from numpy.random import permutation
 
 from scipy.stats import ttest_ind
 
+def _p_upperbound(b, m):
+    """Compute the upper bound of the p-value according to [3].
+
+    Input arguments:
+    b : int
+        Number of permutations yielding a test statistic at least
+        extreme as the observed value.
+    m : int
+        Number of permutations
+
+    Output arguments:
+        The upper bound of the p-value.
+    """
+    return (b+1) / (m+1)
+
 def _sensor_adjacency(raw, threshold=4):
     """Function for computing sensor adjacencies using Euclidean distance.
     The default 4 cm threshold is the one chosen in reference [1].
