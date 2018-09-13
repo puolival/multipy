@@ -62,36 +62,46 @@ def _sensor_adjacency(raw, threshold=4):
     return adjacent
 
 def _cluster_time_frequency(X):
-    """Cluster time-frequency tuples."""
+    """Function for clustering the time-frequency pairs into connected
+    sets.
 
-    n_frequencies, n_samples = np.shape(X)
+    Input arguments:
+    X : ndarray
+        An array indicating which time-frequency pairs were significant
+        after thresholding.
+    """
 
-    clusters = np.zeros([n_frequencies, n_samples])
-    cluster_number = 1
+    """Define the neighbourhood a given time-frequency pair."""
+    neighborhood = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
     """Perform the clustering."""
-    for i, j in np.ndindex(n_frequencies, n_samples):
-        """If the time-frequency tuple has been already assigned a value
-        earlier, move on."""
-        if (X[i, j] > 0):
+    n_freqs, n_samples = np.shape(X)
+    clusters = np.zeros([n_freqs, n_samples])
+    cluster_number = 1
+
+    for i, j in np.ndindex(n_freqs, n_samples):
+        """If the time-frequency pair has been already assigned a value
+        earlier, or if there was no significant result on the first level
+        of analysis, move on."""
+        if ((X[i, j] == 0) | (clusters[i, j] > 0)):
             continue
 
-        """Add the tuple to the search queue. Iterate through neighboring
-        tuples recursively."""
-        q = list([i, j])
+        """Otherwise add the pair to the search queue. Iterate through
+        neighboring tuples recursively."""
+        q = list([[i, j]])
         while q:
-            # Process next element in the queue. Mark the corresponding
-            # part in the cluster table.
-            t = q[0]
-            clusters[t] = cluster_number
-            # If the element of the left side of the current position is
-            # not outside of range, and is 1, add it to the queue.
-            if ((t[0]-1 >= 0) & (X[t[0]-1, t[1]] == 1)):
-                q.append([t[0]-1, t[1]])
-            # Do the same for the element above.
-            if ((t[1]-1 >= 0) & (X[t[0], t[1]-1])):
-                q.append([t[0], t[1]-1])
-            q = q.remove(t)
+            """Process the next element in the queue. Mark the corresponding
+            part in the cluster table."""
+            x, y = q.pop(0)
+            clusters[x, y] = cluster_number
+
+            """Iterate through the neighbourhood of the current position."""
+            for dx, dy in neighborhood:
+                if ((x+dx < 0) | (x+dx >= n_freqs) |
+                    (y+dy < 0) | (y+dy >= n_samples)):
+                    continue
+                if (X[x+dx, y+dy] & (clusters[x+dx, y+dy] == 0)):
+                    q.append([x+dx, y+dy])
 
         """Update cluster number."""
         cluster_number += 1
