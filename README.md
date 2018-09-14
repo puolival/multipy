@@ -55,7 +55,8 @@ if you find a bug or have an idea how the software could be improved.
 - Šidák correction [1]
 - Hochberg's procedure [2]
 - Holm-Bonferroni procedure [3]
-- Random field theory (RFT) based approaches [9]
+- Permutation tests [8, 10]
+- Random field theory (RFT) based approaches [9, 11]
 
 ### Quick example
 ```python
@@ -78,7 +79,6 @@ print zip(['{:.4f}'.format(p) for p in pvals], significant_pvals)
 - Storey-Tibshirani q-value procedure [5]
 - Adaptive linear step-up procedure [6–7]
 - Two-stage linear step-up procedure [7]
-- Permutation tests [8] (work in progress)
 
 ### Quick example
 ```python
@@ -150,3 +150,11 @@ and MEG-data. *Journal of Neuroscience Methods* 164(1):177–190.
 [9] Brett M, Penny W, Kiebel S (2003): An introduction to random field 
 theory. *Human Brain Function* (2nd edition). 
 [<a href="https://www.fil.ion.ucl.ac.uk/spm/doc/books/hbf2/">full text</a>]
+
+[10] Phipson B, Smyth GK (2010): Permutation p-values should never ber zero:
+Calculating exact P-values when permutations are randomly drawn. *Statistical
+Applications in Genetics and Molecular Biology* 9:article39.
+
+[11] Worsley KJ, Evans AC, Marrett S, Neelin P (1992): A three-dimensional
+statistical analysis for CBF activation studies in human brain. *Journal of
+Cerebral Blood Flow and Metabolism* 12:900-918.
