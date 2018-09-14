@@ -152,7 +152,7 @@ theory. *Human Brain Function* (2nd edition).
 [<a href="https://www.fil.ion.ucl.ac.uk/spm/doc/books/hbf2/">full text</a>]
 
 [10] Phipson B, Smyth GK (2010): Permutation p-values should never ber zero:
-Calculating exact P-values when permutations are randomly drawn. *Statistical
+Calculating exact p-values when permutations are randomly drawn. *Statistical
 Applications in Genetics and Molecular Biology* 9:article39.
 
 [11] Worsley KJ, Evans AC, Marrett S, Neelin P (1992): A three-dimensional
