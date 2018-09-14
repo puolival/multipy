@@ -225,7 +225,17 @@ def tfr_permutation_test(X, Y, n_permutations, alpha=0.05, threshold=1):
         clusters = _cluster_time_frequency(tstats > threshold)
         dist[i] = np.max(_cluster_stat(tstats, clusters))
 
+    """Compute p-values for each cluster."""
+    pvals = [_p_upperbound(np.sum(dist > c), float(n_permutations))
+             for c in ref_cluster_stat]
 
+    # Find significant variables.
+    significant_clusters = [i+1 for i, p in enumerate(pvals) if p < alpha]
+    significant = np.zeros([n_freqs, n_samples], dtype='bool')
+    for c in significant_clusters:
+        significant[ref_clusters == c] = True
+
+    return significant
 
 def permutation_test(X, Y, n_permutations=1000, threshold=1, tail='both',
                      alpha=0.05):

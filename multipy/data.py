@@ -113,23 +113,28 @@ def square_grid_model(nl=100, sl=60, N=25, delta=0.7):
     """
 
     """Generate the noise statistics."""
+    X_noise = normal(loc=0, scale=1, size=(nl, nl, N))
+    Y_noise = normal(loc=0, scale=1, size=(nl, nl, N))
     noise_tstats, noise_pvals = ttest_ind(
-        normal(loc=0, scale=1, size=(nl, nl, N)),
-        normal(loc=0, scale=1, size=(nl, nl, N)), axis=2)
+        X_noise, Y_noise, axis=2)
 
     """Generate the signal statistics."""
+    X_signal = normal(loc=delta, scale=1, size=(sl, sl, N))
+    Y_signal = normal(loc=0, scale=1, size=(sl, sl, N))
     signal_tstats, signal_pvals = ttest_ind(
-        normal(loc=delta, scale=1, size=(sl, sl, N)),
-        normal(loc=0, scale=1, size=(sl, sl, N)), axis=2)
+        X_signal, Y_signal, axis=2)
 
     """Combine the data so that the desired spatial structure is
     obtained."""
-    X = noise_pvals
+    S = noise_pvals
     d = (nl-sl) // 2
-    X[d:(nl-d), d:(nl-d)] = signal_pvals
+    S[d:(nl-d), d:(nl-d)] = signal_pvals
     tstats = noise_tstats
     tstats[d:(nl-d), d:(nl-d)] = signal_tstats
-    return X, tstats
+    X, Y = X_noise, Y_noise
+    X[d:(nl-d), d:(nl-d)] = X_signal
+    Y[d:(nl-d), d:(nl-d)] = Y_signal
+    return S, tstats, X, Y
 
 def two_class_grid_model(nl=100, sl=60, N=25):
     A = square_grid_model(nl=nl//2, sl=sl//2, N=N, delta=0.1)
