@@ -90,7 +90,7 @@ def separate_class_model(a_N=25, b_N=25, a_m=500, b_m=500, a_pi0=0.25,
                      np.hstack([A_pvals, B_pvals]))
     return tstats, pvals
 
-def square_grid_model(nl=100, sl=60, N=25, delta=0.7):
+def square_grid_model(nl=100, sl=60, N=25, delta=0.7, equal_var=True):
     """Bennett et al [5] model.
 
     Input arguments:
@@ -103,6 +103,9 @@ def square_grid_model(nl=100, sl=60, N=25, delta=0.7):
     delta : float
         Effect size. Difference in means between the two normal
         distributions.
+    equal_var : bool
+        Whether to assume equal population variances while performing
+        the Student's t-tests. See also scipy.stats.ttest_ind.
 
     Output arguments:
     X : ndarray
@@ -116,13 +119,13 @@ def square_grid_model(nl=100, sl=60, N=25, delta=0.7):
     X_noise = normal(loc=0, scale=1, size=(nl, nl, N))
     Y_noise = normal(loc=0, scale=1, size=(nl, nl, N))
     noise_tstats, noise_pvals = ttest_ind(
-        X_noise, Y_noise, axis=2)
+        X_noise, Y_noise, axis=2, equal_var=equal_var)
 
     """Generate the signal statistics."""
     X_signal = normal(loc=delta, scale=1, size=(sl, sl, N))
     Y_signal = normal(loc=0, scale=1, size=(sl, sl, N))
     signal_tstats, signal_pvals = ttest_ind(
-        X_signal, Y_signal, axis=2)
+        X_signal, Y_signal, axis=2, equal_var=equal_var)
 
     """Combine the data so that the desired spatial structure is
     obtained."""
@@ -136,7 +139,21 @@ def square_grid_model(nl=100, sl=60, N=25, delta=0.7):
     Y[d:(nl-d), d:(nl-d)] = Y_signal
     return S, tstats, X, Y
 
-def two_class_grid_model(nl=100, sl=60, N=25):
+def two_class_grid_model(nl=100, sl1=30, sl2=30, N=25, delta1=0.7, delta2=0.3):
+    """The Bennett et al. [5] model extended for the two separate classes
+    case.
+
+    Input arguments:
+    nl : int
+        The side length of the noise region.
+    sl<i> : int
+        The side length of the ith signal region.
+    N : int
+        Sample size in each group.
+    delta<i> : float
+        Effect size in ith class. Difference in means between the two
+        normal distributions.
+    """
     A = square_grid_model(nl=nl//2, sl=sl//2, N=N, delta=0.1)
     B = square_grid_model(nl=nl//2, sl=sl//2, N=N, delta=0.3)
     C = square_grid_model(nl=nl//2, sl=sl//2, N=N, delta=0.5)
@@ -144,4 +161,3 @@ def two_class_grid_model(nl=100, sl=60, N=25):
 
     Y = np.vstack([np.hstack([A, B]), np.hstack([C, D])])
     return Y
-
