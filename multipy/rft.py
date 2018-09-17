@@ -44,11 +44,13 @@ def _n_resels(X, fwhm):
     """Estimate the number of resolution elements. Here the idea is to simply
     compute how many FWHM sized blocsk are needed to cover the entire area of
     X. TODO: Replace with a better (proper?) method."""
-    R = len(X.flatten()) / float(fwhm ** 2)
+    nx, ny = np.shape(X)
+    R = float(nx * ny) / float(fwhm ** 2)
     return R
 
 def _expected_ec_2d(R, Z):
-    """Function for computing the expected value of the Euler characteristic.
+    """Function for computing the expected value of the Euler characteristic
+    of a Gaussian field.
 
     Input arguments:
     ================
@@ -197,7 +199,7 @@ def _smooth(X, fwhm):
 
     """Smooth the data."""
     # TODO: consider which filter mode should be used
-    Y = gaussian_filter(X, sigma=sd, mode='wrap',
+    Y = gaussian_filter(X, sigma=sd, mode='nearest',
                         multichannel=False, preserve_range=True)
     return Y
 
@@ -233,7 +235,7 @@ def rft_2d(X, fwhm, alpha=0.05, verbose=True):
 
     """Estimate the number of resolution elements."""
     R = _n_resels(X, fwhm)
-    if (verbose):
+	    if (verbose):
         print('The estimated number of resels is %d' % R)
 
     """Find z-score threshold that gives the chosen family-wise error
