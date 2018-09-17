@@ -2,6 +2,15 @@
 """Compare different correction techniques using data generated
 according to the Bennett et al. model.
 
+NOTES:
+
+[1] For the random field theory (RFT) approach, we have smoothed the data
+at FWHM = 30. This value corresponds to an estimate of 9 resels, which
+matches the underlying parameters of the simulation. Therefore, the
+results may be optimistic compared to scenarios where no such information
+is available. An expanded simulation could include different ways of
+estimating the FWHM parameter from the data.
+
 Author: Tuomas Puoliväli
 Email: tuomas.puolivali@helsinki.fi
 Last modified: 11th September 2018
@@ -40,7 +49,7 @@ Y_fdr = Y_fdr.reshape(nl, nl)
 Y_qvalue, _ = qvalue(X.flatten(), threshold=alpha)
 Y_qvalue = Y_qvalue.reshape(nl, nl)
 
-Y_rft, _, _ = rft_2d(X_tstats, fwhm=30, alpha=alpha, verbose=True)
+Y_rft, Y_smooth, _ = rft_2d(X_tstats, fwhm=30, alpha=alpha, verbose=True)
 # No reshape needed since already in correct form.
 
 Y_tst = tst(X.flatten(), q=alpha)
