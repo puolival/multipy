@@ -69,3 +69,16 @@ def grid_model_counts(Y, nl, sl):
     fp, tn = np.sum(Y[mask] == True), np.sum(Y[mask] == False)
     return tp, fp, tn, fn
 
+def roc(counts):
+    """Function computing TPR and FPR.
+
+    Output arguments:
+    =================
+    tpr : float
+        True positive rate
+    fpr : float
+        False positive rate
+    """
+    tp, fp, tn, fn = counts
+    return float(tp) / (tp+fn), float(fp) / (fp+tn)
+
