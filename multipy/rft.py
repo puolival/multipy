@@ -235,7 +235,7 @@ def rft_2d(X, fwhm, alpha=0.05, verbose=True):
 
     """Estimate the number of resolution elements."""
     R = _n_resels(X, fwhm)
-	    if (verbose):
+    if (verbose):
         print('The estimated number of resels is %d' % R)
 
     """Find z-score threshold that gives the chosen family-wise error
