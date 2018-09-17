@@ -23,13 +23,12 @@ References:
     Neuroscience 4(4):417-422.
 """
 
-from data import square_grid_model
-
 from fdr import lsu, qvalue, tst
 from fwer import sidak, holm_bonferroni, hochberg
-from rft import rft_2d
+from data import square_grid_model
 from permutation import tfr_permutation_test
-
+from rft import rft_2d
+from util import grid_model_counts, roc
 from viz import plot_grid_model
 
 """Generate the test data."""
@@ -66,31 +65,40 @@ Y_hochberg = Y_hochberg.reshape(nl, nl)
 
 """Visualize the results."""
 fig_nocor = plot_grid_model(X<alpha, nl, sl)
-fig_nocor.axes[0].set_title('Uncorrected')
+t_nocor = 'Uncorrected %1.3f %1.3f' % roc(grid_model_counts(X<alpha, nl, sl))
+fig_nocor.axes[0].set_title(t_nocor)
 
 fig_sidak = plot_grid_model(Y_sidak, nl, sl)
-fig_sidak.axes[0].set_title('Sidak')
+t_sidak = 'Sidak %1.3f %1.3f' % roc(grid_model_counts(Y_sidak, nl, sl))
+fig_sidak.axes[0].set_title(t_sidak)
 
 fig_fdr = plot_grid_model(Y_fdr, nl, sl)
-fig_fdr.axes[0].set_title('FDR')
+t_fdr = 'FDR %1.3f %1.3f' % roc(grid_model_counts(Y_fdr, nl, sl))
+fig_fdr.axes[0].set_title(t_fdr)
 
 fig_qvalue = plot_grid_model(Y_qvalue, nl, sl)
-fig_qvalue.axes[0].set_title('Q-value')
+t_qvalue = 'Q-value %1.3f %1.3f' % roc(grid_model_counts(Y_qvalue, nl, sl))
+fig_qvalue.axes[0].set_title(t_qvalue)
 
 fig_rft = plot_grid_model(Y_rft, nl, sl)
-fig_rft.axes[0].set_title('RFT')
+t_rft = 'RFT %1.3f %1.3f' % roc(grid_model_counts(Y_rft, nl, sl))
+fig_rft.axes[0].set_title(t_rft)
 
 fig_tst = plot_grid_model(Y_tst, nl, sl)
-fig_tst.axes[0].set_title('Two-stage procedure')
+t_tst = 'Two-stage procedure %1.3f %1.3f' % roc(grid_model_counts(Y_tst, nl, sl))
+fig_tst.axes[0].set_title(t_tst)
 
 fig_permutation = plot_grid_model(Y_permutation, nl, sl)
-fig_permutation.axes[0].set_title('Permutation')
+t_permutation = 'Permutation %1.3f %1.3f' % roc(grid_model_counts(Y_permutation, nl, sl))
+fig_permutation.axes[0].set_title(t_permutation)
 
 fig_holm = plot_grid_model(Y_holm, nl, sl)
-fig_holm.axes[0].set_title('Holm-Bonferroni')
+t_holm = 'Holm-Bonferroni %1.3f %1.3f' % roc(grid_model_counts(Y_holm, nl, sl))
+fig_holm.axes[0].set_title(t_holm)
 
 fig_hochberg = plot_grid_model(Y_hochberg, nl, sl)
-fig_hochberg.axes[0].set_title('Hochberg')
+t_hochberg = 'Hochberg %1.3f %1.3f' % roc(grid_model_counts(Y_hochberg, nl, sl))
+fig_hochberg.axes[0].set_title(t_hochberg)
 
 import matplotlib.pyplot as plt
 plt.show()
