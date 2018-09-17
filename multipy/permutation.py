@@ -218,7 +218,7 @@ def tfr_permutation_test(X, Y, n_permutations, alpha=0.05, threshold=1):
     for i in np.arange(0, n_permutations):
         """Permute the trial indices and divide the data accordingly."""
         ind = permutation(n_trials)
-        T, U = Z[:, :, ind[0:n_trials_1]], Z[:, :, ind[n_trials_2:-1]]
+        T, U = Z[:, :, ind[0:n_trials_1]], Z[:, :, ind[n_trials_2:]]
 
         """Compute the cluster statistic."""
         tstats, _ = ttest_ind(T, U, axis=2)
