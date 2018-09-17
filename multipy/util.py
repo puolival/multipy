@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Functions for controlling the family-wise error rate (FWER).
+"""General-purpose utility functions.
 
 This program code is part of the MultiPy (Multiple Hypothesis Testing in
 Python) package.
 
 Author: Tuomas Puoliväli (tuomas.puolivali@helsinki.fi)
-Last modified: 29th January 2018.
+Last modified: 17th September 2018.
 License: Revised 3-clause BSD
 Source: https://github.com/puolival/multipy/blob/master/util.py
 
@@ -33,3 +33,39 @@ def print_result(pvals, significant_pvals, sort_pvals=True, pval_digits=4):
     # Print output directly to console.
     format_str = '{:.' + str(pval_digits) + 'f}'
     print zip([format_str.format(p) for p in pvals], significant_pvals)
+
+def grid_model_counts(Y, nl, sl):
+    """Function for counting the number of true and false positives and
+    true and false negatives in Bennett et al. like simulations.
+
+    Input arguments:
+    ================
+    Y : ndarray
+        Truth values indicating which point were declared significant.
+    nl : int
+        Side length of the noise region.
+    sl : int
+        Side length of the signal region.
+
+    Output arguments:
+    =================
+    tp : int
+        Number of true positives.
+    fp : int
+        Number of false positives.
+    tn : int
+        Number of true negatives.
+    fn : int
+        Number of false negatives.
+    """
+    Y = np.asarray(Y, dtype='bool')
+    d = (nl-sl) // 2
+    """Process data within the signal region."""
+    tp, fn = (np.sum(Y[d:(nl-d), d:(nl-d)] == True),
+              np.sum(Y[d:(nl-d), d:(nl-d)] == False))
+    """Process data within the noise region."""
+    mask = np.ones(np.shape(Y), dtype='bool')
+    mask[d:(nl-d), d:(nl-d)] = False
+    fp, tn = np.sum(Y[mask] == True), np.sum(Y[mask] == False)
+    return tp, fp, tn, fn
+
