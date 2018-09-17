@@ -16,12 +16,17 @@ Email: tuomas.puolivali@helsinki.fi
 Last modified: 11th September 2018
 License: Revised 3-clause BSD
 
+TODO: The process of applying each method and visualizing the results could
+be replaced with a more concise iterative structure.
+
 References:
 
 [1] Bennett CM, Wolford GL, Miller MB (2009): The principled control of
     false positives in neuroimaging. Social Cognitive and Affective
     Neuroscience 4(4):417-422.
 """
+
+import numpy as np
 
 from fdr import lsu, qvalue, tst
 from fwer import sidak, holm_bonferroni, hochberg
@@ -102,3 +107,25 @@ fig_hochberg.axes[0].set_title(t_hochberg)
 
 import matplotlib.pyplot as plt
 plt.show()
+
+"""Save the data for later processing and checks."""
+
+"""Save the t-statistics, random variates, and p-values to make it
+possible to reproduce the results."""
+
+output_path = '/home/local/puolival/multipy-material/simulation-data'
+output_fname_x = output_path + '/x.npy'
+output_fname_x_raw = output_path + '/x_raw.npy'
+output_fname_y_raw = output_path + '/y_raw.npy'
+output_fname_x_tstats = output_path + '/x_tstats.npy'
+
+np.save(output_fname_x, X)
+np.save(output_fname_x_raw, X_raw)
+np.save(output_fname_y_raw, Y_raw)
+np.save(output_fname_x_tstats, X_tstats)
+
+"""Save also the simulation parameters."""
+output_fname_params = output_path + '/params.npy'
+
+np.save(output_fname_params, {'nl': nl, 'sl': sl,
+                              'N': N, 'delta': delta})
