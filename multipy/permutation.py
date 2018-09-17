@@ -181,7 +181,7 @@ def _cluster_stat(stat, clusters, statistic='cluster_mass'):
                                   ' is not available' % statistic)
 
 def tfr_permutation_test(X, Y, n_permutations, alpha=0.05, threshold=1):
-    """Permutation test for time-frequency data.
+    """One-sided permutation test for time-frequency data.
 
     Input arguments:
     ================
@@ -194,6 +194,12 @@ def tfr_permutation_test(X, Y, n_permutations, alpha=0.05, threshold=1):
         The desired family-wise error rate.
     threshold : float
         The t-value threshold applied during the first level of analysis.
+
+    Output arguments:
+    =================
+    significant : ndarray
+        Array of booleans indicating which time-frequency pairs were
+        declared as significant.
     """
 
     (n_freqs, n_samples, n_trials_1), (_, _, n_trials_2) = (np.shape(X),
