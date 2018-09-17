@@ -4,6 +4,7 @@ setup.py
 multipy/__init__.py
 multipy/compare.py
 multipy/compare2.py
+multipy/compare_roc.py
 multipy/data.py
 multipy/fdr.py
 multipy/fwer.py
