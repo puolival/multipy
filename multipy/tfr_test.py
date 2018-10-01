@@ -62,9 +62,14 @@ sns.set_style('darkgrid')
 fig = plt.figure(figsize=(8, 6))
 
 ax = fig.add_subplot(111)
-sns.distplot(power_all, ax=ax)
-sns.distplot(power_separate, ax=ax)
+bins = np.linspace(0, 1, 50) # equal number of bins
+sns.distplot(power_all, bins=bins, ax=ax)
+sns.distplot(power_separate, bins=bins, ax=ax)
 
+# Restrict around min and max values
+l, h = (np.min([power_all, power_separate]),
+        np.max([power_all, power_separate]))
+ax.set_xlim([l-0.05, h+0.05])
 ax.set_xlabel('Power')
 ax.set_ylabel('Density')
 
