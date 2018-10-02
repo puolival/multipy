@@ -22,22 +22,25 @@ import seaborn as sns
 
 alpha = 0.05 # The chosen critical level.
 
-pvals = neuhaus()
+pvals = neuhaus(permute=False)
 n_pvals = len(pvals)
 k = np.linspace(1, n_pvals, n_pvals)
+sel = np.arange(0, 8)
 
 """Plot the data."""
-fig = plt.figure(figsize=(6, 4))
-fig.subplots_adjust(top=0.92, bottom=0.13, left=0.12, right=0.95)
+sns.set_style('darkgrid')
+fig = plt.figure(figsize=(8, 6))
 
 ax = fig.add_subplot(111)
-ax.plot(k, pvals, 'o-')
+ax.plot(k[sel], pvals[sel], 'o-')
 y = (alpha/n_pvals)*k + 0 # Line through the origin.
-ax.plot(k, y, '-')
+ax.plot(k[sel], y[sel], '-')
 ax.legend(['P-value', 'Decision line'], loc='upper left')
 ax.set_xlabel('Hypothesis')
 ax.set_ylabel('P-value')
 ax.set_title('Benjamini-Hochberg procedure')
-ax.set_ylim([-0.05, 1.05])
+ax.set_ylim([-0.01, np.max(pvals[sel])+0.01])
+ax.set_xlim([0.5, np.max(sel)+1.5])
 
+fig.tight_layout()
 plt.show()
