@@ -176,12 +176,21 @@ def qvalue(pvals, threshold=0.05, verbose=True):
     if (verbose):
         print 'The estimated proportion of truly null features is %.3f' % pi0
 
-    # Sanity check
-    # TODO: check whether orig. paper has recommendations how to handle
+    """The smoothing step can sometimes converge outside the inteval [0,1].
+    This was noted in the published literature at least by Reiss et al. [4].
+    There are at least two approaches one could use to attempt to fix the
+    issue:
+    (1) Set the estimate to 1, which is the assumption in the classic
+        FDR method.
+    (2) Assume that if pi0 > 1, it was overestimated, and if pi0 < 0,
+        it was underestimated. Set to 0 or 1 depending on which case
+        occurs.
+    Here we have chosen to set the estimate to 1, since it is the more
+    conservative option of the two.
+    """
     if (pi0 < 0 or pi0 > 1):
         pi0 = 1
-        if (verbose):
-            print 'The proportion was not in [0, 1] and was set as 1.'
+        print('Smoothing estimator did not converge in [0, 1]')
 
     # Compute the q-values.
     qvals = np.zeros(np.shape(pvals))
