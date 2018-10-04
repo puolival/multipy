@@ -34,7 +34,7 @@ References:
 
 WARNING: This program code has not been thoroughly tested yet.
 
-Last modified 6th November 2017
+Last modified 4th October 2018
 """
 
 import numpy as np
@@ -174,19 +174,19 @@ def qvalue(pvals, threshold=0.05, verbose=True):
     cs = UnivariateSpline(kappa, pik, k=3, s=None, ext=0)
     pi0 = float(cs(1.))
     if (verbose):
-        print 'The estimated proportion of truly null features is %.3f' % pi0
+        print('The estimated proportion of truly null features is %.3f' % pi0)
 
-    """The smoothing step can sometimes converge outside the inteval [0,1].
-    This was noted in the published literature at least by Reiss et al. [4].
-    There are at least two approaches one could use to attempt to fix the
-    issue:
-    (1) Set the estimate to 1, which is the assumption in the classic
-        FDR method.
-    (2) Assume that if pi0 > 1, it was overestimated, and if pi0 < 0,
-        it was underestimated. Set to 0 or 1 depending on which case
-        occurs.
-    Here we have chosen to set the estimate to 1, since it is the more
-    conservative option of the two.
+    """The smoothing step can sometimes converge outside the inteval [0, 1].
+    This was noted in the published literature at least by Reiss and
+    colleagues [4]. There are at least two approaches one could use to
+    attempt to fix the issue:
+    (1) Set the estimate to 1 if it is outside the interval, which is the
+        assumption in the classic FDR method.
+    (2) Assume that if pi0 > 1, it was overestimated, and if pi0 < 0, it
+        was underestimated. Set to 0 or 1 depending on which case occurs.
+
+    Here we have chosen the first option, since it is the more conservative
+    one of the two.
     """
     if (pi0 < 0 or pi0 > 1):
         pi0 = 1
