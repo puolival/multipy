@@ -114,9 +114,7 @@ plot_qvalue_diagnostics(tstats, pvals, qvals)
 
 ## Citation
 
-### Papers
-
-Work in progress.
+A manuscript of the software is currently being prepared.
 
 ### Poster presentations:
 
