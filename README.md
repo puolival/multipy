@@ -114,8 +114,15 @@ plot_qvalue_diagnostics(tstats, pvals, qvals)
 
 ## Citation
 
+###Papers
+
+Work in progress.
+
+###Poster presentations:
+
 Puoliväli T, Lobier M, Palva S, Palva JM (2018): MultiPy: Multiple hypothesis 
-testing in Python. https://puolival.github.io/multipy/
+testing in Python. *Neuronal Circuit Dynamics across Scales and Species*, 
+Helsinki, Finland, 3–4th May.
 
 ## References
 
@@ -157,4 +164,4 @@ Applications in Genetics and Molecular Biology* 9:article39.
 
 [11] Worsley KJ, Evans AC, Marrett S, Neelin P (1992): A three-dimensional
 statistical analysis for CBF activation studies in human brain. *Journal of
-Cerebral Blood Flow and Metabolism* 12:900-918.
+Cerebral Blood Flow and Metabolism* 12:900–918.
