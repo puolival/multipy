@@ -114,11 +114,11 @@ plot_qvalue_diagnostics(tstats, pvals, qvals)
 
 ## Citation
 
-###Papers
+### Papers
 
 Work in progress.
 
-###Poster presentations:
+### Poster presentations:
 
 Puoliväli T, Lobier M, Palva S, Palva JM (2018): MultiPy: Multiple hypothesis 
 testing in Python. *Neuronal Circuit Dynamics across Scales and Species*, 
