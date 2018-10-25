@@ -95,6 +95,13 @@ print zip(['{:.4f}'.format(p) for p in pvals], significant_pvals)
  ('0.4262', False), ('0.5719', False), ('0.6528', False), ('0.7590', False), ('1.0000', False)]
 ```
 
+## Data and models
+
+- Spatial two-group model [12]
+- Spatial separate-classes model. Partly based on [12–13].
+
+<img src="./multipy/figs/gridmodel.png" alt="gridmodel" style="display: block; margin-left: auto; margin-right: auto;" />
+
 ## Data visualization
 
 ### Quick example
@@ -163,3 +170,11 @@ Applications in Genetics and Molecular Biology* 9:article39.
 [11] Worsley KJ, Evans AC, Marrett S, Neelin P (1992): A three-dimensional
 statistical analysis for CBF activation studies in human brain. *Journal of
 Cerebral Blood Flow and Metabolism* 12:900–918.
+
+[12] Bennett CM, Wolford GL, Miller MB (2009): The principled control of
+false positives in neuroimaging. *Social Cognitive and Affective
+Neuroscience* 4(4):417–422.
+
+[13] Efron B (2008): Simultaneous inference: When should hypothesis testing
+problems be combined? *The Annals of Applied Statistics* 2(1):197–223.
+
