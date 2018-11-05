@@ -102,6 +102,8 @@ print zip(['{:.4f}'.format(p) for p in pvals], significant_pvals)
 
 <img src="./multipy/figs/gridmodel.png" alt="gridmodel" style="display: block; margin-left: auto; margin-right: auto;" />
 
+There is a true effect at each location within the green box and no true effects outside.
+
 ## Data visualization
 
 ### Quick example
