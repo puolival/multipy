@@ -12,13 +12,8 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
-from fdr import lsu, qvalue, tst
-from fwer import sidak, holm_bonferroni, hochberg
-from data import square_grid_model, two_class_grid_model
-from permutation import tfr_permutation_test
-from rft import rft_2d
-from util import grid_model_counts, roc
-from viz import plot_grid_model
+from fdr import lsu
+from data import square_grid_model
 
 from scipy.stats import norm
 
@@ -80,7 +75,7 @@ ax.errorbar(x=deltas, y=np.mean(n_tp[0, :], axis=0) / (sl ** 2),
 ax.errorbar(x=deltas, y=np.mean(n_tp[1, :], axis=0) / (sl ** 2),
             yerr=yerr_tp2)
 ax.errorbar(x=deltas, y=np.mean(n_reproducible, axis=0) / (sl ** 2),
-            yerr=z*np.std(n_reproducible / (sl ** 2), axis=0) /
+            yerr=z * np.std(n_reproducible / (sl ** 2), axis=0) /
             np.sqrt(n_iterations))
 
 """Label the axes etc."""
