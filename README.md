@@ -10,7 +10,7 @@ family-wise error rate (FWER) and the false discovery rate (FDR).
 
 ## News
 
-* MultiPy is presented in a neuroscience seminar at the Jyväskylä Centre for Interdisciplinary Brain Research, Jyväskylä, Finland (30th November 2018)
+* MultiPy is presented in a neuroscience seminar at the <a href="https://cibr.jyu.fi/en">Jyväskylä Centre for Interdisciplinary Brain Research</a>, Jyväskylä, Finland (30th November 2018)
 
 * MultiPy is presented in the Tool of the month <a href="https://blogs.helsinki.fi/ils-blogs/2018/05/24/tom-30-05/">seminar</a> at the University of Helsinki, Finland (30th May 2018)
 
