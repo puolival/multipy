@@ -67,7 +67,7 @@ from multipy.fwer import sidak
 
 pvals = neuhaus()
 significant_pvals = sidak(pvals, alpha=0.05)
-print zip(['{:.4f}'.format(p) for p in pvals], significant_pvals)
+print(zip(['{:.4f}'.format(p) for p in pvals], significant_pvals))
 ```
 ```python
 [('0.0001',  True), ('0.0004',  True), ('0.0019',  True), ('0.0095', False), ('0.0201', False), 
@@ -89,7 +89,7 @@ from multipy.data import neuhaus
 
 pvals = neuhaus()
 significant_pvals = lsu(pvals, q=0.05)
-print zip(['{:.4f}'.format(p) for p in pvals], significant_pvals)
+print(zip(['{:.4f}'.format(p) for p in pvals], significant_pvals))
 ```
 ```python
 [('0.0001',  True), ('0.0004',  True), ('0.0019',  True), ('0.0095',  True), ('0.0201', False), 
