@@ -140,7 +140,7 @@ for i in np.arange(0, n_voxels):
     valid_ind = surf_data[:, i] > 0.1
     pvals[i] = spearmanr(df.age.values[valid_ind],
                          surf_data[valid_ind, i])[1]
-    print 'voxel %6d' % i
+    print('voxel %6d' % i)
 
 pvals[np.isnan(pvals)] = 1
 pvals = pvals[:, 0]
