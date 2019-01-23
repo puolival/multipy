@@ -38,7 +38,7 @@ for i in range(0, n_iter):
         n_rejected_lsu[j, i] = np.sum(lsu(pvals))
         n_rejected_tst[j, i] = np.sum(tst(pvals))
         n_rejected_nc[j, i] = np.sum(pvals<0.05)
-    print 'iteration %3d' % i
+    print('iteration %3d' % i)
 
 """Visualize the results (i.e. the proportion of rejected null hypotheses
 as a function of the effect size.)"""
