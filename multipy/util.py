@@ -32,7 +32,7 @@ def print_result(pvals, significant_pvals, sort_pvals=True, pval_digits=4):
 
     # Print output directly to console.
     format_str = '{:.' + str(pval_digits) + 'f}'
-    print zip([format_str.format(p) for p in pvals], significant_pvals)
+    print(zip([format_str.format(p) for p in pvals], significant_pvals))
 
 def grid_model_counts(Y, nl, sl):
     """Function for counting the number of true and false positives and
