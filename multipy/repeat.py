@@ -68,6 +68,8 @@ def fwer_replicability(pvals_primary, pvals_followup, emph_primary, method,
         ind = np.isnan(pvals_followup) == False
         significant_followup = method(pvals_followup[ind],
                                       emph_followup*alpha)
+    else:
+        raise Exception('Unsupported correction method!')
 
     """Decide which tests are replicable."""
     n_tests = len(pvals_primary)
@@ -100,4 +102,4 @@ def partial_conjuction(pvals_primary, pvals_followup, method, alpha=0.05):
         Array of booleans indicating which tests can be considered to be
         reproducible.
     """
-    pass
+    raise NotImplementedError('Not implemented yet!')
