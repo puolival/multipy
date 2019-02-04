@@ -12,14 +12,14 @@ family-wise error rate (FWER) and the false discovery rate (FDR).
 
 * MultiPy is presented in a neuroscience seminar at the <a href="https://cibr.jyu.fi/en">Jyväskylä Centre for Interdisciplinary Brain Research</a>, Jyväskylä, Finland (30th November 2018)
 
-* MultiPy is presented in the Tool of the month <a href="https://blogs.helsinki.fi/ils-blogs/2018/05/24/tom-30-05/">seminar</a> at the University of Helsinki, Finland (30th May 2018)
+* MultiPy is presented in the <a href="https://blogs.helsinki.fi/ils-blogs/2018/05/24/tom-30-05/">Tool of the month seminar</a> at the University of Helsinki, Finland (30th May 2018)
 
-* MultiPy is presented as a poster in the Neuronal circuit dynamics across scales and species <a href="https://www.helsinki.fi/en/conferences/neuronal-circuit-dynamics-across-scales-and-species">symposium</a> at Helsinki, Finland (3-4th May 2018)
+* MultiPy is presented as a poster in the <a href="https://www.helsinki.fi/en/conferences/neuronal-circuit-dynamics-across-scales-and-species">Neuronal circuit dynamics across scales and species symposium</a> at Helsinki, Finland (3-4th May 2018)
 
 ## Installation
 
 Install the software manually to get the latest version. The pip version is 
-updated approximately once per month.
+updated approximately every two or three months.
 
 ### Using pip
 
@@ -106,6 +106,10 @@ print(zip(['{:.4f}'.format(p) for p in pvals], significant_pvals))
 
 There is a true effect at each location within the green box and no true effects outside.
 
+## Methods for reproducibility analyses
+
+- The FWER replicability method [14–16]
+
 ## Data visualization
 
 ### Quick example
@@ -182,3 +186,13 @@ Neuroscience* 4(4):417–422.
 [13] Efron B (2008): Simultaneous inference: When should hypothesis testing
 problems be combined? *The Annals of Applied Statistics* 2(1):197–223.
 
+[14] Benjamini Y, Heller R (2008): Screening for partial conjuction hypotheses.
+*Biometrics* 64:1215–1222.
+
+[15] Benjamini Y, Heller Y, Yekutieli D (2009): Selective inference in 
+complex research. *Philosophical Transactions of the Royal Society A* 
+367:4255–4271.
+
+[16] Bogomolov M, Heller R (2013): Discovering findings that replicate from a
+primary study high dimension to a follow-up study. *Journal of the American 
+Statistical Association* 108(504):1480–1492.
