@@ -206,14 +206,51 @@ def plot_grid_model(X, nl, sl):
 
     """Plot the signal region borders."""
     d = (nl-sl) // 2
-    ax.plot([d, d], [d+sl, d], 'g-', alpha=0.75)
-    ax.plot([d+sl, d], [d+sl, d+sl], 'g-', alpha=0.75)
-    ax.plot([d+sl, d+sl], [d, d+sl], 'g-', alpha=0.75)
-    ax.plot([d+sl, d], [d, d], 'g-', alpha=0.75)
+    ax.plot([d, d], [d+sl, d], 'g-', linewidth=1.5, alpha=0.75)
+    ax.plot([d+sl, d], [d+sl, d+sl], 'g-', linewidth=1.5, alpha=0.75)
+    ax.plot([d+sl, d+sl], [d, d+sl], 'g-', linewidth=1.5, alpha=0.75)
+    ax.plot([d+sl, d], [d, d], 'g-', linewidth=1.5, alpha=0.75)
 
     """Reduce the amount of unnecessary empty space."""
     ax.set_xlim([0, nl])
     ax.set_ylim([0, nl])
     fig.tight_layout()
-    plt.show()
+    return fig
+
+def plot_grid_model_pvals(X, P, nl, sl):
+    """Function for visualizing square grid model data similar
+    to Bennett and colleagues [2].
+
+    Input arguments:
+    nl : int
+        The side length of the noise region.
+    sl : int
+        The side length of the signal region.
+    """
+    sns.set_style('white')
+    fig = plt.figure(figsize=(5, 5), facecolor='white')
+    ax = fig.add_subplot(111, axisbg='black')
+
+    """Plot indices of p-values declared significant."""
+    for i, j in np.ndindex(nl, nl):
+        if (X[i, j]):
+            if (P[i, j] < 0.001):
+                ax.plot(i, j, 'r.')
+            elif (P[i, j] < 0.01):
+                ax.plot(i, j, 'g.')
+            else:
+                ax.plot(i, j, 'b.')
+
+    """Plot the signal region borders."""
+    d = (nl-sl) // 2
+    ax.plot([d, d], [d+sl, d], 'g-', linewidth=1.5, alpha=0.75)
+    ax.plot([d+sl, d], [d+sl, d+sl], 'g-', linewidth=1.5, alpha=0.75)
+    ax.plot([d+sl, d+sl], [d, d+sl], 'g-', linewidth=1.5, alpha=0.75)
+    ax.plot([d+sl, d], [d, d], 'g-', linewidth=1.5, alpha=0.75)
+
+    """Reduce the amount of unnecessary empty space."""
+    ax.set_xlim([0, nl])
+    ax.set_ylim([0, nl])
+    fig.tight_layout()
+    return fig
 

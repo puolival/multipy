@@ -13,8 +13,10 @@ References:
 
 [1] Hochberg Y (1988): A sharper Bonferroni procedure for multiple tests of
     significance. Biometrika 75(4):800-802.
+
 [2] Holm S (1979): A simple sequentially rejective multiple test procedure.
     Scandinavian Journal of Statistics 6(2):65-70.
+
 [3] Sidak Z (1967): Confidence regions for the means of multivariate normal
     distributions. Journal of the American Statistical Association 62(318):
     626-633.
@@ -25,9 +27,7 @@ WARNING: These functions have not been entirely validated yet.
 
 import numpy as np
 
-#from logger import log_fwer_analysis
-
-def bonferroni(pvals, alpha=0.05): #, write_log=False):
+def bonferroni(pvals, alpha=0.05):
     """A function for controlling the FWER at some level alpha using the
     classical Bonferroni procedure.
 
@@ -40,11 +40,9 @@ def bonferroni(pvals, alpha=0.05): #, write_log=False):
                   after correcting for multiple comparisons.
     """
     m, pvals = len(pvals), np.asarray(pvals)
-    #if (write_log):
-    #    log_fwer_analysis(m, alpha, 'bonferroni', '')
     return pvals < alpha/float(m)
 
-def hochberg(pvals, alpha=0.05): #, write_log=False):
+def hochberg(pvals, alpha=0.05):
     """A function for controlling the FWER using Hochberg's procedure [1].
 
     Input arguments:
@@ -58,16 +56,15 @@ def hochberg(pvals, alpha=0.05): #, write_log=False):
     m, pvals = len(pvals), np.asarray(pvals)
     # Sort the p-values into ascending order
     ind = np.argsort(pvals)
+
     """Here we have k+1 (and not just k) since Python uses zero-based
     indexing."""
     test = [p <= alpha/(m+1-(k+1)) for k, p in enumerate(pvals[ind])]
     significant = np.zeros(np.shape(pvals), dtype='bool')
     significant[ind[0:np.sum(test)]] = True
-    #if (write_log):
-    #    log_fwer_analysis(m, alpha, 'hochberg', '')
     return significant
 
-def holm_bonferroni(pvals, alpha=0.05): #, write_log=False):
+def holm_bonferroni(pvals, alpha=0.05):
     """A function for controlling the FWER using the Holm-Bonferroni
     procedure [2].
 
@@ -82,15 +79,14 @@ def holm_bonferroni(pvals, alpha=0.05): #, write_log=False):
     m, pvals = len(pvals), np.asarray(pvals)
     ind = np.argsort(pvals)
     test = [p > alpha/(m+1-k) for k, p in enumerate(pvals[ind])]
+
     """The minimal index k is m-np.sum(test)+1 and the hypotheses 1, ..., k-1
     are rejected. Hence m-np.sum(test) gives the correct number."""
     significant = np.zeros(np.shape(pvals), dtype='bool')
     significant[ind[0:m-np.sum(test)]] = True
-    #if (write_log):
-    #    log_fwer_analysis(m, alpha, 'holm_bonferroni', '')
     return significant
 
-def sidak(pvals, alpha=0.05): #, write_log=False):
+def sidak(pvals, alpha=0.05):
     """A function for controlling the FWER at some level alpha using the
     procedure by Sidak [3].
 
@@ -103,6 +99,4 @@ def sidak(pvals, alpha=0.05): #, write_log=False):
                   after correcting for multiple comparisons.
     """
     n, pvals = len(pvals), np.asarray(pvals)
-    #if (write_log):
-    #    log_fwer_analysis(m, alpha, 'sidak', '')
     return pvals < 1. - (1.-alpha) ** (1./n)

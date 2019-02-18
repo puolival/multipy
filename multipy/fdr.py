@@ -47,6 +47,7 @@ def lsu(pvals, q=0.05):
     proposed by Benjamini & Hochberg (1995).
 
     Input arguments:
+    ================
     pvals - P-values corresponding to a family of hypotheses.
     q     - The desired false discovery rate.
 
@@ -67,6 +68,7 @@ def abh(pvals, q=0.05):
     discovery rate.
 
     Input arguments:
+    ================
     pvals - P-values corresponding to a family of hypotheses.
     q     - The desired false discovery rate.
     """
@@ -96,6 +98,7 @@ def orc(pvals, m0, q=0.05):
     """The 'Oracle' procedure.
 
     Input arguments:
+    ================
     pvals - P-values corresponding to a family of hypotheses.
     m0    - The number of null hypotheses that are true.
     q     - The desired false discovery rate.
@@ -111,6 +114,7 @@ def tst(pvals, q=0.05):
     false discovery rate.
 
     Input arguments:
+    ================
     pvals - P-values corresponding to a family of hypotheses.
     q     - The desired false discovery rate.
     """
@@ -138,6 +142,7 @@ def paradoxical(pvals, q, significant):
     for. See discussion by Reiss et al. in [4] for more information.
 
     Input arguments:
+    ================
     pvals       - P-values corresponding to a family of hypotheses
     q           - The false discovery rate
     significant - Indicator vector showing which p-values are significant
@@ -153,10 +158,12 @@ def qvalue(pvals, threshold=0.05, verbose=True):
     Tibshirani q-value method (2003).
 
     Input arguments:
+    ================
     pvals       - P-values corresponding to a family of hypotheses.
     threshold   - Threshold for deciding which q-values are significant.
 
     Output arguments:
+    =================
     significant - An array of flags indicating which p-values are significant.
     qvals       - Q-values corresponding to the p-values.
     """
@@ -176,7 +183,7 @@ def qvalue(pvals, threshold=0.05, verbose=True):
     if (verbose):
         print('The estimated proportion of truly null features is %.3f' % pi0)
 
-    """The smoothing step can sometimes converge outside the inteval [0, 1].
+    """The smoothing step can sometimes converge outside the interval [0, 1].
     This was noted in the published literature at least by Reiss and
     colleagues [4]. There are at least two approaches one could use to
     attempt to fix the issue:
