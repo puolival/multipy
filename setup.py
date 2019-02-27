@@ -2,7 +2,7 @@
 from distutils.core import setup
 
 setup(name='multipy',
-      version='0.14',
+      version='0.15',
       description='Multiple hypothesis testing in Python',
       url='https://puolival.github.io/multipy/',
       author='Tuomas Puoliväli',

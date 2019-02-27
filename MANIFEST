@@ -4,6 +4,8 @@ setup.py
 multipy/__init__.py
 multipy/compare.py
 multipy/compare2.py
+multipy/compare_power.py
+multipy/compare_power_orig.py
 multipy/compare_roc.py
 multipy/data.py
 multipy/fdr.py
@@ -12,8 +14,12 @@ multipy/logger.py
 multipy/permutation.py
 multipy/permutation_test.py
 multipy/reiss_sim.py
+multipy/repeat.py
+multipy/reproducibility.py
+multipy/rfd.py
 multipy/rft.py
 multipy/rft_test.py
+multipy/rvalue.py
 multipy/sim.py
 multipy/tfr_test.py
 multipy/util.py
