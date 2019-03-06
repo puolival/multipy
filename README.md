@@ -97,6 +97,10 @@ print(zip(['{:.4f}'.format(p) for p in pvals], significant_pvals))
  ('0.4262', False), ('0.5719', False), ('0.6528', False), ('0.7590', False), ('1.0000', False)]
 ```
 
+## Covariate-adjusted methods
+
+- Independent hypothesis weighting (IHW) [17]
+
 ## Data and models
 
 - Spatial two-group model [12]
@@ -196,3 +200,7 @@ complex research. *Philosophical Transactions of the Royal Society A*
 [16] Bogomolov M, Heller R (2013): Discovering findings that replicate from a
 primary study high dimension to a follow-up study. *Journal of the American 
 Statistical Association* 108(504):1480–1492.
+
+[17] Ignatiadis N, Klaus B, Zaugg JB, Huber W (2016): Data-driven hypothesis
+weighting increases detection power in genome-scale multiple testing. *Nature
+Methods* 13:577–580
