@@ -52,7 +52,7 @@ def ihw_grw(pvals, weights, method, alpha=0.05):
     """Check that the method is supported."""
     supported_methods = ['lsu']
     if (method.__name__ not in supported_methods):
-        raise Exception('The method %s is not supported! % method.__name__')
+        raise Exception('The method %s is not supported!' % method.__name__)
 
     """Apply the correction."""
     weighted_pvals = pvals / weights
@@ -62,6 +62,7 @@ def ihw_grw(pvals, weights, method, alpha=0.05):
 
 def _f_naive_ihw(weights, pvals, groups, method, alpha):
     """The minimized objective function for the naive IHW method."""
+    weights = np.abs(weights)
     weights = weights / np.mean(weights)
     pval_weights = np.zeros(np.shape(pvals))
     for i, g in enumerate(np.unique(groups)):
@@ -76,6 +77,25 @@ def ihw_naive(pvals, groups, method, alpha=0.05):
 
     Input arguments:
     ================
+    pvals : ndarray [n_tests, ]
+        The uncorrected p-values.
+
+    method : function
+        The applied FDR procedure.
+
+    alpha : float
+        The desired critical level.
+
+    Output arguments:
+    =================
+    significant : ndarray [n_tets, ]
+        Vector of booleans indicating which p-values are significant.
+
+    weighted_pvals : ndarray [n_tests, :]
+        The weighted p-values.
+
+    weights : ndarray [n_groups, :]
+        The weight assigned for each group of hypotheses.
     """
 
     """Initialize the weights."""
@@ -83,8 +103,9 @@ def ihw_naive(pvals, groups, method, alpha=0.05):
     initial_weights = np.ones(n_groups, dtype='float')
 
     """Optimize the weights."""
-    weights = minimize(fun=_f_naive_ihw, x0=initial_weights,
-                       args=(pvals, groups, method, alpha),
+    print('Optimizing weights ..')
+    args = (pvals, groups, method, alpha)
+    weights = minimize(fun=_f_naive_ihw, x0=initial_weights, args=args,
                        method='nelder-mead').x
 
     """Apply the correction."""
