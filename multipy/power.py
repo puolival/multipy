@@ -37,7 +37,7 @@ def logistic_function(x, k, x0):
     """
     return 1. / (1. + np.exp(-k*(x-x0)))
 
-def plot_power(effect_sizes, empirical_power):
+def plot_power(effect_sizes, empirical_power, ax=None):
     """Function for plotting empirical power as a function of
     effect size.
 
@@ -63,9 +63,9 @@ def plot_power(effect_sizes, empirical_power):
     logistic_y = logistic_function(logistic_x, logistic_k, logistic_x0)
 
     """Plot the data and fitted line."""
-    sns.set_style('darkgrid')
-    fig = plt.figure(figsize=(8, 5))
-    ax = fig.add_subplot(111)
+    if (ax is None):
+        fig = plt.figure(figsize=(8, 5))
+        ax = fig.add_subplot(111)
     ax.plot(effect_sizes, empirical_power, '.', markersize=9)
     ax.plot(logistic_x, logistic_y, '-', linewidth=1.5)
 
@@ -74,7 +74,7 @@ def plot_power(effect_sizes, empirical_power):
     ax.set_ylim([-0.05, 1.05])
     ax.set_xlabel('Effect size $\Delta$', fontsize=14)
     ax.set_ylabel('Empirical power', fontsize=14)
-    fig.tight_layout()
+    ax.figure.tight_layout()
     plt.show()
 
 """Simulate data and test the plot function."""
@@ -98,4 +98,7 @@ for i, delta in enumerate(deltas):
 
 epwr = np.mean(epwr, axis=1)
 
-plot_power(deltas, epwr)
+sns.set_style('darkgrid')
+fig = plt.figure(figsize=(8, 5))
+ax = fig.add_subplot(111)
+plot_power(deltas, epwr, ax=ax)
