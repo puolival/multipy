@@ -82,3 +82,44 @@ def roc(counts):
     tp, fp, tn, fn = counts
     return float(tp) / (tp+fn), float(fp) / (fp+tn)
 
+def empirical_power(n_tp, n_at):
+    """Computer empirical power.
+
+    Input arguments:
+    ================
+    n_tp : int
+        The observed number of true positives.
+
+    n_at : int
+        The number of hypotheses for which the alternative is true.
+
+    Output arguments:
+    =================
+    epwr : float
+        Empirical power.
+    """
+
+    """Compute the empirical power. Check that the result is in [0, 1]."""
+    epwr = float(n_tp) / float(n_at)
+    if ((epwr > 1) | (epwr < 0)):
+        raise Exception('Invalid input parameters!')
+
+    return epwr
+
+def empirical_fpr(n_fp, n_nt):
+    """Compute empirical false positive rate (FPR).
+
+    Input arguments:
+    ================
+    n_fp : int
+        The observed number of false positives.
+
+    n_nt : int
+        The number of hypotheses for which the null is true.
+
+    Output arguments:
+    =================
+    fpr : float
+        Empirical false positive rate.
+    """
+    return float(n_fp) / float(n_nt)

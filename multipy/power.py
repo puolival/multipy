@@ -8,7 +8,7 @@ License: Revised 3-clause BSD
 """
 from data import square_grid_model
 
-from fdr import lsu, tst
+from fdr import lsu, qvalue, tst
 from fwer import bonferroni
 
 import matplotlib.pyplot as plt
@@ -19,7 +19,7 @@ from scipy.optimize import curve_fit
 
 import seaborn as sns
 
-from util import empirical_power, grid_model_counts
+from util import empirical_power, empirical_fpr, grid_model_counts
 
 def logistic_function(x, k, x0):
     """Logistic function with a maximum value of one.
@@ -65,7 +65,7 @@ def plot_power(effect_sizes, empirical_power, ax=None):
     """Plot the data and fitted line."""
     if (ax is None):
         fig = plt.figure(figsize=(8, 5))
-        ax = fig.add_subplot(111)
+        ax = fig.add_subplot(121)
     ax.plot(effect_sizes, empirical_power, '.', markersize=9)
     ax.plot(logistic_x, logistic_y, '-', linewidth=1.5)
 
@@ -75,30 +75,43 @@ def plot_power(effect_sizes, empirical_power, ax=None):
     ax.set_xlabel('Effect size $\Delta$', fontsize=14)
     ax.set_ylabel('Empirical power', fontsize=14)
     ax.figure.tight_layout()
+
+def two_group_model_power():
+    """Simulate data and test the plot function."""
+    # TODO: make a proper function
+    nl, sl = 90, 30
+    deltas = np.linspace(0.2, 2.4, 12)
+    alpha = 0.05
+    N = 25
+    n_iter = 10
+
+    epwr = np.zeros([len(deltas), n_iter])
+    fpr = np.zeros(np.shape(epwr))
+
+    for i, delta in enumerate(deltas):
+        print('Effect size %1.3f' % delta)
+        for j in np.arange(0, n_iter):
+            X, X_tstats, X_raw, Y_raw = square_grid_model(nl, sl, N, delta,
+                                                          equal_var=True)
+            Y, _ = qvalue(X.flatten(), alpha)
+            Y = Y.reshape(nl, nl)
+            tp, fp, tn, fn = grid_model_counts(Y, nl, sl)
+            epwr[i, j] = empirical_power(tp, tp+fn)
+            fpr[i, j] = empirical_fpr(fp, fp+tn)
+
+    epwr, fpr = np.mean(epwr, axis=1), np.mean(fpr, axis=1)
+
+    sns.set_style('darkgrid')
+    fig = plt.figure(figsize=(8, 5))
+    ax1 = fig.add_subplot(111)
+    ax1.set_title('Two-stage procedure')
+    plot_power(deltas, epwr, ax=ax1)
+    # ax2 = fig.add_subplot(122)
+    # ax2.set_ylabel('Logarithm of empirical false positive\n rate')
+    # sns.boxplot(data=np.log10(fpr), orient='v', ax=ax2)
+    # ax2.set_ylim([-5, 0])
+    fig.tight_layout()
     plt.show()
 
-"""Simulate data and test the plot function."""
-nl, sl = 90, 30
-deltas = np.linspace(0.2, 1.8, 9)
-alpha = 0.05
-N = 25
-n_iter = 10
-
-epwr = np.zeros([len(deltas), n_iter])
-
-for i, delta in enumerate(deltas):
-    print('Effect size %1.3f' % delta)
-    for j in np.arange(0, n_iter):
-        X, X_tstats, X_raw, Y_raw = square_grid_model(nl, sl, N, delta,
-                                                      equal_var=True)
-        Y_tst = lsu(X.flatten(), q=alpha)
-        Y_tst = Y_tst.reshape(nl, nl)
-        tp, fp, tn, fn = grid_model_counts(Y_tst, nl, sl)
-        epwr[i, j] = empirical_power(tp, sl ** 2)
-
-epwr = np.mean(epwr, axis=1)
-
-sns.set_style('darkgrid')
-fig = plt.figure(figsize=(8, 5))
-ax = fig.add_subplot(111)
-plot_power(deltas, epwr, ax=ax)
+def separate_classes_model_power():
+    pass
