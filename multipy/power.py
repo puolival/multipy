@@ -6,10 +6,11 @@ Email: tuomas.puolivali@helsinki.fi
 Last modified: 22th March 2019
 License: Revised 3-clause BSD
 """
-from data import square_grid_model
+from data import square_grid_model, two_class_grid_model
 
 from fdr import lsu, qvalue, tst
-from fwer import bonferroni
+from fwer import bonferroni, hochberg
+from permutation import tfr_permutation_test
 
 import matplotlib.pyplot as plt
 
@@ -76,42 +77,57 @@ def plot_power(effect_sizes, empirical_power, ax=None):
     ax.set_ylabel('Empirical power', fontsize=14)
     ax.figure.tight_layout()
 
-def two_group_model_power():
-    """Simulate data and test the plot function."""
-    # TODO: make a proper function
-    nl, sl = 90, 30
-    deltas = np.linspace(0.2, 2.4, 12)
-    alpha = 0.05
-    N = 25
-    n_iter = 10
+def two_group_model_power(nl=90, sl=30, deltas=np.linspace(0.2, 2.4, 12),
+                          alpha=0.05, N=25, n_iter=10, verbose=True):
+    """Function for generating data under two-group model and visualizing
+    power as a function of effect size.
 
-    epwr = np.zeros([len(deltas), n_iter])
-    fpr = np.zeros(np.shape(epwr))
+    Input arguments:
+    ================
+    nl : int
+        The length of a side of the simulated grid. There will be a total
+        of nl squared tests.
+    sl : int
+        The length of a side of the signal region. In the simulation, there
+        will be a total of sl squared tests where the alternative
+        hypothesis is true.
+    deltas : ndarray
+        The tested effect sizes.
+    alpha : float
+        The desired critical level.
+    N : int
+        Sample size is both of the two groups.
+    n_iter : int
+        Number of iterations used for estimating the power.
+    verbose : bool
+        Flag for deciding whether to print progress reports to the console.
+    """
 
+    """Allocate memory for the results."""
+    n_deltas = len(deltas)
+    pwr = np.zeros([n_deltas, n_iter])
+
+    """Simulate data at each effect size and compute empirical power."""
     for i, delta in enumerate(deltas):
-        print('Effect size %1.3f' % delta)
+        if (verbose):
+            print('Effect size: %1.3f' % delta)
         for j in np.arange(0, n_iter):
-            X, X_tstats, X_raw, Y_raw = square_grid_model(nl, sl, N, delta,
-                                                          equal_var=True)
-            Y, _ = qvalue(X.flatten(), alpha)
+            X = square_grid_model(nl, sl, N, delta, equal_var=True)[0]
+            Y = tst(X.flatten(), alpha)
             Y = Y.reshape(nl, nl)
             tp, fp, tn, fn = grid_model_counts(Y, nl, sl)
-            epwr[i, j] = empirical_power(tp, tp+fn)
-            fpr[i, j] = empirical_fpr(fp, fp+tn)
+            pwr[i, j] = empirical_power(tp, tp+fn)
 
-    epwr, fpr = np.mean(epwr, axis=1), np.mean(fpr, axis=1)
+    return np.mean(pwr, axis=1)
 
-    sns.set_style('darkgrid')
-    fig = plt.figure(figsize=(8, 5))
-    ax1 = fig.add_subplot(111)
-    ax1.set_title('Two-stage procedure')
-    plot_power(deltas, epwr, ax=ax1)
-    # ax2 = fig.add_subplot(122)
-    # ax2.set_ylabel('Logarithm of empirical false positive\n rate')
-    # sns.boxplot(data=np.log10(fpr), orient='v', ax=ax2)
-    # ax2.set_ylim([-5, 0])
-    fig.tight_layout()
-    plt.show()
+deltas = np.linspace(0.2, 2.4, 12)
+pwr = two_group_model_power(deltas=deltas)
 
-def separate_classes_model_power():
-    pass
+sns.set_style('darkgrid')
+fig = plt.figure(figsize=(8, 5))
+ax1 = fig.add_subplot(111)
+ax1.set_title('Two-stage FDR')
+plot_power(deltas, pwr, ax=ax1)
+fig.tight_layout()
+plt.show()
+
