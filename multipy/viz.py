@@ -217,6 +217,58 @@ def plot_grid_model(X, nl, sl):
     fig.tight_layout()
     return fig
 
+def plot_separate_classes_model(X, nl, sl):
+    """Function for visualizing data simulated using the spatial
+    separate-classes model.
+
+    Input arguments:
+    ================
+    X : ndarray
+        Two-dimensional array indicating which tests were declared
+        significant.
+    nl : int
+        The side length of the noise region of a single class. The entire
+        grid has the size [nl x 2 * nl], e.g. 45 x 90 when nl = 45.
+    sl : int
+        The side length of the signal region of a single class.
+
+    Output arguments:
+    =================
+    fig : Figure
+        Instance of a matplotlib Figure class that can be further edited.
+
+    TODO: Add support for signal regions of different sizes.
+    TODO: Add support for non-central locations of the signal regions.
+    """
+    sns.set_style('white')
+    fig = plt.figure(figsize=(10, 5), facecolor='white')
+    ax = fig.add_subplot(111, axisbg='black')
+
+    """Plot indices of p-values declared significant."""
+    n_x, n_y = np.shape(X)
+    for i, j in np.ndindex(n_x, n_y):
+        if (X[i, j]):
+            ax.plot(j, i, 'w.')
+
+    """Plot the first signal region borders."""
+    d = (nl-sl) // 2
+    ax.plot([d, d], [d+sl-1, d], 'g-', linewidth=1.5, alpha=0.75)
+    ax.plot([d+sl-1, d], [d+sl-1, d+sl-1], 'g-', linewidth=1.5, alpha=0.75)
+    ax.plot([d+sl-1, d+sl-1], [d, d+sl-1], 'g-', linewidth=1.5, alpha=0.75)
+    ax.plot([d+sl-1, d], [d, d], 'g-', linewidth=1.5, alpha=0.75)
+
+    """Plot the second signal region borders."""
+    ax.plot([nl+d, nl+d], [d+sl-1, d], 'y-', linewidth=1.5, alpha=0.75)
+    ax.plot([nl+d+sl-1, nl+d], [d+sl-1, d+sl-1], 'y-', linewidth=1.5, alpha=0.75)
+    ax.plot([nl+d+sl-1, nl+d+sl-1], [d, d+sl-1], 'y-', linewidth=1.5, alpha=0.75)
+    ax.plot([nl+d+sl-1, nl+d], [d, d], 'y-', linewidth=1.5, alpha=0.75)
+
+    """Reduce the amount of unnecessary empty space."""
+    ax.set_xlim([0, 2*nl])
+    ax.set_ylim([0, nl])
+    fig.tight_layout()
+    return fig
+
 def plot_grid_model_pvals(X, P, nl, sl):
     """Function for visualizing square grid model data similar
     to Bennett and colleagues [2].
