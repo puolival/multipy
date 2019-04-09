@@ -108,11 +108,12 @@ def square_grid_model(nl=100, sl=60, N=25, delta=0.7, equal_var=True):
         the Student's t-tests. See also scipy.stats.ttest_ind.
 
     Output arguments:
-    X : ndarray
-        Array of booleans indicating which p-values were declared
-        significant.
+    P : ndarray
+        T-test p-values.
     tstats : ndarray
         The corresponding test statistics.
+    X, Y : ndarray
+        Samples in the two groups.
     """
 
     """Generate the noise statistics."""
@@ -129,17 +130,44 @@ def square_grid_model(nl=100, sl=60, N=25, delta=0.7, equal_var=True):
 
     """Combine the data so that the desired spatial structure is
     obtained."""
-    S = noise_pvals
+    P = noise_pvals
     d = (nl-sl) // 2
-    S[d:(nl-d), d:(nl-d)] = signal_pvals
+    P[d:(nl-d), d:(nl-d)] = signal_pvals
     tstats = noise_tstats
     tstats[d:(nl-d), d:(nl-d)] = signal_tstats
     X, Y = X_noise, Y_noise
     X[d:(nl-d), d:(nl-d)] = X_signal
     Y[d:(nl-d), d:(nl-d)] = Y_signal
-    return S, tstats, X, Y
+    return P, tstats, X, Y
 
-def two_class_grid_model(nl=100, sl1=30, sl2=30, N=25, delta1=0.7, delta2=0.3):
+
+def spatial_separate_classes_model(delta1, delta2):
+    """Function for simulating data under the spatial separate-classes
+    model.
+
+    Input arguments:
+    ================
+    delta1, delta : float
+        The effect sizes at the first and second signal regions
+        respectively.
+
+    Output arguments:
+    =================
+    pvals, tstats : ndarray
+        P-values and t-statistics of each test.
+    X, Y : ndarray
+        The simulated data.
+    """
+    # TODO: make nl, sl, & N parameters of the function.
+    P_a, tstats_a, X_a, Y_a = square_grid_model(nl=45, sl=15, N=25,
+                                                delta=delta1, equal_var=True)
+    P_b, tstats_b, X_b, Y_b = square_grid_model(nl=45, sl=15, N=25,
+                                                delta=delta2, equal_var=True)
+
+    return (np.hstack([P_a, P_b]), np.hstack([tstats_a, tstats_b]),
+            np.hstack([X_a, X_b]), np.hstack([Y_a, Y_b]))
+
+def two_class_grid_model():
     """The Bennett et al. [5] model extended for the two separate classes
     case.
 
@@ -154,10 +182,15 @@ def two_class_grid_model(nl=100, sl1=30, sl2=30, N=25, delta1=0.7, delta2=0.3):
         Effect size in ith class. Difference in means between the two
         normal distributions.
     """
-    A = square_grid_model(nl=nl//2, sl=sl//2, N=N, delta=0.1)
-    B = square_grid_model(nl=nl//2, sl=sl//2, N=N, delta=0.3)
-    C = square_grid_model(nl=nl//2, sl=sl//2, N=N, delta=0.5)
-    D = square_grid_model(nl=nl//2, sl=sl//2, N=N, delta=0.7)
 
-    Y = np.vstack([np.hstack([A, B]), np.hstack([C, D])])
-    return Y
+    P_a, T_a, X_a, Y_a = square_grid_model(nl=45, sl=25, N=25, delta=0.25)
+    P_b, T_b, X_b, Y_b = square_grid_model(nl=45, sl=25, N=25, delta=0.50)
+    P_c, T_c, X_c, Y_c = square_grid_model(nl=45, sl=25, N=25, delta=0.75)
+    P_d, T_d, X_d, Y_d = square_grid_model(nl=45, sl=25, N=25, delta=1.00)
+
+    P = np.vstack([np.hstack([P_a, P_b]), np.hstack([P_c, P_d])])
+    T = np.vstack([np.hstack([T_a, T_b]), np.hstack([T_c, T_d])])
+    X = np.vstack([np.hstack([X_a, X_b]), np.hstack([X_c, X_d])])
+    Y = np.vstack([np.hstack([Y_a, Y_b]), np.hstack([Y_c, Y_d])])
+
+    return P, T, X, Y
