@@ -1,12 +1,13 @@
 # -*- encoding: utf-8 -*-
-"""Function for visualizing empirical power as a function of effect size.
+"""Function for visualizing empirical power as a function of effect size
+in the spatial two-group or separate-classes model.
 
 Author: Tuomas Puoliväli
 Email: tuomas.puolivali@helsinki.fi
 Last modified: 22th March 2019
 License: Revised 3-clause BSD
 """
-from data import square_grid_model, two_class_grid_model
+from data import square_grid_model, spatial_separate_classes_model
 
 from fdr import lsu, qvalue, tst
 from fwer import bonferroni, hochberg
@@ -22,7 +23,10 @@ from scipy.optimize import curve_fit
 
 import seaborn as sns
 
-from util import empirical_power, empirical_fpr, grid_model_counts
+from util import (empirical_power, empirical_fpr,
+                  grid_model_counts, separate_classes_model_counts)
+
+from viz import plot_separate_classes_model
 
 def logistic_function(x, k, x0):
     """Logistic function with a maximum value of one.
@@ -80,8 +84,8 @@ def plot_power(effect_sizes, empirical_power, ax=None):
 
 def two_group_model_power(nl=90, sl=30, deltas=np.linspace(0.2, 2.4, 12),
                           alpha=0.05, N=25, n_iter=10, verbose=True):
-    """Function for generating data under two-group model and visualizing
-    power as a function of effect size.
+    """Function for generating data under two-group model at various effect
+    sizes and computing the corresponding empirical power.
 
     Input arguments:
     ================
@@ -192,5 +196,46 @@ def simulate_two_group_model():
     ax1 = fig.add_subplot(111)
     ax1.set_title('Two-stage FDR')
     plot_power(deltas, pwr, ax=ax1)
+    fig.tight_layout()
+    plt.show()
+
+def separate_classes_model_power(deltas):
+    # TODO: make a proper function
+    n_deltas = len(deltas)
+    n_iter = 10
+    alpha = 0.05
+    pwr = np.zeros([n_deltas, n_deltas, n_iter])
+    nl, sl = 45, 15
+
+    for i, delta1 in enumerate(deltas):
+        for k, delta2 in enumerate(deltas):
+            for j in np.arange(0, n_iter):
+                X = spatial_separate_classes_model(delta1, delta2)[0]
+                Y = qvalue(X.flatten(), alpha)[0]
+                Y = Y.reshape([nl, 2*nl])
+                tp, _, _, fn = separate_classes_model_counts(Y, nl, sl)
+                pwr[i, k, j] = empirical_power(tp, tp+fn)
+
+    return np.mean(pwr, axis=2)
+
+def simulate_separate_classes_model():
+    # TODO: document
+    effect_sizes = np.linspace(0.2, 2.4, 12)
+    pwr = separate_classes_model_power(effect_sizes)
+
+    sns.set_style('darkgrid')
+    fig = plt.figure(figsize=(8, 5))
+    ax = fig.add_subplot(111)
+    ax.imshow(pwr, origin='lower', cmap='viridis', interpolation='none')
+    ax.grid(False)
+
+    ax.set_xticks(np.arange(0, 12, 2))
+    ax.set_yticks(np.arange(0, 12, 2))
+    ax.set_xticklabels(effect_sizes[0::2])
+    ax.set_yticklabels(effect_sizes[0::2])
+
+    ax.set_xlabel('Effect size $\Delta_1$')
+    ax.set_ylabel('Effect size $\Delta_2$')
+
     fig.tight_layout()
     plt.show()
