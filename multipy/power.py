@@ -233,24 +233,43 @@ def separate_classes_model_power(deltas, n_iter=10, alpha=0.05, nl=45,
 
     return np.mean(pwr, axis=2)
 
-def simulate_separate_classes_model():
-    # TODO: document
-    effect_sizes = np.linspace(0.2, 2.4, 12)
-    pwr = separate_classes_model_power(effect_sizes)
+def plot_separate_classes_model_power(effect_sizes, pwr):
+    """Function for visualizing empirical power in the separate-classes
+    model as a function of the effect size at the first and second signal
+    regions.
 
+    Input arguments:
+    ================
+    effect_sizes : ndarray
+        The tested effect sizes.
+    pwr : ndarray
+        The power at each combination of effect sizes.
+
+    Output arguments:
+    =================
+    fig : Figure
+        An instance of the matplotlib Figure class for further editing.
+    """
     sns.set_style('darkgrid')
     fig = plt.figure(figsize=(8, 5))
     ax = fig.add_subplot(111)
     ax.imshow(pwr, origin='lower', cmap='viridis', interpolation='none')
     ax.grid(False)
 
-    ax.set_xticks(np.arange(0, 12, 2))
-    ax.set_yticks(np.arange(0, 12, 2))
+    # Only display every other <x/y>tick.
+    n_effect_sizes = len(effect_sizes)
+    ax.set_xticks(np.arange(0, n_effect_sizes, 2))
+    ax.set_yticks(np.arange(0, n_effect_sizes, 2))
     ax.set_xticklabels(effect_sizes[0::2])
     ax.set_yticklabels(effect_sizes[0::2])
 
     ax.set_xlabel('Effect size $\Delta_1$')
     ax.set_ylabel('Effect size $\Delta_2$')
-
     fig.tight_layout()
+    return fig
+
+def simulate_separate_classes_model():
+    effect_sizes = np.linspace(0.2, 2.4, 12)
+    pwr = separate_classes_model_power(effect_sizes)
+    fig = plot_separate_classes_model_power(effect_sizes, pwr)
     plt.show()
