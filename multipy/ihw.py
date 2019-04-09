@@ -64,13 +64,18 @@ def _f_naive_ihw(weights, pvals, groups, method, alpha):
     """The minimized objective function for the naive IHW method."""
     weights = np.abs(weights)
     weights = weights / np.mean(weights)
+    significant = _apply_correction(pvals, groups, weights, method, alpha)
+    # Minimize negative sum = maximize.
+    return -np.sum(significant)
+
+def _apply_correction(pvals, groups, weights, method, alpha):
+    """Apply the correction method."""
     pval_weights = np.zeros(np.shape(pvals))
     for i, g in enumerate(np.unique(groups)):
         pval_weights[groups == g] = weights[i]
     weighted_pvals = pvals / pval_weights
-
     significant = method(weighted_pvals, alpha)
-    return -np.sum(significant)
+    return significant
 
 def ihw_naive(pvals, groups, method, alpha=0.05):
     """The "naive IHW" method by Ignatiadis et al. [1].
@@ -84,7 +89,7 @@ def ihw_naive(pvals, groups, method, alpha=0.05):
         The applied FDR procedure.
 
     alpha : float
-        The desired critical level.
+        The desired critical level. 0.05 by default.
 
     Output arguments:
     =================
@@ -109,11 +114,6 @@ def ihw_naive(pvals, groups, method, alpha=0.05):
                        method='nelder-mead').x
 
     """Apply the correction."""
-    pval_weights = np.zeros(np.shape(pvals))
-    for i, g in enumerate(np.unique(groups)):
-        pval_weights[groups == g] = weights[i]
-    weighted_pvals = pvals / pval_weights
-    significant = method(weighted_pvals, alpha)
-
+    significant = _apply_correction(pvals, groups, weights, method, alpha)
     return significant, weighted_pvals, weights
 
