@@ -16,6 +16,8 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
+from repeat import fwer_replicability
+
 from scipy.optimize import curve_fit
 
 import seaborn as sns
@@ -75,7 +77,6 @@ def plot_power(effect_sizes, empirical_power, ax=None):
     ax.set_ylim([-0.05, 1.05])
     ax.set_xlabel('Effect size $\Delta$', fontsize=14)
     ax.set_ylabel('Empirical power', fontsize=14)
-    ax.figure.tight_layout()
 
 def two_group_model_power(nl=90, sl=30, deltas=np.linspace(0.2, 2.4, 12),
                           alpha=0.05, N=25, n_iter=10, verbose=True):
@@ -115,19 +116,81 @@ def two_group_model_power(nl=90, sl=30, deltas=np.linspace(0.2, 2.4, 12),
             X = square_grid_model(nl, sl, N, delta, equal_var=True)[0]
             Y = tst(X.flatten(), alpha)
             Y = Y.reshape(nl, nl)
-            tp, fp, tn, fn = grid_model_counts(Y, nl, sl)
+            tp, _, _, fn = grid_model_counts(Y, nl, sl)
             pwr[i, j] = empirical_power(tp, tp+fn)
 
     return np.mean(pwr, axis=1)
 
-deltas = np.linspace(0.2, 2.4, 12)
-pwr = two_group_model_power(deltas=deltas)
+def two_group_reproducibility():
+    # TODO: make parameters
+    method = tst
+    alpha = 0.05
+    emph_primary = np.asarray([0.02, 0.5, 0.98])
+    n_emphs = len(emph_primary)
+    nl, sl = 90, 30
+    deltas = np.linspace(0.2, 2.4, 12)
+    n_deltas = len(deltas)
+    N = 25
+    n_iter = 10
 
-sns.set_style('darkgrid')
-fig = plt.figure(figsize=(8, 5))
-ax1 = fig.add_subplot(111)
-ax1.set_title('Two-stage FDR')
-plot_power(deltas, pwr, ax=ax1)
-fig.tight_layout()
-plt.show()
+    """Compute the reproducibility rate for each effect size and
+    primary study emphasis, for several iterations."""
+    reproducible = np.zeros([n_deltas, n_emphs, n_iter])
 
+    for ind in np.ndindex(n_deltas, n_emphs, n_iter):
+        delta, emphasis = deltas[ind[0]], emph_primary[ind[1]]
+        X_pri = square_grid_model(nl, sl, N, delta, equal_var=True)[0]
+        X_fol = square_grid_model(nl, sl, N, delta, equal_var=True)[0]
+
+        X_pri, X_fol = X_pri.flatten(), X_fol.flatten()
+
+        R = fwer_replicability(X_pri, X_fol, emphasis,
+                               method, alpha)
+        R = np.reshape(R, [nl, nl])
+        tp, _, _, fn = grid_model_counts(R, nl, sl)
+        reproducible[ind] = tp / float(tp+fn)
+
+    reproducible = np.mean(reproducible, axis=2)
+
+    """Fit logistic functions."""
+    logistic_k, logistic_x0 = np.zeros(n_emphs), np.zeros(n_emphs)
+    for i in np.arange(0, n_emphs):
+        params = curve_fit(logistic_function, deltas, reproducible[:, i])[0]
+        logistic_k[i], logistic_x0[i] = params
+
+    # TODO: separate visualization from computations
+    """Visualize the results."""
+    sns.set_style('darkgrid')
+    fig = plt.figure(figsize=(8, 5))
+
+    ax = fig.add_subplot(111)
+    ax.plot(deltas, reproducible, '.')
+
+    for i in np.arange(0, n_emphs):
+        logistic_x = np.linspace(deltas[0], deltas[-1], 100)
+        logistic_y = logistic_function(logistic_x, logistic_k[i],
+                                       logistic_x0[i])
+        plt.plot(logistic_x, logistic_y, '-')
+
+    ax.set_xlim([deltas[0]-0.05, deltas[-1]+0.05])
+    ax.set_ylim([-0.05, 1.05])
+    ax.set_xlabel('Effect size $\Delta$')
+    ax.set_ylabel('Reproducibility rate')
+    ax.set_title('Two-stage FDR')
+    ax.legend(emph_primary, loc='lower right')
+
+    fig.tight_layout()
+    plt.show()
+
+def simulate_two_group_model():
+    # TODO: document
+    deltas = np.linspace(0.2, 2.4, 12)
+    pwr = two_group_model_power(deltas=deltas)
+
+    sns.set_style('darkgrid')
+    fig = plt.figure(figsize=(8, 5))
+    ax1 = fig.add_subplot(111)
+    ax1.set_title('Two-stage FDR')
+    plot_power(deltas, pwr, ax=ax1)
+    fig.tight_layout()
+    plt.show()
