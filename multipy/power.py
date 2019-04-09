@@ -187,6 +187,8 @@ def two_group_reproducibility():
     plt.show()
 
 def simulate_two_group_model():
+    """Function for performing the two-group simulations and visualizing
+    the results."""
     # TODO: document
     deltas = np.linspace(0.2, 2.4, 12)
     pwr = two_group_model_power(deltas=deltas)
@@ -199,22 +201,35 @@ def simulate_two_group_model():
     fig.tight_layout()
     plt.show()
 
-def separate_classes_model_power(deltas):
+def separate_classes_model_power(deltas, n_iter=10, alpha=0.05, nl=45,
+                                 sl=15):
+    """Function for simulating data under the spatial separate-classes
+    model at various effect sizes.
+
+    Input arguments:
+    ================
+    deltas : ndarray
+        The tested effect sizes are all possible effect size pairs
+        (delta1, delta2) among the given array.
+    n_iter : int
+        Number of repetitions of each simulation.
+    alpha : float
+        The desired critical level.
+    nl, sl : int
+        The side lengths of the signal and noise regions within a single
+        class.
+    """
     # TODO: make a proper function
     n_deltas = len(deltas)
-    n_iter = 10
-    alpha = 0.05
     pwr = np.zeros([n_deltas, n_deltas, n_iter])
-    nl, sl = 45, 15
 
-    for i, delta1 in enumerate(deltas):
-        for k, delta2 in enumerate(deltas):
-            for j in np.arange(0, n_iter):
-                X = spatial_separate_classes_model(delta1, delta2)[0]
-                Y = qvalue(X.flatten(), alpha)[0]
-                Y = Y.reshape([nl, 2*nl])
-                tp, _, _, fn = separate_classes_model_counts(Y, nl, sl)
-                pwr[i, k, j] = empirical_power(tp, tp+fn)
+    for ind in np.ndindex(n_deltas, n_deltas, n_iter):
+        delta1, delta2 = deltas[ind[0]], deltas[ind[1]]
+        X = spatial_separate_classes_model(delta1, delta2)[0]
+        Y = tst(X.flatten(), alpha)
+        Y = Y.reshape([nl, 2*nl])
+        tp, _, _, fn = separate_classes_model_counts(Y, nl, sl)
+        pwr[ind] = empirical_power(tp, tp+fn)
 
     return np.mean(pwr, axis=2)
 
