@@ -126,6 +126,40 @@ def two_group_model_power(nl=90, sl=30, deltas=np.linspace(0.2, 2.4, 12),
 
     return np.mean(pwr, axis=1)
 
+def two_group_reproducibility_null_density():
+    """Function for estimating reproducibility as a function of non-null
+    density at a fixed effect size."""
+    emphasis = np.asarray([0.02, 0.5, 0.98])
+    sls = np.arange(14, 90, 16)
+    nl = 90
+    n_iter = 10
+
+    """Compute the tested null density under the selected parameters."""
+    null_density = (sls**2) / float(nl**2)
+    n_null_density, n_emphasis = len(sls), len(emphasis)
+
+    reproducibility = np.zeros([n_iter, n_null_density, n_emphasis])
+    for j in np.arange(0, n_iter):
+        for i, sl in enumerate(sls):
+            r = two_group_reproducibility(sl=sl, effect_sizes=[1.0],
+                                          emphasis_primary=emphasis)
+            reproducibility[j, i, :] = r[0]
+    reproducibility = np.mean(reproducibility, axis=0)
+
+    """Visualize the obtained results."""
+    sns.set_style('darkgrid')
+    fig = plt.figure(figsize=(8, 5))
+
+    ax = fig.add_subplot(111)
+    ax.plot(null_density, reproducibility, '.-')
+    ax.set_xlabel('Non-null proportion $1-\pi_{0}$')
+    ax.set_ylabel('Reproducibility')
+    ax.set_ylim([-0.05, 1.05])
+    ax.set_xlim([null_density[0]-0.05, null_density[-1]+0.05])
+    ax.legend(emphasis, loc='upper left')
+    fig.tight_layout()
+    plt.show()
+
 def simulate_two_group_reproducibility():
     """Perform the simulation."""
     effect_sizes = np.linspace(0.2, 2.4, 12)
@@ -163,14 +197,14 @@ def two_group_reproducibility(effect_sizes, emphasis_primary, nl=90, sl=30,
     reproducible = np.zeros([n_effect_sizes, n_emphasis, n_iter])
 
     for ind in np.ndindex(n_effect_sizes, n_emphasis, n_iter):
+        # Simulate new data.
         delta, emphasis = effect_sizes[ind[0]], emphasis_primary[ind[1]]
         X_pri = square_grid_model(nl, sl, N, delta, equal_var=True)[0]
         X_fol = square_grid_model(nl, sl, N, delta, equal_var=True)[0]
-
         X_pri, X_fol = X_pri.flatten(), X_fol.flatten()
 
-        R = fwer_replicability(X_pri, X_fol, emphasis,
-                               method, alpha)
+        # Apply the correction and compute reproducibility.
+        R = fwer_replicability(X_pri, X_fol, emphasis, method, alpha)
         R = np.reshape(R, [nl, nl])
         tp, _, _, fn = grid_model_counts(R, nl, sl)
         reproducible[ind] = tp / float(tp+fn)
