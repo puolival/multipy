@@ -83,7 +83,8 @@ def plot_power(effect_sizes, empirical_power, ax=None):
     ax.set_ylabel('Empirical power', fontsize=14)
 
 def two_group_model_power(nl=90, sl=30, deltas=np.linspace(0.2, 2.4, 12),
-                          alpha=0.05, N=25, n_iter=10, verbose=True):
+                          alpha=0.05, N=25, n_iter=10, verbose=True,
+                          method=tst):
     """Function for generating data under two-group model at various effect
     sizes and computing the corresponding empirical power.
 
@@ -118,24 +119,20 @@ def two_group_model_power(nl=90, sl=30, deltas=np.linspace(0.2, 2.4, 12),
             print('Effect size: %1.3f' % delta)
         for j in np.arange(0, n_iter):
             X = square_grid_model(nl, sl, N, delta, equal_var=True)[0]
-            Y = tst(X.flatten(), alpha)
+            Y = method(X.flatten(), alpha)
             Y = Y.reshape(nl, nl)
             tp, _, _, fn = grid_model_counts(Y, nl, sl)
             pwr[i, j] = empirical_power(tp, tp+fn)
 
     return np.mean(pwr, axis=1)
 
-def two_group_reproducibility():
+def two_group_reproducibility(nl=90, sl=30, alpha=0.05, N=25, n_iter=10):
     # TODO: make parameters
     method = tst
-    alpha = 0.05
     emph_primary = np.asarray([0.02, 0.5, 0.98])
     n_emphs = len(emph_primary)
-    nl, sl = 90, 30
     deltas = np.linspace(0.2, 2.4, 12)
     n_deltas = len(deltas)
-    N = 25
-    n_iter = 10
 
     """Compute the reproducibility rate for each effect size and
     primary study emphasis, for several iterations."""
@@ -155,33 +152,58 @@ def two_group_reproducibility():
         reproducible[ind] = tp / float(tp+fn)
 
     reproducible = np.mean(reproducible, axis=2)
+    plot_two_group_reproducibility(deltas, emph_primary, reproducible)
+    #return reproducible
 
-    """Fit logistic functions."""
+def plot_two_group_reproducibility(effect_sizes, emphasis_primary,
+                                   reproducibility):
+    """Function for visualizing reproducibility in the two-group model.
+
+    Input arguments:
+    ================
+    effect_sizes : ndarray [n_effect_sizes, ]
+        The tested effect sizes.
+
+    emphasis_primary : ndarray [n_emphasis_values, ]
+        The tested primary study emphases.
+
+    reproducibility ndarray [n_effect_sizes, n_emphasis_values]
+        The observed reproducibility at each combination of effect size and
+        emphasis of primary study.
+
+    Output arguments:
+    =================
+    fig : Figure
+        Instance of matplotlib Figure class.
+    """
+    n_emphs = len(emphasis_primary)
+
+    """Fit logistic functions to the data."""
     logistic_k, logistic_x0 = np.zeros(n_emphs), np.zeros(n_emphs)
     for i in np.arange(0, n_emphs):
-        params = curve_fit(logistic_function, deltas, reproducible[:, i])[0]
+        params = curve_fit(logistic_function, effect_sizes,
+                           reproducibility[:, i])[0]
         logistic_k[i], logistic_x0[i] = params
 
-    # TODO: separate visualization from computations
     """Visualize the results."""
     sns.set_style('darkgrid')
     fig = plt.figure(figsize=(8, 5))
 
     ax = fig.add_subplot(111)
-    ax.plot(deltas, reproducible, '.')
+    ax.plot(effect_sizes, reproducibility, '.')
 
     for i in np.arange(0, n_emphs):
-        logistic_x = np.linspace(deltas[0], deltas[-1], 100)
+        logistic_x = np.linspace(effect_sizes[0], effect_sizes[-1], 100)
         logistic_y = logistic_function(logistic_x, logistic_k[i],
                                        logistic_x0[i])
         plt.plot(logistic_x, logistic_y, '-')
 
-    ax.set_xlim([deltas[0]-0.05, deltas[-1]+0.05])
+    ax.set_xlim([effect_sizes[0]-0.05, effect_sizes[-1]+0.05])
     ax.set_ylim([-0.05, 1.05])
     ax.set_xlabel('Effect size $\Delta$')
     ax.set_ylabel('Reproducibility rate')
     ax.set_title('Two-stage FDR')
-    ax.legend(emph_primary, loc='lower right')
+    ax.legend(emphasis_primary, loc='lower right')
 
     fig.tight_layout()
     plt.show()
@@ -273,3 +295,10 @@ def simulate_separate_classes_model():
     pwr = separate_classes_model_power(effect_sizes)
     fig = plot_separate_classes_model_power(effect_sizes, pwr)
     plt.show()
+
+#sl = np.arange(2, 80, 4)
+#pwr = np.zeros(np.shape(sl))
+#
+#for i, s in enumerate(sl):
+#    pwr[i] = two_group_model_power(deltas=[0.7], method=bonferroni, sl=s)
+
