@@ -126,20 +126,44 @@ def two_group_model_power(nl=90, sl=30, deltas=np.linspace(0.2, 2.4, 12),
 
     return np.mean(pwr, axis=1)
 
-def two_group_reproducibility(nl=90, sl=30, alpha=0.05, N=25, n_iter=10):
-    # TODO: make parameters
-    method = tst
-    emph_primary = np.asarray([0.02, 0.5, 0.98])
-    n_emphs = len(emph_primary)
-    deltas = np.linspace(0.2, 2.4, 12)
-    n_deltas = len(deltas)
+def simulate_two_group_reproducibility():
+    """Perform the simulation."""
+    effect_sizes = np.linspace(0.2, 2.4, 12)
+    emphasis_primary = np.asarray([0.02, 0.5, 0.98])
+    reproducibility = two_group_reproducibility(effect_sizes,
+                                                emphasis_primary)
+    plot_two_group_reproducibility(effect_sizes, emphasis_primary,
+                                   reproducibility)
+
+def two_group_reproducibility(effect_sizes, emphasis_primary, nl=90, sl=30,
+                              alpha=0.05, N=25, n_iter=10, method=tst):
+    """Function for computing reproducibility in the two-group model under
+    various effect sizes and amounts of emphasis on the primary study.
+
+    Input arguments:
+    ================
+    effect_sizes : ndarray [n_effect_sizes, ]
+        The tested effect sizes.
+
+    emphasis_primary : ndarray [n_emphasis_values, ]
+        The tested amounts of emphasis on the primary study.
+
+    TODO: document rest of the parameters.
+
+    Output arguments
+    ================
+    reproducibility : ndarray [n_effect_sizes, n_emphasis_values]
+        The observed reproducibility at the tested effect sizes and amounts
+        of emphasis on the primary study.
+    """
+    n_effect_sizes, n_emphasis = len(effect_sizes), len(emphasis_primary)
 
     """Compute the reproducibility rate for each effect size and
     primary study emphasis, for several iterations."""
-    reproducible = np.zeros([n_deltas, n_emphs, n_iter])
+    reproducible = np.zeros([n_effect_sizes, n_emphasis, n_iter])
 
-    for ind in np.ndindex(n_deltas, n_emphs, n_iter):
-        delta, emphasis = deltas[ind[0]], emph_primary[ind[1]]
+    for ind in np.ndindex(n_effect_sizes, n_emphasis, n_iter):
+        delta, emphasis = effect_sizes[ind[0]], emphasis_primary[ind[1]]
         X_pri = square_grid_model(nl, sl, N, delta, equal_var=True)[0]
         X_fol = square_grid_model(nl, sl, N, delta, equal_var=True)[0]
 
@@ -152,8 +176,7 @@ def two_group_reproducibility(nl=90, sl=30, alpha=0.05, N=25, n_iter=10):
         reproducible[ind] = tp / float(tp+fn)
 
     reproducible = np.mean(reproducible, axis=2)
-    plot_two_group_reproducibility(deltas, emph_primary, reproducible)
-    #return reproducible
+    return reproducible
 
 def plot_two_group_reproducibility(effect_sizes, emphasis_primary,
                                    reproducibility):
