@@ -169,6 +169,49 @@ def simulate_two_group_reproducibility():
     plot_two_group_reproducibility(effect_sizes, emphasis_primary,
                                    reproducibility)
 
+def two_group_reproducibility_sample_size():
+    """Function for computing reproducibility in the two-group model at
+    various sample sizes but fixed effect size.
+
+    Input arguments:
+    ================
+    effect_size : float
+        The tested effect size.
+
+    emphasis_primary : ndarray
+        The amount of emphasis placed on the primary study.
+
+    sample_sizes : ndarray [n_sample_sizes, ]
+        The tested sample sizes.
+
+    n_iter : int
+        The number of repetitions of each simulation.
+    """
+
+    # TODO: make this a proper function
+    """Perform the simulation."""
+    effect_sizes = [1.0]
+    emphasis_primary = np.asarray([0.02, 0.5, 0.98])
+    sample_sizes = np.arange(8, 80, 8)
+    n_emphasis, n_sample_sizes = len(emphasis_primary), len(sample_sizes)
+    n_iter = 10
+
+    reproducibility = np.zeros([n_iter, n_sample_sizes, n_emphasis])
+    for ind in np.ndindex(n_iter, n_sample_sizes):
+        sample_size = sample_sizes[ind[1]]
+        output = two_group_reproducibility(effect_sizes, emphasis_primary,
+                                           N=sample_size)
+        reproducibility[ind] = output
+
+    reproducibility = np.mean(reproducibility, axis=0)
+
+    # TODO: separate visualization
+    fig = plot_two_group_reproducibility(sample_sizes, emphasis_primary,
+                                         reproducibility)
+    fig.axes[0].set_xlabel('Sample size $N$')
+    plt.show()
+
+
 def two_group_reproducibility(effect_sizes, emphasis_primary, nl=90, sl=30,
                               alpha=0.05, N=25, n_iter=10, method=tst):
     """Function for computing reproducibility in the two-group model under
@@ -263,7 +306,7 @@ def plot_two_group_reproducibility(effect_sizes, emphasis_primary,
     ax.legend(emphasis_primary, loc='lower right')
 
     fig.tight_layout()
-    plt.show()
+    return fig
 
 def simulate_two_group_model():
     """Function for performing the two-group simulations and visualizing
