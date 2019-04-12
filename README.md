@@ -113,6 +113,7 @@ There is a true effect at each location within the green box and no true effects
 ## Methods for reproducibility analyses
 
 - The FWER replicability method [14–16]
+- The r-value method [18] (work in progress)
 
 ## Data visualization
 
@@ -204,3 +205,8 @@ Statistical Association* 108(504):1480–1492.
 [17] Ignatiadis N, Klaus B, Zaugg JB, Huber W (2016): Data-driven hypothesis
 weighting increases detection power in genome-scale multiple testing. *Nature
 Methods* 13:577–580
+
+[18] Heller R, Bogomolov M, Benjamini Y (2014): Deciding whether follow-up
+studies have replicated findings in a preliminary large-scale omics study.
+*The Proceedings of the National Academy of Sciences of the United States
+of America* 111(46):16262–16267.
