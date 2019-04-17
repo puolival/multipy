@@ -6,6 +6,10 @@ Author: Tuomas Puoliväli
 Email: tuomas.puolivali@helsinki.fi
 Last modified: 22th March 2019
 License: Revised 3-clause BSD
+
+WARNING: There is unfinished code and only partial testing has been
+         performed.
+
 """
 from data import square_grid_model, spatial_separate_classes_model
 
@@ -27,6 +31,8 @@ from util import (empirical_power, empirical_fpr,
                   grid_model_counts, separate_classes_model_counts)
 
 from viz import plot_separate_classes_model
+
+from rvalue import fdr_rvalue
 
 def logistic_function(x, k, x0):
     """Logistic function with a maximum value of one.
@@ -402,3 +408,63 @@ def simulate_separate_classes_model():
 #for i, s in enumerate(sl):
 #    pwr[i] = two_group_model_power(deltas=[0.7], method=bonferroni, sl=s)
 
+
+def rvalue_test(nl=90, sl=30, N=25, alpha=0.05, n_iter=10):
+    """Function for testing the FDR r-value method.
+
+    Input arguments:
+    ================
+    effect_sizes : ndarray [n_effect_sizes, ]
+        The tested effect sizes.
+
+    emphasis : ndarray [n_emphasis, ]
+        The tested amounts of emphasis placed on the primary study.
+
+    n_iter : int
+        The number of repetitions of each simulation.
+
+    """
+
+    # TODO: document all variables.
+    # TODO: refactor and clean the code
+
+    emphasis = np.asarray([0.02, 0.5, 0.98])
+    n_emphasis = len(emphasis)
+    effect_sizes = np.linspace(0.2, 2.4, 12)
+    n_effect_sizes = len(effect_sizes)
+
+    reproducibility = np.zeros([n_iter, n_effect_sizes, n_emphasis])
+
+    for ind in np.ndindex(n_iter, n_effect_sizes, n_emphasis):
+        # simulate data
+        delta, emph = effect_sizes[ind[1]], emphasis[ind[2]]
+        p1 = square_grid_model(delta=delta, nl=nl, sl=sl, N=N)[0]
+        p2 = square_grid_model(delta=delta, nl=nl, sl=sl, N=N)[0]
+
+        # apply fdr for the primary-study data
+        s1 = tst(p1.flatten(), alpha)
+        s1 = np.reshape(s1, [nl, nl])
+
+        # apply the r-value method
+        if (np.sum(s1) > 0):
+            r_p1 = p1[s1]
+            r_p2 = p2[s1]
+            rvals = fdr_rvalue(p1=r_p1, p2=r_p2, m=nl**2, c2=emph)
+            R = np.ones(np.shape(p1))
+            R[s1] = rvals
+            tp, _, _, fn = grid_model_counts(R < alpha, nl, sl)
+            reproducibility[ind] = tp / float(tp+fn)
+        else:
+            reproducibility[ind] = 0
+
+    reproducibility = np.mean(reproducibility, axis=0)
+
+    """Visualize the result."""
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    ax.plot(effect_sizes, reproducibility)
+    ax.legend(emphasis, loc='lower right')
+
+    fig.tight_layout()
+    plt.show()
