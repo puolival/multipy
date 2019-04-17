@@ -65,7 +65,12 @@ def fwer_replicability(pvals_primary, pvals_followup, emph_primary, method,
                          'sidak', 'lsu', 'tst']
     if (method.__name__ in supported_methods):
         significant_primary = method(pvals_primary, emph_primary*alpha)
-        # Exclude not-a-number values.
+        """Exclude not-a-number values. These have two possible sources:
+        (1) tests not significant in the primary study, set here, and
+        (2) tests marked as nan by the user in advance, for other
+            possible reasons.
+        """
+        pvals_followup[~significant_primary] = np.nan
         ind = np.isnan(pvals_followup) == False
         significant_followup = method(pvals_followup[ind],
                                       emph_followup*alpha)
@@ -74,6 +79,7 @@ def fwer_replicability(pvals_primary, pvals_followup, emph_primary, method,
         the p-values, so we have to handle it separately."""
         significant_primary = method(pvals_primary, emph_primary*alpha)[0]
         # Exclude not-a-number values.
+        pvals_followup[~significant_primary] = np.nan
         ind = np.isnan(pvals_followup) == False
         significant_followup = method(pvals_followup[ind],
                                       emph_followup*alpha)[0]
@@ -116,6 +122,12 @@ def fwer_replicability_permutation(rvs_a_primary, rvs_b_primary,
         raise Exception('Emphasis given to the primary study must be' +
                         ' in (0, 1)!')
     emph_followup = 1-emph_primary
+
+    if (method.__name__ == 'tfr_permutation_test'):
+        significant_primary = method(rvs_a_primary, rvs_b_primary,
+                                     n_permutations, alpha, threshold)
+    else:
+        raise Exception('Unsupported correction method!')
 
 def partial_conjuction(pvals_primary, pvals_followup, method, alpha=0.05):
     """The partial conjuction method for deciding reproducible effects.

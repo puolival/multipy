@@ -81,7 +81,7 @@ def fdr_rvalue(p1, p2, m, c2=0.5, l00=0.8):
     """Compute the r-values."""
     rvalue = np.zeros(np.shape(p2), dtype='float')
     for i, _ in enumerate(p2):
-        if (_fdr_rvalue_aux(1, i, m, p1, p2, c2, l00) >= 0):
+        if (_fdr_rvalue_f_aux(1, i, m, p1, p2, c2, l00) >= 0):
             rvalue[i] = 1
         else:
             sol = root(_fdr_rvalue_f_aux, x0=0.5,
