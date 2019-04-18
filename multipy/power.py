@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
-from repeat import fwer_replicability
+from repeat import fdr_rvalue, fwer_replicability
 
 from scipy.optimize import curve_fit
 
@@ -31,8 +31,6 @@ from util import (empirical_power, empirical_fpr,
                   grid_model_counts, separate_classes_model_counts)
 
 from viz import plot_separate_classes_model
-
-from rvalue import fdr_rvalue
 
 def logistic_function(x, k, x0):
     """Logistic function with a maximum value of one.
