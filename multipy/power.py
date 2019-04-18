@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
-from repeat import fdr_rvalue, fwer_replicability
+from reproducibility import fdr_rvalue, fwer_replicability
 
 from scipy.optimize import curve_fit
 

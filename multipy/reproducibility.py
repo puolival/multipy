@@ -1,89 +1,232 @@
 # -*- encoding: utf-8 -*-
-"""Evaluate test-retest reliability as a function of effect size in the
-spatial two-group model.
+"""Functions for testing reproducibility.
 
 Author: Tuomas Puoliväli
 Email: tuomas.puolivali@helsinki.fi
-Last modified: 20th November 2018
+Last modified: 18th April 2019
 License: Revised 3-clause BSD
-"""
 
-import matplotlib.pyplot as plt
+References:
+
+[1] Heller R, Bogomolov M, Benjamini Y (2014): Deciding whether follow-up
+    studies have replicated findings in a preliminary large-scale omics
+    study. Proceedings of the National Academy of Sciences of the United
+    states of America 111(46):16262-16267.
+
+[2] Bogomolov M, Heller R (2013): Discovering findings that replicate from
+    a primary study of high dimension to a follow-up study. Journal of the
+    American Statistical Association 108(504):1480-1492.
+
+NOTE: Work in progress. Untested code.
+
+"""
 
 import numpy as np
 
-from fdr import lsu
-from data import square_grid_model
+from scipy.optimize import root
+from scipy.stats import rankdata
 
-from scipy.stats import norm
+def fwer_replicability(pvals_primary, pvals_followup, emph_primary, method,
+                       alpha=0.05):
+    """The Bogomolov & Heller family-wise error rate (FWER) replicability
+    method.
 
-import seaborn as sns
+    Input arguments:
+    ================
+    pvals_primary : ndarray [n_tests, ]
+        P-values from the primary study.
 
-"""The simulation settings."""
-nl, sl = 90, 30
-N = 25
-alpha = 0.05
-d = (nl-sl) // 2
-n_iterations = 20
-deltas = np.linspace(0.5, 1.5, 20)
-n_deltas = len(deltas)
+    pvals_followup : ndarray [n_tests, ]
+        P-values from the follow-up study. Variables that were not selected
+        for further investigation should be marked with not-a-number (NaN)
+        values.
 
-"""Estimate reproducibility and true positive rate in simulated test-retest
-experiments using the two-group model."""
-n_reproducible = np.zeros([n_iterations, n_deltas])
-n_tp = np.zeros([2, n_iterations, n_deltas]) # test and retest conditions
+    emph_primary : float in the open interval (0, 1)
+        Emphasis given to the primary study.
 
-for i, delta in enumerate(deltas):
-    print('Estimating reproducibility at effect size d=%1.3f' % delta)
-    for j in np.arange(0, n_iterations):
-        """Generate test and retest data."""
-        X_test = square_grid_model(nl, sl, N, delta, equal_var=True)[0]
-        X_retest = square_grid_model(nl, sl, N, delta, equal_var=True)[0]
+    method : function
+        The method used to control for false positives.
 
-        """Correct the statistics for multiple testing."""
-        Y_test = lsu(X_test.flatten(), alpha)
-        Y_test = Y_test.reshape(nl, nl)
+    alpha : float
+        The critical level. Defaults to 0.05 when unspecified.
 
-        Y_retest = lsu(X_retest.flatten(), alpha)
-        Y_retest = Y_retest.reshape(nl, nl)
+    Output arguments:
+    =================
+    replicable : ndarray [n_tests, ]
+        Array of booleans indicating which tests can be considered to be
+        reproducible.
+    """
 
-        """Count how many discoveries were reproducible."""
-        n_reproducible[j, i] = np.sum(Y_retest[d:(nl-d), d:(nl-d)]
-                                      [Y_test[d:(nl-d), d:(nl-d)]])
+    """Compute emphasis given to the follow-up study."""
+    if ((emph_primary < 0) or (emph_primary > 1)):
+        raise Exception('Emphasis given to the primary study must be' +
+                        ' in (0, 1)!')
+    emph_followup = 1-emph_primary
 
-        """Count the number of true positives in test and retest sets."""
-        n_tp[0, j, i] = np.sum(Y_test[d:(nl-d), d:(nl-d)])
-        n_tp[1, j, i] = np.sum(Y_retest[d:(nl-d), d:(nl-d)])
+    """Apply the correction to both sets of p-values."""
+    supported_methods = ['bonferroni', 'hochberg', 'holm_bonferroni',
+                         'sidak', 'lsu', 'tst']
+    if (method.__name__ in supported_methods):
+        significant_primary = method(pvals_primary, emph_primary*alpha)
+        """Exclude not-a-number values. These have two possible sources:
+        (1) tests not significant in the primary study, set here, and
+        (2) tests marked as nan by the user in advance, for other
+            possible reasons.
+        """
+        pvals_followup[~significant_primary] = np.nan
+        ind = np.isnan(pvals_followup) == False
+        significant_followup = method(pvals_followup[ind],
+                                      emph_followup*alpha)
+    elif (method.__name__ == 'qvalue'):
+        """The q-value method also returns the q-values corresponding to
+        the p-values, so we have to handle it separately."""
+        significant_primary = method(pvals_primary, emph_primary*alpha)[0]
+        # Exclude not-a-number values.
+        pvals_followup[~significant_primary] = np.nan
+        ind = np.isnan(pvals_followup) == False
+        significant_followup = method(pvals_followup[ind],
+                                      emph_followup*alpha)[0]
+    else:
+        raise Exception('Unsupported correction method!')
 
-"""Visualize the results."""
-z = norm.ppf(0.995) # 99% confidence interval
+    """Decide which tests are replicable."""
+    n_tests = len(pvals_primary)
+    replicable = np.zeros(n_tests, dtype='bool')
+    replicable[ind] = significant_primary[ind] & significant_followup
+    return replicable
 
-sns.set_style('darkgrid')
-fig = plt.figure(figsize=(8, 7))
+def fwer_replicability_permutation(rvs_a_primary, rvs_b_primary,
+                                   rvs_a_followup, rvs_b_followup,
+                                   emph_primary, alpha):
+    """The Bogomolov & Heller family-wise error rate (FWER) replicability
+    method for permutation testing approaches.
 
-ax = fig.add_subplot(111)
+    Input arguments:
+    ================
+    rvs_a_primary, rvs_b_primary, rvs_a_followup, rvs_b_followup : ndarray
+        Primary and follow-up data.
 
-"""Compute TPR confidence intervals."""
-yerr_tp1 = (z * np.std(n_tp[0, :] / (sl ** 2), axis=0) /
-             np.sqrt(n_iterations))
-yerr_tp2 = (z * np.std(n_tp[1, :] / (sl ** 2), axis=0) /
-             np.sqrt(n_iterations))
+    emph_primary : float in the open interval (0, 1)
+        Emphasis given to the primary study.
 
-"""Plot the TPR and reproducibility data."""
-ax.errorbar(x=deltas, y=np.mean(n_tp[0, :], axis=0) / (sl ** 2),
-            yerr=yerr_tp1)
-ax.errorbar(x=deltas, y=np.mean(n_tp[1, :], axis=0) / (sl ** 2),
-            yerr=yerr_tp2)
-ax.errorbar(x=deltas, y=np.mean(n_reproducible, axis=0) / (sl ** 2),
-            yerr=z * np.std(n_reproducible / (sl ** 2), axis=0) /
-            np.sqrt(n_iterations))
+    alpha : float
+        The critical level. Defaults to 0.05 when unspecified.
 
-"""Label the axes etc."""
-ax.set_xlabel("Effect size (Cohen's d)")
-ax.set_ylabel('True positive or reproducibility rate')
-ax.set_xlim([deltas[0]-0.05, deltas[-1]+0.05])
-ax.set_ylim([-0.05, 1.05])
-ax.legend(['Test', 'Retest', 'Reproducibility'], loc=4)
+    Output arguments:
+    =================
+    replicable : ndarray [n_tests, ]
+        Array of booleans indicating which tests can be considered to be
+        reproducible.
+    """
+    raise NotImplementedError('Unfinished implementation!')
 
-fig.tight_layout()
-plt.show()
+    """Compute emphasis given to the follow-up study."""
+    if ((emph_primary < 0) or (emph_primary > 1)):
+        raise Exception('Emphasis given to the primary study must be' +
+                        ' in (0, 1)!')
+    emph_followup = 1-emph_primary
+
+    if (method.__name__ == 'tfr_permutation_test'):
+        significant_primary = method(rvs_a_primary, rvs_b_primary,
+                                     n_permutations, alpha, threshold)
+    else:
+        raise Exception('Unsupported correction method!')
+
+def partial_conjuction(pvals_primary, pvals_followup, method, alpha=0.05):
+    """The partial conjuction method for deciding reproducible effects.
+
+    Input arguments:
+    ================
+    pvals_primary : ndarray [n_tests, ]
+        P-values from the primary study.
+
+    pvals_followup : ndarray [n_tests, ]
+        P-values from the follow-up study. Variables that were not selected
+        for further investigation should be marked with not-a-number (NaN)
+        values.
+
+    method : function
+        The method used to control FWER.
+
+    alpha : float
+        The critical level. Defaults to 0.05 when unspecified.
+
+    Output arguments:
+    =================
+    reproducible : ndarray [n_tests, ]
+        Array of booleans indicating which tests can be considered to be
+        reproducible.
+    """
+    raise NotImplementedError('Not implemented yet!')
+
+def _fdr_rvalue_f(x, m, p1, p2, c2=0.5, l00=0.8):
+    """Function for computing the FDR r-value of a given feature.
+
+    Input arguments:
+    ================
+    c2 : float in range (0, 1)
+        The emphasis given to the follow-up study.
+
+    l00 : float in range [0, 1)
+        The lower bound on f00, which is "the fraction of features, of the
+        m features examined in the primary study, that are null in both
+        studies".
+    """
+
+    # TODO: initially named to match the reference R code
+    R1 = len(p1)
+    c1 = (1.-c2) / (1.-l00*(1.-c2*x))
+
+    e = np.max([m*p1 / c1, R1*p2 / c2], axis=0)
+    e = e / rankdata(e, method='max')
+
+    oe = np.argsort(e)[::-1]
+    oer = np.argsort(oe)
+
+    r = np.minimum.accumulate(e[oe])[oer]
+    r = np.min([r, np.ones(np.shape(r))], axis=0)
+    return r
+
+def _fdr_rvalue_f_aux(x, i, m, p1, p2, c2, l00):
+    """Auxiliary function used to enable solving f(x) = x."""
+    return _fdr_rvalue_f(x, m, p1, p2, c2, l00)[i] - x
+
+def fdr_rvalue(p1, p2, m, c2=0.5, l00=0.8):
+    """Function for computing FDR r-values using the method suggested by
+    Heller et al.
+
+    Input arguments:
+    ================
+    p1, p2 : ndarray [n_tests, ]
+        The p-values that were selected for follow-up from the primary
+        study (p1) and the corresponding p-values observed in the
+        follow-up study (p2).
+
+    m : int
+        The number of tests considered in the primary study.
+
+    c2 : float in range (0, 1)
+        The emphasis given to the follow-up study.
+
+    l00 : float in range [0, 1)
+        The lower bound on f00, which is "the fraction of features, of the
+        m features examined in the primary study, that are null in both
+        studies".
+    """
+
+    # TODO: Consider implementing the other variations of computing c1.
+
+    tol = np.min([np.min([p1, p2]), 0.0001])
+
+    """Compute the r-values."""
+    rvalue = np.zeros(np.shape(p2), dtype='float')
+    for i, _ in enumerate(p2):
+        if (_fdr_rvalue_f_aux(1, i, m, p1, p2, c2, l00) >= 0):
+            rvalue[i] = 1
+        else:
+            sol = root(_fdr_rvalue_f_aux, x0=0.5,
+                       args=(i, m, p1, p2, c2, l00), tol=tol)['x']
+            rvalue[i] = sol
+
+    return rvalue
+
