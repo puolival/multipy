@@ -4,17 +4,15 @@ in the spatial two-group model.
 
 Author: Tuomas Puoliväli
 Email: tuomas.puolivali@helsinki.fi
-Last modified: 23th March 2019
+Last modified: 23th April 2019
 License: Revised 3-clause BSD
 
 WARNING: There is unfinished code and only partial testing has been
          performed.
-
 """
 
 def plot_power(effect_sizes, empirical_power, ax=None):
-    """Function for plotting empirical power as a function of
-    effect size.
+    """Function for plotting empirical power as a function of effect size.
 
     Input arguments:
     ================
@@ -24,11 +22,9 @@ def plot_power(effect_sizes, empirical_power, ax=None):
     empirical_power : ndarray[n_effect_sizes, ]
         The empirical power at each effect size.
 
-    Output arguments:
-    =================
-    fig : Figure
-        The figure instance for further plotting and/or style
-        adjustments.
+    ax : Axes
+        (Optional) Axes to plot to. If not specified, a new figure with new
+        axes will be created.
     """
 
     """Fit a logistic function to the data."""
@@ -50,9 +46,8 @@ def plot_power(effect_sizes, empirical_power, ax=None):
     ax.set_xlabel('Effect size $\Delta$', fontsize=14)
     ax.set_ylabel('Empirical power', fontsize=14)
 
-def two_group_model_power(nl=90, sl=30, deltas=np.linspace(0.2, 2.4, 12),
-                          alpha=0.05, N=25, n_iter=10, verbose=True,
-                          method=tst):
+def two_group_model_power(deltas, method, nl=90, sl=30, alpha=0.05, N=25,
+                          n_iter=10, verbose=True):
     """Function for generating data under two-group model at various effect
     sizes and computing the corresponding empirical power.
 
@@ -61,18 +56,24 @@ def two_group_model_power(nl=90, sl=30, deltas=np.linspace(0.2, 2.4, 12),
     nl : int
         The length of a side of the simulated grid. There will be a total
         of nl squared tests.
+
     sl : int
         The length of a side of the signal region. In the simulation, there
         will be a total of sl squared tests where the alternative
         hypothesis is true.
+
     deltas : ndarray
         The tested effect sizes.
+
     alpha : float
         The desired critical level.
+
     N : int
         Sample size is both of the two groups.
+
     n_iter : int
         Number of iterations used for estimating the power.
+
     verbose : bool
         Flag for deciding whether to print progress reports to the console.
     """
@@ -94,18 +95,31 @@ def two_group_model_power(nl=90, sl=30, deltas=np.linspace(0.2, 2.4, 12),
 
     return np.mean(pwr, axis=1)
 
-def simulate_two_group_model():
-    """Function for performing the two-group simulations and visualizing
-    the results."""
-    # TODO: document
-    deltas = np.linspace(0.2, 2.4, 12)
-    pwr = two_group_model_power(deltas=deltas)
+def simulate_two_group_model(effect_sizes=np.linspace(0.2, 2.4, 12),
+                             method=lsu):
+    """Function for performing simulations using the two-group model and
+    visualizing the results.
 
+    Input arguments:
+    ================
+    effect_sizes : ndarray [n_effect_sizes, ]
+        The tested effect sizes (Cohen's d's). The default range is from
+        d = 0.2 to 2.4.
+
+    method : function
+        The applied correction method. The default value is the
+        Benjamini-Hochberg FDR method.
+    """
+
+    """Estimate power at each effect size."""
+    pwr = two_group_model_power(deltas=effect_sizes, method=method)
+
+    """Visualize the results."""
     sns.set_style('darkgrid')
     fig = plt.figure(figsize=(8, 5))
     ax1 = fig.add_subplot(111)
     ax1.set_title('Two-stage FDR')
-    plot_power(deltas, pwr, ax=ax1)
+    plot_power(effect_sizes, pwr, ax=ax1)
     fig.tight_layout()
     plt.show()
 
