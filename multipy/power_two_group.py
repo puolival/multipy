@@ -19,6 +19,8 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
+# from permutation import tfr_permutation_test
+
 from scipy.optimize import curve_fit
 
 import seaborn as sns
@@ -61,7 +63,7 @@ def plot_power(effect_sizes, empirical_power, ax=None):
     ax.set_ylabel('Empirical power', fontsize=14)
 
 def two_group_model_power(deltas, method, nl=90, sl=30, alpha=0.05, N=25,
-                          n_iter=10, verbose=True):
+                          n_iter=20, verbose=True):
     """Function for generating data under two-group model at various effect
     sizes and computing the corresponding empirical power.
 
@@ -102,6 +104,10 @@ def two_group_model_power(deltas, method, nl=90, sl=30, alpha=0.05, N=25,
             print('Effect size: %1.3f' % delta)
         for j in np.arange(0, n_iter):
             X = square_grid_model(nl, sl, N, delta, equal_var=True)[0]
+            # TODO: q-value method returns a tuple with the first element
+            # containing the decision.
+            # Y = tfr_permutation_test(X_raw, Y_raw, alpha=alpha,
+            #                          n_permutations=100, threshold=1)
             Y = method(X.flatten(), alpha)
             Y = Y.reshape(nl, nl)
             tp, _, _, fn = grid_model_counts(Y, nl, sl)
@@ -132,7 +138,7 @@ def simulate_two_group_model(effect_sizes=np.linspace(0.2, 2.4, 12),
     sns.set_style('darkgrid')
     fig = plt.figure(figsize=(8, 5))
     ax1 = fig.add_subplot(111)
-    ax1.set_title('Two-stage FDR')
+    ax1.set_title('Method: %s' % method.__name__)
     plot_power(effect_sizes, pwr, ax=ax1)
     fig.tight_layout()
     plt.show()
