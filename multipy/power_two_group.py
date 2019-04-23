@@ -11,6 +11,20 @@ WARNING: There is unfinished code and only partial testing has been
          performed.
 """
 
+from data import square_grid_model
+
+from fdr import lsu # default correction method
+
+import matplotlib.pyplot as plt
+
+import numpy as np
+
+from scipy.optimize import curve_fit
+
+import seaborn as sns
+
+from util import empirical_power, grid_model_counts, logistic_function
+
 def plot_power(effect_sizes, empirical_power, ax=None):
     """Function for plotting empirical power as a function of effect size.
 
