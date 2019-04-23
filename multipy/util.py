@@ -77,9 +77,11 @@ def separate_classes_model_counts(Y, nl, sl):
     ================
     Y : ndarray
         Array of booleans indicating which tests were declared significant.
+
     nl : int
         The side length of the noise region for a single class. The size of
         the matrix Y should be [nl, 2*nl].
+
     sl : int
         The side length of a signal region.
 
@@ -159,3 +161,20 @@ def empirical_fpr(n_fp, n_nt):
         Empirical false positive rate.
     """
     return float(n_fp) / float(n_nt)
+
+def logistic_function(x, k, x0):
+    """Logistic function with a maximum value of one.
+
+    Input arguments:
+    ================
+    x : float
+        Value at which to evaluate the function.
+
+    k : float
+        Steepness of the curve.
+
+    x0 : float
+        The x-value of the sigmoid's midpoint.
+    """
+    return 1. / (1. + np.exp(-k*(x-x0)))
+

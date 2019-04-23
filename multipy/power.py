@@ -28,25 +28,10 @@ from scipy.optimize import curve_fit
 import seaborn as sns
 
 from util import (empirical_power, empirical_fpr,
-                  grid_model_counts, separate_classes_model_counts)
+                  grid_model_counts, separate_classes_model_counts,
+                  logistic_function)
 
 from viz import plot_separate_classes_model
-
-def logistic_function(x, k, x0):
-    """Logistic function with a maximum value of one.
-
-    Input arguments:
-    ================
-    x : float
-        Value at which to evaluate the function.
-
-    k : float
-        Steepness of the curve.
-
-    x0 : float
-        The x-value of the sigmoid's midpoint.
-    """
-    return 1. / (1. + np.exp(-k*(x-x0)))
 
 def plot_power(effect_sizes, empirical_power, ax=None):
     """Function for plotting empirical power as a function of
@@ -407,7 +392,7 @@ def simulate_separate_classes_model():
 #    pwr[i] = two_group_model_power(deltas=[0.7], method=bonferroni, sl=s)
 
 
-def rvalue_test(nl=90, sl=30, N=25, alpha=0.05, n_iter=10):
+def rvalue_test(method=tst, nl=90, sl=30, N=25, alpha=0.05, n_iter=10):
     """Function for testing the FDR r-value method.
 
     Input arguments:
@@ -440,7 +425,7 @@ def rvalue_test(nl=90, sl=30, N=25, alpha=0.05, n_iter=10):
         p2 = square_grid_model(delta=delta, nl=nl, sl=sl, N=N)[0]
 
         # apply fdr for the primary-study data
-        s1 = tst(p1.flatten(), alpha)
+        s1 = method(p1.flatten(), alpha)
         s1 = np.reshape(s1, [nl, nl])
 
         # apply the r-value method
@@ -452,8 +437,6 @@ def rvalue_test(nl=90, sl=30, N=25, alpha=0.05, n_iter=10):
             R[s1] = rvals
             tp, _, _, fn = grid_model_counts(R < alpha, nl, sl)
             reproducibility[ind] = tp / float(tp+fn)
-        else:
-            reproducibility[ind] = 0
 
     reproducibility = np.mean(reproducibility, axis=0)
 
