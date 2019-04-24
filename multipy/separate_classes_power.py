@@ -13,7 +13,7 @@ WARNING: There is unfinished code and only partial testing has been
 """
 from data import spatial_separate_classes_model
 
-from fdr import lsu, tst
+from fdr import lsu
 
 import matplotlib.pyplot as plt
 
@@ -30,8 +30,8 @@ from util import (empirical_power, separate_classes_model_counts,
 
 from viz import plot_separate_classes_model
 
-def separate_classes_model_power(deltas, n_iter=10, alpha=0.05, nl=45,
-                                 sl=15):
+def separate_classes_model_power(deltas, n_iter=20, alpha=0.05, nl=45,
+                                 sl=15, method=lsu):
     """Function for simulating data under the spatial separate-classes
     model at various effect sizes.
 
@@ -40,13 +40,19 @@ def separate_classes_model_power(deltas, n_iter=10, alpha=0.05, nl=45,
     deltas : ndarray
         The tested effect sizes are all possible effect size pairs
         (delta1, delta2) among the given array.
+
     n_iter : int
         Number of repetitions of each simulation.
+
     alpha : float
         The desired critical level.
+
     nl, sl : int
         The side lengths of the signal and noise regions within a single
         class.
+
+    method : function
+        The applied correction method.
     """
     # TODO: make a proper function
     n_deltas = len(deltas)
@@ -55,7 +61,7 @@ def separate_classes_model_power(deltas, n_iter=10, alpha=0.05, nl=45,
     for ind in np.ndindex(n_deltas, n_deltas, n_iter):
         delta1, delta2 = deltas[ind[0]], deltas[ind[1]]
         X = spatial_separate_classes_model(delta1, delta2)[0]
-        Y = tst(X.flatten(), alpha)
+        Y = method(X.flatten(), alpha)
         Y = Y.reshape([nl, 2*nl])
         tp, _, _, fn = separate_classes_model_counts(Y, nl, sl)
         pwr[ind] = empirical_power(tp, tp+fn)
@@ -100,11 +106,7 @@ def plot_separate_classes_model_power(effect_sizes, pwr):
 def simulate_separate_classes_model():
     effect_sizes = np.linspace(0.2, 2.4, 12)
     pwr = separate_classes_model_power(effect_sizes)
-    fig = plot_separate_classes_model_power(effect_sizes, pwr)
+    fig = plot_separate_classes_model_power(effect_sizes, pwr,
+                                            method=lsu)
     plt.show()
 
-#sl = np.arange(2, 80, 4)
-#pwr = np.zeros(np.shape(sl))
-#
-#for i, s in enumerate(sl):
-#    pwr[i] = two_group_model_power(deltas=[0.7], method=bonferroni, sl=s)
