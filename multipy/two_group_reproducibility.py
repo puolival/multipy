@@ -166,7 +166,9 @@ def plot_two_group_reproducibility(effect_sizes, emphasis_primary,
     fig.tight_layout()
     return fig
 
-def rvalue_test(method=tst, nl=90, sl=30, N=25, alpha=0.05, n_iter=10):
+def rvalue_test(effect_sizes=np.linspace(0.2, 2.4, 12),
+                emphasis=np.asarray([0.02, 0.5, 0.98]), method=tst,
+                nl=90, sl=30, N=25, alpha=0.05, n_iter=10):
     """Function for testing the FDR r-value method.
 
     Input arguments:
@@ -180,16 +182,23 @@ def rvalue_test(method=tst, nl=90, sl=30, N=25, alpha=0.05, n_iter=10):
     n_iter : int
         The number of repetitions of each simulation.
 
+    method : function
+        The applied correction procedure.
+
+    nl, sl : int
+        The sizes of the noise and signal regions respectively.
+
+    N : int
+        The sample size in both groups.
+
+    alpha : float
+        The critical level. Default value is 0.05.
+
+    n_iter : int
+        The number of repetitions each simulation.
     """
-
-    # TODO: document all variables.
-    # TODO: refactor and clean the code
-
-    emphasis = np.asarray([0.02, 0.5, 0.98])
     n_emphasis = len(emphasis)
-    effect_sizes = np.linspace(0.2, 2.4, 12)
     n_effect_sizes = len(effect_sizes)
-
     reproducibility = np.zeros([n_iter, n_effect_sizes, n_emphasis])
 
     for ind in np.ndindex(n_iter, n_effect_sizes, n_emphasis):
