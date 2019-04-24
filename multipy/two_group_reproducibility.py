@@ -13,7 +13,7 @@ WARNING: There is unfinished code and only partial testing has been
 """
 from data import square_grid_model
 
-from fdr import lsu
+from fdr import lsu, tst
 
 import matplotlib.pyplot as plt
 
@@ -193,27 +193,31 @@ def rvalue_test(method=tst, nl=90, sl=30, N=25, alpha=0.05, n_iter=10):
     reproducibility = np.zeros([n_iter, n_effect_sizes, n_emphasis])
 
     for ind in np.ndindex(n_iter, n_effect_sizes, n_emphasis):
-        # simulate data
+        """Simulate primary and follow-up experiments."""
         delta, emph = effect_sizes[ind[1]], emphasis[ind[2]]
         p1 = square_grid_model(delta=delta, nl=nl, sl=sl, N=N)[0]
         p2 = square_grid_model(delta=delta, nl=nl, sl=sl, N=N)[0]
 
-        # apply fdr for the primary-study data
-        s1 = method(p1.flatten(), alpha)
-        s1 = np.reshape(s1, [nl, nl])
+        """Test which hypotheses are significant in the primary study.
+        This is done for selecting hypotheses for the follow-up study."""
+        significant_primary = method(p1.flatten(), alpha)
+        significant_primary = np.reshape(significant_primary, [nl, nl])
 
-        # apply the r-value method
+        """If there were significant hypotheses in the primary study,
+        apply the r-value method to test which ones can be replicated in
+        the follow-up study."""
         if (np.sum(s1) > 0):
-            r_p1 = p1[s1]
-            r_p2 = p2[s1]
-            rvals = fdr_rvalue(p1=r_p1, p2=r_p2, m=nl**2, c2=emph)
+            rvals = fdr_rvalue(p1=p1[significant_primary],
+                               p2=p2[significant_primary], m=nl**2, c2=emph)
             R = np.ones(np.shape(p1))
             R[s1] = rvals
             tp, _, _, fn = grid_model_counts(R < alpha, nl, sl)
             reproducibility[ind] = tp / float(tp+fn)
 
     reproducibility = np.mean(reproducibility, axis=0)
+    return reproducibility
 
+def plot_rvalue_test():
     """Visualize the result."""
     fig = plt.figure()
     ax = fig.add_subplot(111)
