@@ -26,6 +26,8 @@ import numpy as np
 
 import seaborn as sns
 
+from scipy.stats import zscore
+
 from skimage.filters import gaussian as gaussian_filter
 from skimage.measure import label
 
@@ -96,8 +98,8 @@ def _ec_2d(X):
       The empirical Euler characteristic.
     """
     # TODO: check for holes in the activated regions.
-    _, ec = label(X, neighbors=4, background=0, return_num=True,
-                  connectivity=1)
+    _, ec = label(X, neighbors=None, background=0, return_num=True,
+                  connectivity=2)
     return ec
 
 def plot_ec(X, fwhm, Z_low=0, Z_high=5):
@@ -200,7 +202,7 @@ def _smooth(X, fwhm):
     """Smooth the data."""
     # TODO: consider which filter mode should be used
     Y = gaussian_filter(X, sigma=sd, mode='nearest',
-                        multichannel=False, preserve_range=True)
+                        multichannel=False, preserve_range=False)
     return Y
 
 def rft_2d(X, fwhm, alpha=0.05, verbose=True):
@@ -211,7 +213,7 @@ def rft_2d(X, fwhm, alpha=0.05, verbose=True):
     Input arguments:
     ================
     X : ndarray of floats
-      The analyzed two-dimensional data array.
+      The analyzed two-dimensional statistical map.
     fwhm : float
       Size of the smoothing kernel measured as full-width at half maximum
       (FWMH).
@@ -240,16 +242,16 @@ def rft_2d(X, fwhm, alpha=0.05, verbose=True):
 
     """Find z-score threshold that gives the chosen family-wise error
     rate."""
-    Z = np.linspace(2, 7, 501)
+    Z = np.linspace(1, 8, 1000)
     expected_ec = _expected_ec_2d(R, Z)
     z_threshold = Z[expected_ec < alpha][0]
     if (verbose):
         print('The Z-score threshold for FWER of %1.3f is %1.3f' %
               (alpha, z_threshold))
 
-    """Smooth, z-score, and threshold the data array."""
+    """Smooth and threshold the data array."""
     X_smooth = _smooth(X, fwhm=fwhm)
-    X_thr = _threshold(X_smooth, Z=z_threshold)
+    X_thr = X_smooth > z_threshold
 
     """Compute the empirical Euler characteristic and find significant
     elements."""

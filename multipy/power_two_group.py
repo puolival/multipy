@@ -20,6 +20,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # from permutation import tfr_permutation_test
+# from rft import rft_2d
 
 from scipy.optimize import curve_fit
 
@@ -103,11 +104,15 @@ def two_group_model_power(deltas, method, nl=90, sl=30, alpha=0.05, N=25,
         if (verbose):
             print('Effect size: %1.3f' % delta)
         for j in np.arange(0, n_iter):
+            # NOTE: output arguments 1-4 needed for permutation testing.
+            # NOTE: output arguments 1-2 needed for RFT based testing.
             X = square_grid_model(nl, sl, N, delta, equal_var=True)[0]
+
             # TODO: q-value method returns a tuple with the first element
             # containing the decision.
             # Y = tfr_permutation_test(X_raw, Y_raw, alpha=alpha,
             #                          n_permutations=100, threshold=1)
+            # Y = rft_2d(T, fwhm=3, alpha=alpha, verbose=True)[0]
             Y = method(X.flatten(), alpha)
             Y = Y.reshape(nl, nl)
             tp, _, _, fn = grid_model_counts(Y, nl, sl)
