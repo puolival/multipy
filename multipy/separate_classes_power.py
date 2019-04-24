@@ -1,21 +1,19 @@
 # -*- encoding: utf-8 -*-
-"""Function for visualizing empirical power as a function of effect size
-in the spatial two-group or separate-classes model.
+"""Programs for computing and visualizing empirical power as a function of
+effect size in the spatial separate-classes model.
 
 Author: Tuomas Puoliväli
 Email: tuomas.puolivali@helsinki.fi
-Last modified: 22th March 2019
+Last modified: 24th April 2019
 License: Revised 3-clause BSD
 
 WARNING: There is unfinished code and only partial testing has been
          performed.
 
 """
-from data import square_grid_model, spatial_separate_classes_model
+from data import spatial_separate_classes_model
 
-from fdr import lsu, qvalue, tst
-from fwer import bonferroni, hochberg
-from permutation import tfr_permutation_test
+from fdr import lsu, tst
 
 import matplotlib.pyplot as plt
 
@@ -27,8 +25,7 @@ from scipy.optimize import curve_fit
 
 import seaborn as sns
 
-from util import (empirical_power, empirical_fpr,
-                  grid_model_counts, separate_classes_model_counts,
+from util import (empirical_power, separate_classes_model_counts,
                   logistic_function)
 
 from viz import plot_separate_classes_model
