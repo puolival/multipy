@@ -202,7 +202,7 @@ def qvalue(pvals, threshold=0.05, verbose=True):
     # Compute the q-values.
     qvals = np.zeros(np.shape(pvals))
     qvals[-1] = pi0*pvals[-1]
-    for i in xrange(m-2, -1, -1):
+    for i in np.arange(m-2, -1, -1):
         qvals[i] = min(pi0*m*pvals[i]/float(i+1), qvals[i+1])
 
     # Test which p-values are significant.
