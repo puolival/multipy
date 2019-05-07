@@ -141,7 +141,7 @@ A manuscript of the software is currently being prepared.
 ### Poster presentations:
 
 Puoliväli T, Palva S, Palva JM (2019): MultiPy: Multiple hypothesis testing
-in Python *MEG Nord*, Jyväskylä, Finland, 8–10th May
+in Python. *MEG Nord*, Jyväskylä, Finland, 8–10th May
 
 Puoliväli T, Lobier M, Palva S, Palva JM (2018): MultiPy: Multiple hypothesis 
 testing in Python. *Neuronal Circuit Dynamics across Scales and Species*, 
