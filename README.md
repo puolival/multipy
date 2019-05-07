@@ -10,11 +10,13 @@ family-wise error rate (FWER) and the false discovery rate (FDR).
 
 ## News
 
+* MultiPy is presented as a poster in the <a href="https://megnord.org/"></a> conference at Jyväskylä, Finland (8–10th May 2019)
+
 * MultiPy is presented in a neuroscience seminar at the <a href="https://cibr.jyu.fi/en">Jyväskylä Centre for Interdisciplinary Brain Research</a>, Jyväskylä, Finland (30th November 2018)
 
 * MultiPy is presented in the <a href="https://blogs.helsinki.fi/ils-blogs/2018/05/24/tom-30-05/">Tool of the month seminar</a> at the University of Helsinki, Finland (30th May 2018)
 
-* MultiPy is presented as a poster in the <a href="https://www.helsinki.fi/en/conferences/neuronal-circuit-dynamics-across-scales-and-species">Neuronal circuit dynamics across scales and species symposium</a> at Helsinki, Finland (3-4th May 2018)
+* MultiPy is presented as a poster in the <a href="https://www.helsinki.fi/en/conferences/neuronal-circuit-dynamics-across-scales-and-species">Neuronal circuit dynamics across scales and species symposium</a> at Helsinki, Finland (3–4th May 2018)
 
 ## Installation
 
@@ -137,6 +139,9 @@ plot_qvalue_diagnostics(tstats, pvals, qvals)
 A manuscript of the software is currently being prepared.
 
 ### Poster presentations:
+
+Puoliväli T, Palva S, Palva JM (2019): MultiPy: Multiple hypothesis testing
+in Python *MEG Nord*, Jyväskylä, Finland, 8–10th May
 
 Puoliväli T, Lobier M, Palva S, Palva JM (2018): MultiPy: Multiple hypothesis 
 testing in Python. *Neuronal Circuit Dynamics across Scales and Species*, 
