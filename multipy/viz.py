@@ -29,7 +29,11 @@ from matplotlib.patches import Rectangle
 
 import numpy as np
 
+from scipy.optimize import curve_fit
+
 import seaborn as sns
+
+from util import logistic_function
 
 def plot_pval_hist(pvals, hist_bins=1e2, show_plot=True):
     """Plot a simple density histogram of P-values.
@@ -259,8 +263,10 @@ def plot_separate_classes_model(X, nl, sl):
 
     """Plot the second signal region borders."""
     ax.plot([nl+d, nl+d], [d+sl-1, d], 'y-', linewidth=1.5, alpha=0.75)
-    ax.plot([nl+d+sl-1, nl+d], [d+sl-1, d+sl-1], 'y-', linewidth=1.5, alpha=0.75)
-    ax.plot([nl+d+sl-1, nl+d+sl-1], [d, d+sl-1], 'y-', linewidth=1.5, alpha=0.75)
+    ax.plot([nl+d+sl-1, nl+d], [d+sl-1, d+sl-1], 'y-', linewidth=1.5,
+            alpha=0.75)
+    ax.plot([nl+d+sl-1, nl+d+sl-1], [d, d+sl-1], 'y-', linewidth=1.5,
+            alpha=0.75)
     ax.plot([nl+d+sl-1, nl+d], [d, d], 'y-', linewidth=1.5, alpha=0.75)
 
     """Reduce the amount of unnecessary empty space."""
@@ -306,3 +312,41 @@ def plot_grid_model_pvals(X, P, nl, sl):
     fig.tight_layout()
     return fig
 
+def plot_logistic(x, y, ax, legend=None, xlabel=None, ylabel=None, xlim=None,
+                  ylim=None):
+    """Function for drawing a scatter plot of the (x, y) tuples and
+    fitting a logistic function.
+
+    Input arguments:
+    ================
+    x, y : ndarray
+        The visualize data points.
+    ax : Matplotlib Axes
+        The axes to draw to.
+    legend : ndarray
+        Legend added to the axes, e.g. different parameter selection when
+        drawing several overlaid datasets at once.
+    xlabel, ylabel : str
+        Labels for the x- and y-axes.
+    xlim, ylim : ndarray
+        Limits for the axes.
+    """
+
+    n_samples, n_vars = np.shape(y)
+
+    """Fit a logistic function to the data."""
+    for i in np.arange(0, n_vars):
+        logistic_k, logistic_x0 = curve_fit(logistic_function, x, y[:, i])[0]
+        logistic_x = np.linspace(x[0], x[-1], 100)
+        logistic_y = logistic_function(logistic_x, logistic_k, logistic_x0)
+
+        """Plot the data and the fitted line."""
+        ax.plot(x, y[:, i], '.', markersize=9)
+        ax.plot(logistic_x, logistic_y, '-', linewidth=1.5)
+
+    """Label the axes etc."""
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
+    ax.set_xlabel(xlabel, fontsize=14)
+    ax.set_ylabel(ylabel, fontsize=14)
+    return ax

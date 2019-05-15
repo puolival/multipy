@@ -27,6 +27,8 @@ import seaborn as sns
 
 from util import empirical_power, grid_model_counts, logistic_function
 
+from viz import plot_logistic
+
 def two_group_reproducibility_null_density():
     """Function for estimating reproducibility as a function of non-null
     density at a fixed effect size."""
@@ -202,6 +204,7 @@ def rvalue_test(effect_sizes=np.linspace(0.2, 2.4, 12),
     reproducibility = np.zeros([n_iter, n_effect_sizes, n_emphasis])
 
     for ind in np.ndindex(n_iter, n_effect_sizes, n_emphasis):
+        print ind
         """Simulate primary and follow-up experiments."""
         delta, emph = effect_sizes[ind[1]], emphasis[ind[2]]
         p1 = square_grid_model(delta=delta, nl=nl, sl=sl, N=N)[0]
@@ -215,28 +218,35 @@ def rvalue_test(effect_sizes=np.linspace(0.2, 2.4, 12),
         """If there were significant hypotheses in the primary study,
         apply the r-value method to test which ones can be replicated in
         the follow-up study."""
-        if (np.sum(s1) > 0):
+        if (np.sum(significant_primary) > 0):
             rvals = fdr_rvalue(p1=p1[significant_primary],
                                p2=p2[significant_primary], m=nl**2, c2=emph)
             R = np.ones(np.shape(p1))
-            R[s1] = rvals
+            R[significant_primary] = rvals
             tp, _, _, fn = grid_model_counts(R < alpha, nl, sl)
             reproducibility[ind] = tp / float(tp+fn)
 
     reproducibility = np.mean(reproducibility, axis=0)
     return reproducibility
 
-def plot_rvalue_test():
+def simulate_rvalue():
+    effect_sizes = np.linspace(0.2, 2.4, 12)
+    emphasis = np.asarray([0.02, 0.5, 0.98])
+    reproducibility = rvalue_test(effect_sizes=effect_sizes,
+                                  emphasis=emphasis, n_iter=10)
+    plot_rvalue_test(effect_sizes, reproducibility, emphasis)
+
+def plot_rvalue_test(effect_sizes, reproducibility, emphasis):
     """Visualize the result."""
+    sns.set_style('darkgrid')
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    ax.plot(effect_sizes, reproducibility)
-    ax.legend(emphasis, loc='lower right')
+    ax = plot_logistic(effect_sizes, reproducibility, ax)
+    # ax.legend(emphasis, loc='lower right')
 
     fig.tight_layout()
     plt.show()
-
 
 def two_group_reproducibility_sample_size():
     """Function for computing reproducibility in the two-group model at
@@ -278,5 +288,6 @@ def two_group_reproducibility_sample_size():
     fig = plot_two_group_reproducibility(sample_sizes, emphasis_primary,
                                          reproducibility)
     fig.axes[0].set_xlabel('Sample size $N$')
+    fig.tight_layout()
     plt.show()
 

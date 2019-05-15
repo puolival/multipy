@@ -13,7 +13,7 @@ WARNING: There is unfinished code and only partial testing has been
 """
 from data import spatial_separate_classes_model
 
-from fdr import lsu
+from fdr import lsu, tst
 
 import matplotlib.pyplot as plt
 
@@ -108,7 +108,8 @@ def plot_separate_classes_model_power(effect_sizes, pwr):
     sns.set_style('darkgrid')
     fig = plt.figure(figsize=(8, 5))
     ax = fig.add_subplot(111)
-    im = ax.imshow(pwr, origin='lower', cmap='viridis', interpolation='none')
+    im = ax.imshow(pwr, origin='lower', cmap='viridis', interpolation='none',
+                   vmin=0, vmax=1)
     ax.grid(False)
 
     # Only display every other <x/y>tick.
@@ -122,12 +123,20 @@ def plot_separate_classes_model_power(effect_sizes, pwr):
     ax.set_ylabel('Effect size $\Delta_2$')
     return fig, im
 
-def simulate_separate_classes_model():
+def simulate_separate_classes_model(method):
+    """Function for performing simulations using the separate-classes model
+    and visualizing the results.
+
+    Input arguments:
+    ================
+    method : function
+        The applied correction method.
+    """
+
     """Compute empirical power at the chosen effect sizes using the chosen
     multiple testing method."""
     single_analysis = True
     effect_sizes = np.linspace(0.2, 2.4, 12)
-    method = lsu
     pwr = separate_classes_model_power(effect_sizes, method=method,
                                        single_analysis=single_analysis)
 
@@ -139,3 +148,24 @@ def simulate_separate_classes_model():
     fig.axes[0].grid(False)
     plt.show()
 
+def simulate_single_separate_analyses():
+    """Function for simulating data using the separate-classes model and
+    comparing the performance of single and separate analyses."""
+
+    effect_sizes = np.linspace(0.2, 2.4, 12)
+    n_iter = 10
+    alpha = 0.05
+    nl, sl = 45, 15
+    method = lsu
+
+    pwr1 = separate_classes_model_power(deltas=effect_sizes, n_iter=n_iter,
+                                        alpha=alpha, nl=nl, sl=sl, method=method,
+                                        single_analysis=True)
+    pwr2 = separate_classes_model_power(deltas=effect_sizes, n_iter=n_iter,
+                                        alpha=alpha, nl=nl, sl=sl, method=method,
+                                        single_analysis=False)
+
+    plt.figure()
+    plt.plot(effect_sizes, pwr1[6, :])
+    plt.plot(effect_sizes, pwr2[6, :])
+    plt.show()
