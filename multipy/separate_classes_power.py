@@ -30,6 +30,36 @@ from util import (empirical_power, separate_classes_model_counts,
 
 from viz import plot_separate_classes_model
 
+def separate_data(X, c1, c2):
+    """Function for diving the dataset X into two separate classes.
+
+    Input arguments:
+    ================
+    X : ndarray [n_rows, n_cols]
+        The entire dataset having 'n_rows' rows and 'n_cols' columns.
+    c1, c2 : ndarray [4, ]
+        The coordinates of the top left and bottom right corners of
+        the two classes.
+
+        More specifically, c1[0:2] are the x-coordinates and
+        c1[2:4] are the y-coordinates.
+
+    Output arguments:
+    =================
+    X_c1, X_c2 : ndarray
+        The separated datasets.
+    """
+
+    """Get the classes' coordinates."""
+    c1_x1, c1_x2, c1_y1, c1_y2 = c1
+    c2_x1, c2_x2, c2_y1, c2_y2 = c2
+
+    """Separate the dataset into two parts."""
+    X_c1 = X[c1_y1:c1_y2, c1_x1:c1_x2]
+    X_c2 = X[c2_y1:c2_y2, c2_x1:c2_x2]
+
+    return X_c1, X_c2
+
 def separate_classes_model_power(deltas, n_iter=20, alpha=0.05, nl=45,
                                  sl=15, method=lsu,
                                  single_analysis=False):
@@ -77,8 +107,10 @@ def separate_classes_model_power(deltas, n_iter=20, alpha=0.05, nl=45,
             Y = method(X.flatten(), alpha)
             Y = Y.reshape([nl, 2*nl])
         else:
-            Y1, Y2 = (method(X[:, 0:nl].flatten(), alpha),
-                      method(X[:, nl:].flatten(), alpha))
+            X_c1, X_c2 = separate_data(X, [0, nl, 0, nl],
+                                          [nl, 2*nl, 0, nl])
+            Y1, Y2 = (method(X_c1.flatten(), alpha),
+                      method(X_c2.flatten(), alpha))
             Y1, Y2 = Y1.reshape([nl, nl]), Y2.reshape([nl, nl])
             Y = np.hstack([Y1, Y2])
 
@@ -169,3 +201,4 @@ def simulate_single_separate_analyses():
     plt.plot(effect_sizes, pwr1[6, :])
     plt.plot(effect_sizes, pwr2[6, :])
     plt.show()
+
