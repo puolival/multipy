@@ -13,7 +13,10 @@ References:
     study. Proceedings of the National Academy of Sciences of the United
     states of America 111(46):16262-16267.
 
-[2] Bogomolov M, Heller R (2013): Discovering findings that replicate from
+[2] The Heller et al. [1] R implementation of the proposed the method
+    (follow closely in the function fdr_rvalue).
+
+[3] Bogomolov M, Heller R (2013): Discovering findings that replicate from
     a primary study of high dimension to a follow-up study. Journal of the
     American Statistical Association 108(504):1480-1492.
 
@@ -157,7 +160,18 @@ def partial_conjuction(pvals_primary, pvals_followup, method, alpha=0.05):
         Array of booleans indicating which tests can be considered to be
         reproducible.
     """
-    raise NotImplementedError('Not implemented yet!')
+
+    """Set the p-values of those tests that were not followed up as 1."""
+    pvals_followup[np.isnan(pvals_followup)] = 1.0
+
+    """Get element-wise maximum p-values."""
+    pvals = np.maximum(pvals_primary, pvals_followup)
+
+    """Apply the correction."""
+    n_rows, n_cols = np.shape(pvals)
+    reproducible = method(pvals.flatten(), alpha)
+    reproducible = np.reshape(reproducible, [n_rows, n_cols])
+    return reproducible
 
 def _fdr_rvalue_f(x, m, p1, p2, c2=0.5, l00=0.8):
     """Function for computing the FDR r-value of a given feature.
@@ -229,4 +243,3 @@ def fdr_rvalue(p1, p2, m, c2=0.5, l00=0.8):
             rvalue[i] = sol
 
     return rvalue
-
