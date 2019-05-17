@@ -141,7 +141,7 @@ def square_grid_model(nl=100, sl=60, N=25, delta=0.7, equal_var=True):
     return P, tstats, X, Y
 
 
-def spatial_separate_classes_model(delta1, delta2):
+def spatial_separate_classes_model(delta1, delta2, N=25):
     """Function for simulating data under the spatial separate-classes
     model.
 
@@ -150,6 +150,8 @@ def spatial_separate_classes_model(delta1, delta2):
     delta1, delta : float
         The effect sizes at the first and second signal regions
         respectively.
+    N : int
+        The sample size in each group.
 
     Output arguments:
     =================
@@ -159,9 +161,9 @@ def spatial_separate_classes_model(delta1, delta2):
         The simulated data.
     """
     # TODO: make nl, sl, & N parameters of the function.
-    P_a, tstats_a, X_a, Y_a = square_grid_model(nl=45, sl=15, N=25,
+    P_a, tstats_a, X_a, Y_a = square_grid_model(nl=45, sl=15, N=N,
                                                 delta=delta1, equal_var=True)
-    P_b, tstats_b, X_b, Y_b = square_grid_model(nl=45, sl=15, N=25,
+    P_b, tstats_b, X_b, Y_b = square_grid_model(nl=45, sl=15, N=N,
                                                 delta=delta2, equal_var=True)
 
     return (np.hstack([P_a, P_b]), np.hstack([tstats_a, tstats_b]),
