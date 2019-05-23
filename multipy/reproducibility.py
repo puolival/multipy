@@ -13,8 +13,8 @@ References:
     study. Proceedings of the National Academy of Sciences of the United
     states of America 111(46):16262-16267.
 
-[2] The Heller et al. [1] R implementation of the proposed the method
-    (follow closely in the function fdr_rvalue).
+[2] The Heller et al. [1] R implementation of their proposed method
+    (followed closely in the function fdr_rvalue).
 
 [3] Bogomolov M, Heller R (2013): Discovering findings that replicate from
     a primary study of high dimension to a follow-up study. Journal of the
@@ -78,24 +78,30 @@ def fwer_replicability(pvals_primary, pvals_followup, emph_primary, method,
         """
         pvals_followup[~significant_primary] = np.nan
         ind = np.isnan(pvals_followup) == False
-        significant_followup = method(pvals_followup[ind],
-                                      emph_followup*alpha)
+
+        # First check whether anything was significant in primary study.
+        if (np.sum(ind) > 0):
+            significant_followup = method(pvals_followup[ind],
+                                          emph_followup*alpha)
     elif (method.__name__ == 'qvalue'):
         """The q-value method also returns the q-values corresponding to
         the p-values, so we have to handle it separately."""
         significant_primary = method(pvals_primary, emph_primary*alpha)[0]
+
         # Exclude not-a-number values.
         pvals_followup[~significant_primary] = np.nan
         ind = np.isnan(pvals_followup) == False
-        significant_followup = method(pvals_followup[ind],
-                                      emph_followup*alpha)[0]
+        if (np.sum(ind) > 0):
+            significant_followup = method(pvals_followup[ind],
+                                          emph_followup*alpha)[0]
     else:
         raise Exception('Unsupported correction method!')
 
     """Decide which tests are replicable."""
     n_tests = len(pvals_primary)
     replicable = np.zeros(n_tests, dtype='bool')
-    replicable[ind] = significant_primary[ind] & significant_followup
+    if (np.sum(ind) > 0):
+        replicable[ind] = significant_primary[ind] & significant_followup
     return replicable
 
 def fwer_replicability_permutation(rvs_a_primary, rvs_b_primary,
@@ -165,12 +171,11 @@ def partial_conjuction(pvals_primary, pvals_followup, method, alpha=0.05):
     pvals_followup[np.isnan(pvals_followup)] = 1.0
 
     """Get element-wise maximum p-values."""
+    pvals_primary[np.isnan(pvals_primary)] = 1.0
     pvals = np.maximum(pvals_primary, pvals_followup)
 
     """Apply the correction."""
-    n_rows, n_cols = np.shape(pvals)
     reproducible = method(pvals.flatten(), alpha)
-    reproducible = np.reshape(reproducible, [n_rows, n_cols])
     return reproducible
 
 def _fdr_rvalue_f(x, m, p1, p2, c2=0.5, l00=0.8):
