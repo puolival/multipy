@@ -332,6 +332,11 @@ def plot_logistic(x, y, ax, legend=None, xlabel=None, ylabel=None, xlim=None,
         Limits for the axes.
     """
 
+    """Find number of samples and variables."""
+    if (len(np.shape(x))):
+        x = x[:, None]
+    if (len(np.shape(y))):
+        y = y[:, None]
     n_samples, n_vars = np.shape(y)
 
     """Fit a logistic function to the data."""
