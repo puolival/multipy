@@ -13,13 +13,16 @@ WARNING: There is unfinished code and only partial testing has been
 """
 from data import square_grid_model
 
-from fdr import lsu, tst
+from fdr import lsu, tst, qvalue
+
+from fwer import bonferroni
 
 import matplotlib.pyplot as plt
 
 import numpy as np
 
-from reproducibility import fdr_rvalue, fwer_replicability
+from reproducibility import (fdr_rvalue, fwer_replicability,
+                             partial_conjuction)
 
 from scipy.optimize import curve_fit
 
@@ -212,7 +215,10 @@ def rvalue_test(effect_sizes=np.linspace(0.2, 2.4, 12),
 
         """Test which hypotheses are significant in the primary study.
         This is done for selecting hypotheses for the follow-up study."""
-        significant_primary = method(p1.flatten(), alpha)
+        if (method.__name__ == 'qvalue'):
+            significant_primary = method(p1.flatten(), alpha)[0]
+        else:
+            significant_primary = method(p1.flatten(), alpha)
         significant_primary = np.reshape(significant_primary, [nl, nl])
 
         """If there were significant hypotheses in the primary study,
@@ -230,20 +236,41 @@ def rvalue_test(effect_sizes=np.linspace(0.2, 2.4, 12),
     return reproducibility
 
 def simulate_rvalue():
+    """Function for simulating primary and follow-up experiments using the
+    two-group model and testing which hypotheses are reproducible. The
+    FDR-based r-value method is used to decide which findings are considered
+    reproducible. We compare here the BH FDR, two-stage FDR, and q-value
+    methods."""
+
+    """Define settings for the r-value method simulations."""
+    methods = [lsu, tst, qvalue]
+    n_methods = len(methods)
     effect_sizes = np.linspace(0.2, 2.4, 12)
+    n_effect_sizes = len(effect_sizes)
     emphasis = np.asarray([0.02, 0.5, 0.98])
-    reproducibility = rvalue_test(effect_sizes=effect_sizes,
-                                  emphasis=emphasis, n_iter=10)
+    n_emphasis = len(emphasis)
+    n_iter = 20
+
+    """Compute reproducibility of true effects for each of the
+    three different methods."""
+    reproducibility = np.zeros([n_methods, n_effect_sizes, n_emphasis])
+    for i, method in enumerate(methods):
+        reproducibility[i, :] = rvalue_test(effect_sizes=effect_sizes,
+                                            emphasis=emphasis,
+                                            n_iter=n_iter, method=method)
+
+    """Visualize the results."""
     plot_rvalue_test(effect_sizes, reproducibility, emphasis)
 
 def plot_rvalue_test(effect_sizes, reproducibility, emphasis):
     """Visualize the result."""
     sns.set_style('darkgrid')
-    fig = plt.figure()
+    fig = plt.figure(figsize=(7, 6))
     ax = fig.add_subplot(111)
 
-    ax = plot_logistic(effect_sizes, reproducibility, ax)
-    # ax.legend(emphasis, loc='lower right')
+    n_methods = np.shape(reproducibility)[0]
+    for i in np.arange(0, n_methods):
+        ax = plot_logistic(effect_sizes, reproducibility[i, :], ax)
 
     fig.tight_layout()
     plt.show()
@@ -288,6 +315,49 @@ def two_group_reproducibility_sample_size():
     fig = plot_two_group_reproducibility(sample_sizes, emphasis_primary,
                                          reproducibility)
     fig.axes[0].set_xlabel('Sample size $N$')
+    fig.tight_layout()
+    plt.show()
+
+def compare_fwer_methods():
+    """Perform a comparison of the partial conjuction and FWER
+    replicability methods using the two-group model."""
+
+    N, nl, sl = 25, 90, 30
+    effect_sizes = np.linspace(0.2, 2.4, 12)
+    n_effect_sizes = len(effect_sizes)
+    method = bonferroni
+
+    repr_fwer = np.zeros(n_effect_sizes)
+    repr_part = np.zeros(n_effect_sizes)
+
+    for i, effect_size in enumerate(effect_sizes):
+        pvals_pri = square_grid_model(nl, sl, N, effect_size)[0]
+        pvals_sec = square_grid_model(nl, sl, N, effect_size)[0]
+
+        rep_fwer = fwer_replicability(pvals_pri.flatten(),
+                                      pvals_sec.flatten(), 0.5, method)
+        rep_part = partial_conjuction(pvals_pri.flatten(),
+                                      pvals_sec.flatten(), method)
+
+        rep_fwer = np.reshape(rep_fwer, [nl, nl])
+        rep_part = np.reshape(rep_part, [nl, nl])
+
+        conf_fwer = grid_model_counts(rep_fwer, nl, sl)
+        conf_part = grid_model_counts(rep_part, nl, sl)
+
+        repr_fwer[i] = conf_fwer[0] / float(sl ** 2)
+        repr_part[i] = conf_part[0] / float(sl ** 2)
+
+    """Visualize the data."""
+    sns.set_style('white')
+    fig = plt.figure(figsize=(7, 6))
+    ax = fig.add_subplot(111)
+
+    plot_logistic(effect_sizes, repr_fwer, ax=ax)
+    plot_logistic(effect_sizes, repr_part, ax=ax)
+
+    ax.legend(['FWER replicability', 'partial conjuction'],
+              loc='lower right')
     fig.tight_layout()
     plt.show()
 
