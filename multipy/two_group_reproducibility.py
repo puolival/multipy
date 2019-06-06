@@ -15,7 +15,7 @@ from data import square_grid_model
 
 from fdr import lsu, tst, qvalue
 
-from fwer import bonferroni
+from fwer import bonferroni, hochberg
 
 import matplotlib.pyplot as plt
 
@@ -325,27 +325,49 @@ def compare_fwer_methods():
     N, nl, sl = 25, 90, 30
     effect_sizes = np.linspace(0.2, 2.4, 12)
     n_effect_sizes = len(effect_sizes)
-    method = bonferroni
+    method = hochberg #bonferroni
+    emphasis = np.asarray([0.02, 0.05, 0.10, 0.30, 0.50,
+                           0.70, 0.90, 0.95, 0.98])
+    n_emphasis = len(emphasis)
 
-    repr_fwer = np.zeros(n_effect_sizes)
-    repr_part = np.zeros(n_effect_sizes)
+    """Generate the test data."""
+    print('Simulating primary and follow-up experiments ..')
 
-    for i, effect_size in enumerate(effect_sizes):
-        pvals_pri = square_grid_model(nl, sl, N, effect_size)[0]
-        pvals_sec = square_grid_model(nl, sl, N, effect_size)[0]
+    # Allocate memory.
+    pvals_pri = np.zeros([n_effect_sizes, nl, nl])
+    pvals_sec = np.zeros(np.shape(pvals_pri))
 
-        rep_fwer = fwer_replicability(pvals_pri.flatten(),
-                                      pvals_sec.flatten(), 0.5, method)
-        rep_part = partial_conjuction(pvals_pri.flatten(),
-                                      pvals_sec.flatten(), method)
+    # Obtain the uncorrected p-values.
+    for i, delta in enumerate(effect_sizes):
+        pvals_pri[i] = square_grid_model(nl, sl, N, delta)[0]
+        pvals_sec[i] = square_grid_model(nl, sl, N, delta)[0]
 
-        rep_fwer = np.reshape(rep_fwer, [nl, nl])
-        rep_part = np.reshape(rep_part, [nl, nl])
+    """Find reproducible effects using the FWER replicability
+    method."""
+    print('Estimating reproducibility ..')
 
-        conf_fwer = grid_model_counts(rep_fwer, nl, sl)
+    repr_fwer = np.zeros([n_effect_sizes, n_emphasis])
+
+    for i in np.ndindex(n_effect_sizes, n_emphasis):
+        # Find reproducible effects and rearrange the data.
+        result = fwer_replicability(pvals_pri[i[0]].flatten(),
+                                    pvals_sec[i[0]].flatten(),
+                                    emphasis[i[1]], method)
+        result = np.reshape(result, [nl, nl])
+
+        # Compute the number reproducible true effects.
+        repr_fwer[i] = (grid_model_counts(result, nl, sl)[0] /
+                        float(sl ** 2))
+
+    """Find reproducible effects using the partial conjuction
+    method."""
+    repr_part = np.zeros([n_effect_sizes])
+
+    for i in np.ndindex(n_effect_sizes):
+        rep_part = partial_conjuction(pvals_pri[i].flatten(),
+                                      pvals_sec[i].flatten(), method)
         conf_part = grid_model_counts(rep_part, nl, sl)
-
-        repr_fwer[i] = conf_fwer[0] / float(sl ** 2)
+        rep_part = np.reshape(rep_part, [nl, nl])
         repr_part[i] = conf_part[0] / float(sl ** 2)
 
     """Visualize the data."""
