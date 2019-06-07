@@ -318,12 +318,12 @@ def two_group_reproducibility_sample_size():
     fig.tight_layout()
     plt.show()
 
-def compare_fwer_methods():
+def direct_replication_fwer_partial_conjunction():
     """Perform a comparison of the partial conjuction and FWER
     replicability methods using the two-group model."""
 
     N, nl, sl = 25, 90, 30
-    effect_sizes = np.linspace(0.2, 2.4, 12)
+    effect_sizes = np.linspace(0.6, 2.4, 12)
     n_effect_sizes = len(effect_sizes)
     method = hochberg #bonferroni
     emphasis = np.asarray([0.02, 0.05, 0.10, 0.30, 0.50,
@@ -344,7 +344,7 @@ def compare_fwer_methods():
 
     """Find reproducible effects using the FWER replicability
     method."""
-    print('Estimating reproducibility ..')
+    print('Estimating reproducibility: FWER replicability ..')
 
     repr_fwer = np.zeros([n_effect_sizes, n_emphasis])
 
@@ -361,25 +361,30 @@ def compare_fwer_methods():
 
     """Find reproducible effects using the partial conjuction
     method."""
+    print('Estimating reproducibility: Partial conjuction ..')
+
     repr_part = np.zeros([n_effect_sizes])
 
     for i in np.ndindex(n_effect_sizes):
-        rep_part = partial_conjuction(pvals_pri[i].flatten(),
-                                      pvals_sec[i].flatten(), method)
-        conf_part = grid_model_counts(rep_part, nl, sl)
-        rep_part = np.reshape(rep_part, [nl, nl])
-        repr_part[i] = conf_part[0] / float(sl ** 2)
+        result = partial_conjuction(pvals_pri[i].flatten(),
+                                    pvals_sec[i].flatten(), method)
+        result = np.reshape(result, [nl, nl])
+        repr_part[i] = (grid_model_counts(result, nl, sl)[0] /
+                        float(sl ** 2))
 
     """Visualize the data."""
     sns.set_style('white')
     fig = plt.figure(figsize=(7, 6))
     ax = fig.add_subplot(111)
 
-    plot_logistic(effect_sizes, repr_fwer, ax=ax)
-    plot_logistic(effect_sizes, repr_part, ax=ax)
+    plot_logistic(effect_sizes, repr_fwer[:, emphasis<=0.5],
+                  ax=ax, color='k')
+    plot_logistic(effect_sizes, repr_fwer[:, emphasis>0.5],
+                  ax=ax, color='g')
+    plot_logistic(effect_sizes, repr_part, ax=ax, color='b')
 
-    ax.legend(['FWER replicability', 'partial conjuction'],
-              loc='lower right')
+    ax.set_xlabel('Effect size')
+    ax.set_ylabel('Reproducibility rate')
+
     fig.tight_layout()
     plt.show()
-

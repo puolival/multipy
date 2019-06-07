@@ -114,6 +114,7 @@ There is a true effect at each location within the green box and no true effects
 
 ## Methods for reproducibility analyses
 
+- The partial conjuction method
 - The FWER replicability method [14–16]
 - The FDR r-value method [18] (work in progress)
 

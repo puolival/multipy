@@ -313,7 +313,7 @@ def plot_grid_model_pvals(X, P, nl, sl):
     return fig
 
 def plot_logistic(x, y, ax, legend=None, xlabel=None, ylabel=None, xlim=None,
-                  ylim=None):
+                  ylim=None, **kwargs):
     """Function for drawing a scatter plot of the (x, y) tuples and
     fitting a logistic function.
 
@@ -330,24 +330,29 @@ def plot_logistic(x, y, ax, legend=None, xlabel=None, ylabel=None, xlim=None,
         Labels for the x- and y-axes.
     xlim, ylim : ndarray
         Limits for the axes.
+    **kwargs : keyword arguments
+        Possible additional keyword arguments for plotting (ax.plot).
     """
 
     """Find number of samples and variables."""
-    if (len(np.shape(x))):
+    if (len(np.shape(x)) == 1):
         x = x[:, None]
-    if (len(np.shape(y))):
+    if (len(np.shape(y)) == 1):
         y = y[:, None]
+    print np.shape(x), np.shape(y)
     n_samples, n_vars = np.shape(y)
 
     """Fit a logistic function to the data."""
     for i in np.arange(0, n_vars):
-        logistic_k, logistic_x0 = curve_fit(logistic_function, x, y[:, i])[0]
+        xdata, ydata = np.squeeze(x), np.squeeze(y[:, i])
+        logistic_k, logistic_x0 = curve_fit(logistic_function, xdata,
+                                            ydata)[0]
         logistic_x = np.linspace(x[0], x[-1], 100)
         logistic_y = logistic_function(logistic_x, logistic_k, logistic_x0)
 
         """Plot the data and the fitted line."""
-        ax.plot(x, y[:, i], '.', markersize=9)
-        ax.plot(logistic_x, logistic_y, '-', linewidth=1.5)
+        ax.plot(x, y[:, i], '.', markersize=9, **kwargs)
+        ax.plot(logistic_x, logistic_y, '-', linewidth=1.5, **kwargs)
 
     """Label the axes etc."""
     ax.set_xlim(xlim)
