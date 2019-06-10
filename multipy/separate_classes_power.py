@@ -185,10 +185,10 @@ def simulate_single_separate_analyses():
     comparing the performance of single and separate analyses."""
 
     effect_sizes = np.linspace(0.2, 2.4, 12)
-    n_iter = 10
+    n_iter = 20
     alpha = 0.05
     nl, sl = 45, 15
-    method = lsu
+    method = tst
 
     pwr1 = separate_classes_model_power(deltas=effect_sizes, n_iter=n_iter,
                                         alpha=alpha, nl=nl, sl=sl, method=method,
@@ -197,8 +197,17 @@ def simulate_single_separate_analyses():
                                         alpha=alpha, nl=nl, sl=sl, method=method,
                                         single_analysis=False)
 
-    plt.figure()
-    plt.plot(effect_sizes, pwr1[6, :])
-    plt.plot(effect_sizes, pwr2[6, :])
+    """Visualize the results."""
+    sns.set_style('white')
+    fig = plt.figure(figsize=(8, 5))
+    ax = fig.add_subplot(111)
+    ax.plot(effect_sizes, pwr1[7, :])
+    ax.plot(effect_sizes, pwr2[7, :])
+
+    ax.set_xlabel('Effect size')
+    ax.set_ylabel('Power')
+
+    fig.tight_layout()
     plt.show()
+
 

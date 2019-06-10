@@ -162,7 +162,7 @@ def empirical_fpr(n_fp, n_nt):
     """
     return float(n_fp) / float(n_nt)
 
-def logistic_function(x, k, x0):
+def logistic_function(x, k, x0, L=1.0):
     """Logistic function with a maximum value of one.
 
     Input arguments:
@@ -176,5 +176,5 @@ def logistic_function(x, k, x0):
     x0 : float
         The x-value of the sigmoid's midpoint.
     """
-    return 1. / (1. + np.exp(-k*(x-x0)))
+    return L / (1. + np.exp(-k*(x-x0)))
 
