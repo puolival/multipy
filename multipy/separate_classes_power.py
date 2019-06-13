@@ -103,7 +103,7 @@ def separate_classes_model_power(deltas, n_iter=20, alpha=0.05, nl=45,
         the experiments. (However, it would be interesting to also test
         happens when this assumption is incorrect.)
         """
-        if (single_analysis):
+        if (single_analysis == True):
             Y = method(X.flatten(), alpha)
             Y = Y.reshape([nl, 2*nl])
         else:
@@ -116,7 +116,7 @@ def separate_classes_model_power(deltas, n_iter=20, alpha=0.05, nl=45,
 
         """Compute empirical power."""
         tp, _, _, fn = separate_classes_model_counts(Y, nl, sl)
-        pwr[ind] = empirical_power(tp, tp+fn)
+        pwr[ind] = empirical_power(tp, 2*sl**2)
 
     return np.mean(pwr, axis=2)
 
@@ -188,7 +188,7 @@ def simulate_single_separate_analyses():
     n_iter = 20
     alpha = 0.05
     nl, sl = 45, 15
-    method = tst
+    method = lsu
 
     pwr1 = separate_classes_model_power(deltas=effect_sizes, n_iter=n_iter,
                                         alpha=alpha, nl=nl, sl=sl, method=method,
@@ -201,8 +201,8 @@ def simulate_single_separate_analyses():
     sns.set_style('white')
     fig = plt.figure(figsize=(8, 5))
     ax = fig.add_subplot(111)
-    ax.plot(effect_sizes, pwr1[7, :])
-    ax.plot(effect_sizes, pwr2[7, :])
+    ax.plot(effect_sizes, pwr1[6, :], 'k')
+    ax.plot(effect_sizes, pwr2[6, :], 'r')
 
     ax.set_xlabel('Effect size')
     ax.set_ylabel('Power')
