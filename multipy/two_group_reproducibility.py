@@ -174,7 +174,9 @@ def plot_two_group_reproducibility(effect_sizes, emphasis_primary,
 def rvalue_test(effect_sizes=np.linspace(0.2, 2.4, 12),
                 emphasis=np.asarray([0.02, 0.5, 0.98]), method=tst,
                 nl=90, sl=30, N=25, alpha=0.05, n_iter=10):
-    """Function for testing the FDR r-value method.
+    """Function for simulating primary and follow-up experiments using the
+    two-group model and testing which effects are reproducible using the FDR
+    r-value method.
 
     Input arguments:
     ================
@@ -249,7 +251,7 @@ def simulate_rvalue():
     n_effect_sizes = len(effect_sizes)
     emphasis = np.asarray([0.02, 0.5, 0.98])
     n_emphasis = len(emphasis)
-    n_iter = 20
+    n_iter = 2
 
     """Compute reproducibility of true effects for each of the
     three different methods."""
@@ -269,8 +271,11 @@ def plot_rvalue_test(effect_sizes, reproducibility, emphasis):
     ax = fig.add_subplot(111)
 
     n_methods = np.shape(reproducibility)[0]
+    method_colors = ['r', 'g', 'b']
+
     for i in np.arange(0, n_methods):
-        ax = plot_logistic(effect_sizes, reproducibility[i, :], ax)
+        ax = plot_logistic(effect_sizes, reproducibility[i, :], ax,
+                           color=method_colors[i])
 
     fig.tight_layout()
     plt.show()
@@ -374,7 +379,7 @@ def direct_replication_fwer_partial_conjunction():
 
     """Visualize the data."""
     sns.set_style('white')
-    fig = plt.figure(figsize=(7, 6))
+    fig = plt.figure(figsize=(8, 5))
     ax = fig.add_subplot(111)
 
     plot_logistic(effect_sizes, repr_fwer[:, emphasis<=0.5],
@@ -388,3 +393,4 @@ def direct_replication_fwer_partial_conjunction():
 
     fig.tight_layout()
     plt.show()
+
