@@ -70,10 +70,13 @@ def simulate_two_group_reproducibility():
     """Perform the simulation."""
     effect_sizes = np.linspace(0.2, 2.4, 12)
     emphasis_primary = np.asarray([0.02, 0.5, 0.98])
+    method = bonferroni # tst
     reproducibility = two_group_reproducibility(effect_sizes,
-                                                emphasis_primary)
-    plot_two_group_reproducibility(effect_sizes, emphasis_primary,
-                                   reproducibility)
+                                                emphasis_primary, method=method)
+    fig = plot_two_group_reproducibility(effect_sizes, emphasis_primary,
+                                         reproducibility)
+    fig.axes[0].set_title('Correction method: %s' % method.__name__)
+    plt.show()
 
 def two_group_reproducibility(effect_sizes, emphasis_primary, nl=90, sl=30,
                               alpha=0.05, N=25, n_iter=10, method=tst):
@@ -330,7 +333,7 @@ def direct_replication_fwer_partial_conjunction():
     N, nl, sl = 25, 90, 30
     effect_sizes = np.linspace(0.6, 2.4, 12)
     n_effect_sizes = len(effect_sizes)
-    method = hochberg #bonferroni
+    method = lsu # hochberg #bonferroni
     emphasis = np.asarray([0.02, 0.05, 0.10, 0.30, 0.50,
                            0.70, 0.90, 0.95, 0.98])
     n_emphasis = len(emphasis)

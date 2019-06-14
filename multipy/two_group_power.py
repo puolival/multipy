@@ -93,11 +93,19 @@ def two_group_model_power(deltas, method, nl=90, sl=30, alpha=0.05, N=25,
 
     verbose : bool
         Flag for deciding whether to print progress reports to the console.
+
+    Output arguments:
+    =================
+    pwr : ndarray [n_deltas, n_iter]
+        The power at each tested effect size at each iteration.
+
+    fpr : ndarray [n_deltas, n_iter]
+        The corresponding false positive rates.
     """
 
     """Allocate memory for the results."""
     n_deltas = len(deltas)
-    pwr = np.zeros([n_deltas, n_iter])
+    pwr, fpr = np.zeros([n_deltas, n_iter]), np.zeros([n_deltas, n_iter])
 
     """Simulate data at each effect size and compute empirical power."""
     for i, delta in enumerate(deltas):
@@ -115,10 +123,11 @@ def two_group_model_power(deltas, method, nl=90, sl=30, alpha=0.05, N=25,
             # Y = rft_2d(T, fwhm=3, alpha=alpha, verbose=True)[0]
             Y = method(X.flatten(), alpha)
             Y = Y.reshape(nl, nl)
-            tp, _, _, fn = grid_model_counts(Y, nl, sl)
+            tp, fp, _, fn = grid_model_counts(Y, nl, sl)
             pwr[i, j] = empirical_power(tp, tp+fn)
+            fpr[i, j] = float(fp) / float(nl ** 2 - sl ** 2)
 
-    return np.mean(pwr, axis=1)
+    return np.mean(pwr, axis=1), np.mean(fpr, axis=1)
 
 def simulate_two_group_model(effect_sizes=np.linspace(0.2, 2.4, 12),
                              method=lsu):
@@ -137,7 +146,7 @@ def simulate_two_group_model(effect_sizes=np.linspace(0.2, 2.4, 12),
     """
 
     """Estimate power at each effect size."""
-    pwr = two_group_model_power(deltas=effect_sizes, method=method)
+    pwr, fpr = two_group_model_power(deltas=effect_sizes, method=method)
 
     """Visualize the results."""
     sns.set_style('darkgrid')
@@ -145,6 +154,12 @@ def simulate_two_group_model(effect_sizes=np.linspace(0.2, 2.4, 12),
     ax1 = fig.add_subplot(111)
     ax1.set_title('Method: %s' % method.__name__)
     plot_power(effect_sizes, pwr, ax=ax1)
+    plot_power(effect_sizes, fpr, ax=ax1)
     fig.tight_layout()
     plt.show()
 
+def simulate_two_group_example():
+    """Function for performing a simulation using the two-group model and
+    visualizing the raw data (i.e. the t-values and p-values).
+    """
+    pass
