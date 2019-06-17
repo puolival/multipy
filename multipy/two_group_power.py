@@ -149,17 +149,37 @@ def simulate_two_group_model(effect_sizes=np.linspace(0.2, 2.4, 12),
     pwr, fpr = two_group_model_power(deltas=effect_sizes, method=method)
 
     """Visualize the results."""
+    # Power
     sns.set_style('darkgrid')
     fig = plt.figure(figsize=(8, 5))
-    ax1 = fig.add_subplot(111)
-    ax1.set_title('Method: %s' % method.__name__)
-    plot_power(effect_sizes, pwr, ax=ax1)
-    plot_power(effect_sizes, fpr, ax=ax1)
+    ax = fig.add_subplot(111)
+    ax.set_title('Method: %s' % method.__name__)
+    plot_power(effect_sizes, pwr, ax=ax)
     fig.tight_layout()
     plt.show()
 
-def simulate_two_group_example():
+    # False positive rate
+    del fig
+    fig = plt.figure(figsize=(8, 5))
+    ax = fig.add_subplot(111)
+    ax.set_title('Method: %s' % method.__name__)
+    plot_power(effect_sizes, np.log10(fpr), ax=ax)
+    ax.set_ylim([-4, 0]) # = p-value range 0.0001 to 0.1.
+    fig.tight_layout()
+    plt.show()
+
+def _simulate_two_group_example(delta, nl=90, sl=30, alpha=0.05, N=25):
     """Function for performing a simulation using the two-group model and
     visualizing the raw data (i.e. the t-values and p-values).
     """
-    pass
+    pvals, tstats = square_grid_model(nl, sl, N, delta, equal_var=True)[0:2]
+
+    sns.set_style('white')
+    fig = plt.figure(figsize=(5, 4))
+    ax = fig.add_subplot(111)
+    im = ax.imshow(tstats, origin='lower', interpolation='none',
+                   aspect='auto', cmap='gray')
+    color_bar = fig.colorbar(im)
+    color_bar.set_label('T-statistic')
+    fig.tight_layout()
+    plt.show()
