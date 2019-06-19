@@ -106,7 +106,7 @@ def fwer_replicability(pvals_primary, pvals_followup, emph_primary, method,
 
 def fwer_replicability_permutation(rvs_a_primary, rvs_b_primary,
                                    rvs_a_followup, rvs_b_followup,
-                                   emph_primary, alpha):
+                                   method, emph_primary, alpha=0.05):
     """The Bogomolov & Heller family-wise error rate (FWER) replicability
     method for permutation testing approaches.
 
@@ -114,6 +114,10 @@ def fwer_replicability_permutation(rvs_a_primary, rvs_b_primary,
     ================
     rvs_a_primary, rvs_b_primary, rvs_a_followup, rvs_b_followup : ndarray
         Primary and follow-up data.
+
+    method : function
+        The applied correction technique. For now, the only supported
+        method is tfr_permutation_test.
 
     emph_primary : float in the open interval (0, 1)
         Emphasis given to the primary study.
@@ -127,7 +131,9 @@ def fwer_replicability_permutation(rvs_a_primary, rvs_b_primary,
         Array of booleans indicating which tests can be considered to be
         reproducible.
     """
-    raise NotImplementedError('Unfinished implementation!')
+
+    """Settings."""
+    n_permutations, t_threshold = 100, 1.0
 
     """Compute emphasis given to the follow-up study."""
     if ((emph_primary < 0) or (emph_primary > 1)):
@@ -135,11 +141,24 @@ def fwer_replicability_permutation(rvs_a_primary, rvs_b_primary,
                         ' in (0, 1)!')
     emph_followup = 1-emph_primary
 
+    """Compute the new critical levels."""
+    alpha_primary, alpha_followup = (emph_primary * alpha, emph_followup
+                                                           * alpha)
+
+    """Perform the reproducibility testing."""
     if (method.__name__ == 'tfr_permutation_test'):
         significant_primary = method(rvs_a_primary, rvs_b_primary,
-                                     n_permutations, alpha, threshold)
+                                     n_permutations, alpha_primary,
+                                     t_threshold)
+        significant_followup = method(rvs_a_followup, rvs_b_followup,
+                                      n_permutations, alpha_followup,
+                                      t_threshold)
     else:
         raise Exception('Unsupported correction method!')
+
+    """Decide which tests are replicable."""
+    replicable = significant_primary & significant_followup
+    return replicable
 
 def partial_conjuction(pvals_primary, pvals_followup, method, alpha=0.05):
     """The partial conjuction method for deciding reproducible effects.
