@@ -168,18 +168,28 @@ def simulate_two_group_model(effect_sizes=np.linspace(0.2, 2.4, 12),
     fig.tight_layout()
     plt.show()
 
-def _simulate_two_group_example(delta, nl=90, sl=30, alpha=0.05, N=25):
+def simulate_two_group_example(delta=0.8, nl=90, sl=30, N=25):
     """Function for performing a simulation using the two-group model and
-    visualizing the raw data (i.e. the t-values and p-values).
-    """
-    pvals, tstats = square_grid_model(nl, sl, N, delta, equal_var=True)[0:2]
+    visualizing the t-values.
 
+    Input arguments:
+    ================
+    delta : float
+        Effect size (Cohen's d).
+    nl, sl : int
+        The sizes of the signal and noise regions.
+    N : int
+        Sample size in each of the two groups.
+    """
+    pvals, tstats = square_grid_model(nl, sl, N, delta,
+                                      equal_var=True)[0:2]
     sns.set_style('white')
-    fig = plt.figure(figsize=(5, 4))
+    fig = plt.figure(figsize=(5, 5))
     ax = fig.add_subplot(111)
     im = ax.imshow(tstats, origin='lower', interpolation='none',
                    aspect='auto', cmap='gray')
     color_bar = fig.colorbar(im)
     color_bar.set_label('T-statistic')
+    # ax.set_title('Effect size = %1.3f' % delta)
     fig.tight_layout()
     plt.show()
