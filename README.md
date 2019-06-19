@@ -116,7 +116,7 @@ There is a true effect at each location within the green box and no true effects
 
 - The partial conjuction method
 - The FWER replicability method [14–16]
-- The FDR r-value method [18] (work in progress)
+- The FDR r-value method [18]
 
 ## Data visualization
 
@@ -142,7 +142,7 @@ A manuscript of the software is currently being prepared.
 ### Poster presentations:
 
 Puoliväli T, Palva S, Palva JM (2019): MultiPy: Multiple hypothesis testing
-in Python. *MEG Nord*, Jyväskylä, Finland, 8–10th May
+in Python. *MEG Nord*, Jyväskylä, Finland, 8–10th May.
 
 Puoliväli T, Lobier M, Palva S, Palva JM (2018): MultiPy: Multiple hypothesis 
 testing in Python. *Neuronal Circuit Dynamics across Scales and Species*, 
@@ -210,7 +210,7 @@ Statistical Association* 108(504):1480–1492.
 
 [17] Ignatiadis N, Klaus B, Zaugg JB, Huber W (2016): Data-driven hypothesis
 weighting increases detection power in genome-scale multiple testing. *Nature
-Methods* 13:577–580
+Methods* 13:577–580.
 
 [18] Heller R, Bogomolov M, Benjamini Y (2014): Deciding whether follow-up
 studies have replicated findings in a preliminary large-scale omics study.
