@@ -19,9 +19,6 @@ References:
 [3] Bogomolov M, Heller R (2013): Discovering findings that replicate from
     a primary study of high dimension to a follow-up study. Journal of the
     American Statistical Association 108(504):1480-1492.
-
-NOTE: Work in progress. Untested code.
-
 """
 
 import numpy as np
