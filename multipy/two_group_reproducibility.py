@@ -13,7 +13,7 @@ WARNING: There is unfinished code and only partial testing has been
 """
 from data import square_grid_model
 
-from fdr import lsu, tst, qvalue
+from fdr import abh, lsu, tst, qvalue
 
 from fwer import bonferroni, hochberg
 
@@ -21,7 +21,10 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
+from permutation import tfr_permutation_test
+
 from reproducibility import (fdr_rvalue, fwer_replicability,
+                             fwer_replicability_permutation as fwer_prep,
                              partial_conjuction)
 
 from scipy.optimize import curve_fit
@@ -71,8 +74,10 @@ def simulate_two_group_reproducibility():
     effect_sizes = np.linspace(0.2, 2.4, 12)
     emphasis_primary = np.asarray([0.02, 0.5, 0.98])
     method = bonferroni # tst
+    n_iter = 20
     reproducibility = two_group_reproducibility(effect_sizes,
-                                                emphasis_primary, method=method)
+                                                emphasis_primary, n_iter=n_iter,
+                                                method=method)
     fig = plot_two_group_reproducibility(effect_sizes, emphasis_primary,
                                          reproducibility)
     fig.axes[0].set_title('Correction method: %s' % method.__name__)
@@ -165,8 +170,8 @@ def plot_two_group_reproducibility(effect_sizes, emphasis_primary,
         plt.plot(logistic_x, logistic_y, '-')
 
     ax.set_xlim([effect_sizes[0]-0.05, effect_sizes[-1]+0.05])
-    ax.set_ylim([-0.05, 1.05])
-    ax.set_xlabel('Effect size $\Delta$')
+    ax.set_ylim([0.0, 1.0])
+    ax.set_xlabel('Effect size')
     ax.set_ylabel('Reproducibility rate')
     ax.set_title('Two-stage FDR')
     ax.legend(emphasis_primary, loc='lower right')
@@ -248,13 +253,13 @@ def simulate_rvalue():
     methods."""
 
     """Define settings for the r-value method simulations."""
-    methods = [lsu, tst, qvalue]
+    methods = [abh]
     n_methods = len(methods)
     effect_sizes = np.linspace(0.2, 2.4, 12)
     n_effect_sizes = len(effect_sizes)
     emphasis = np.asarray([0.02, 0.5, 0.98])
     n_emphasis = len(emphasis)
-    n_iter = 2
+    n_iter = 20
 
     """Compute reproducibility of true effects for each of the
     three different methods."""
@@ -270,7 +275,7 @@ def simulate_rvalue():
 def plot_rvalue_test(effect_sizes, reproducibility, emphasis):
     """Visualize the result."""
     sns.set_style('darkgrid')
-    fig = plt.figure(figsize=(7, 6))
+    fig = plt.figure(figsize=(8, 5))
     ax = fig.add_subplot(111)
 
     n_methods = np.shape(reproducibility)[0]
@@ -397,3 +402,59 @@ def direct_replication_fwer_partial_conjunction():
     fig.tight_layout()
     plt.show()
 
+def permutation_test_fwer_replicability(effect_sizes, emphasis_primary,
+                                     nl=90, sl=30, alpha=0.05, N=25,
+                                     n_iter=10, t_threshold=1.0):
+    """Estimate reproducibility in the two-group model using the
+    Maris-Oostenveld permutation test with the Phipson-Smyth p-value
+    correction.
+
+    Input arguments:
+    ================
+    effect_sizes : ndarray
+        Tested effect sizes (Cohen's d's).
+
+    emphasis_primary : float
+        Amount of emphasis placed on the primary study.
+
+    nl, sl : int
+        The sizes of the noise and signal regions respectively.
+
+    alpha : float
+        The desired critical level.
+
+    N : int
+        Sample size in each of the two groups.
+
+    n_iter : int
+        Number of repetitions of the simulation at each distinct
+        effect size.
+
+    t_threshold : float
+        The t-threshold used in the permutation test.
+    """
+
+    n_effect_sizes = len(effect_sizes)
+    reproducibility = np.zeros([n_effect_sizes, n_iter])
+
+    """Estimate reproducibility at each effect size."""
+    for ind in np.ndindex(n_effect_sizes, n_iter):
+        print ind
+
+        # Generate new raw data.
+        delta = effect_sizes[ind[0]]
+        X_raw_p, Y_raw_p = square_grid_model(nl, sl, N, delta)[2:4]
+        X_raw_f, Y_raw_f = square_grid_model(nl, sl, N, delta)[2:4]
+
+        # Here *_p = primary study, *_f = follow-up study.
+        R = fwer_prep(X_raw_p, Y_raw_p, X_raw_f, Y_raw_f,
+                      tfr_permutation_test, emphasis_primary, alpha)
+        tp, _, _, fn = grid_model_counts(R, nl, sl)
+        reproducibility[ind] = tp / float(tp+fn)
+
+    reproducibility = np.mean(reproducibility, axis=1)
+
+    """Visualize the results."""
+    plt.figure()
+    plt.plot(effect_sizes, reproducibility, '-')
+    plt.show()
