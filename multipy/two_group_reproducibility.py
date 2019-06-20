@@ -414,7 +414,7 @@ def permutation_test_fwer_replicability(effect_sizes, emphasis_primary,
     effect_sizes : ndarray
         Tested effect sizes (Cohen's d's).
 
-    emphasis_primary : float
+    emphasis_primary : ndarray
         Amount of emphasis placed on the primary study.
 
     nl, sl : int
@@ -435,26 +435,31 @@ def permutation_test_fwer_replicability(effect_sizes, emphasis_primary,
     """
 
     n_effect_sizes = len(effect_sizes)
-    reproducibility = np.zeros([n_effect_sizes, n_iter])
+    n_emphasis = len(emphasis_primary)
+    reproducibility = np.zeros([n_effect_sizes, n_emphasis, n_iter])
 
     """Estimate reproducibility at each effect size."""
-    for ind in np.ndindex(n_effect_sizes, n_iter):
+    for ind in np.ndindex(n_effect_sizes, n_emphasis, n_iter):
         print ind
 
         # Generate new raw data.
-        delta = effect_sizes[ind[0]]
+        delta, emphasis = effect_sizes[ind[0]], emphasis_primary[ind[1]]
         X_raw_p, Y_raw_p = square_grid_model(nl, sl, N, delta)[2:4]
         X_raw_f, Y_raw_f = square_grid_model(nl, sl, N, delta)[2:4]
 
         # Here *_p = primary study, *_f = follow-up study.
         R = fwer_prep(X_raw_p, Y_raw_p, X_raw_f, Y_raw_f,
-                      tfr_permutation_test, emphasis_primary, alpha)
+                      tfr_permutation_test, emphasis, alpha)
         tp, _, _, fn = grid_model_counts(R, nl, sl)
         reproducibility[ind] = tp / float(tp+fn)
 
-    reproducibility = np.mean(reproducibility, axis=1)
+    reproducibility = np.mean(reproducibility, axis=2)
 
     """Visualize the results."""
-    plt.figure()
-    plt.plot(effect_sizes, reproducibility, '-')
+    sns.set_style('white')
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.plot(effect_sizes, reproducibility, '.')
+    plot_logistic(effect_sizes, reproducibility, ax=ax, color='b')
+    fig.tight_layout()
     plt.show()
