@@ -403,8 +403,8 @@ def direct_replication_fwer_partial_conjunction():
     plt.show()
 
 def permutation_test_fwer_replicability(effect_sizes, emphasis_primary,
-                                     nl=90, sl=30, alpha=0.05, N=25,
-                                     n_iter=10, t_threshold=1.0):
+                                        nl=90, sl=30, alpha=0.05, N=25,
+                                        n_iter=20, t_threshold=1.0):
     """Estimate reproducibility in the two-group model using the
     Maris-Oostenveld permutation test with the Phipson-Smyth p-value
     correction.
@@ -457,9 +457,15 @@ def permutation_test_fwer_replicability(effect_sizes, emphasis_primary,
 
     """Visualize the results."""
     sns.set_style('white')
-    fig = plt.figure()
+    fig = plt.figure(figsize=(8, 5))
     ax = fig.add_subplot(111)
+    colors = ['r', 'g', 'b']
     ax.plot(effect_sizes, reproducibility, '.')
-    plot_logistic(effect_sizes, reproducibility, ax=ax, color='b')
+    ax.plot(effect_sizes, reproducibility, '-')
     fig.tight_layout()
     plt.show()
+
+def simulate_permutation_fwer_replicability():
+    effect_sizes = np.linspace(0.2, 2.4, 12)
+    emphasis = np.asarray([0.02, 0.5, 0.98], dtype='float')
+    permutation_test_fwer_replicability(effect_sizes, emphasis)
