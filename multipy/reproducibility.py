@@ -164,14 +164,15 @@ def fwer_replicability_permutation(rvs_a_primary, rvs_b_primary,
     replicable = significant_primary & significant_followup
     return replicable
 
-def fwer_replicability_rft(tstat, method, emph_primary, alpha=0.05):
+def fwer_replicability_rft(tstat_primary, tstat_followup, method, emph_primary,
+                           alpha=0.05):
     """The FWER replicability method for random field theory (RFT) based
     approaches.
 
     Input arguments:
     ================
-    tstat : ndarray
-        T-statistic for each variable.
+    tstat_primary, tstat_followup : ndarray
+        T-statistics from the primary and follow-up experiments.
 
     method : str
         The applied correction method. For now, only 'rft_2d' is supported.
@@ -183,13 +184,26 @@ def fwer_replicability_rft(tstat, method, emph_primary, alpha=0.05):
         The desired critical level. Set as 0.05 by default.
     """
 
+    """Settings."""
+    # TODO: make fwhm input parameter.
+    fwhm, verbose = 30, True
+
     """Compute emphasis given to the follow-up study."""
     if ((emph_primary < 0) or (emph_primary > 1)):
         raise Exception('Emphasis given to the primary study must be' +
                         ' in (0, 1)!')
     emph_followup = 1-emph_primary
 
-    # TODO: find which are replicable.
+    if (method.__name__ == 'rft_2d'):
+        significant_primary = rft_2d(tstat_primary, fwhm=fwhm, alpha=alpha,
+                                     verbose=verbose)
+        significant_followup = rft_2d(tstat_followup, fwhm=fwhm,
+                                      alpha=alpha, verbose=verbose)
+    else:
+        raise Exception('Unsupported correction method!')
+
+    """Decide which hypotheses are replicable."""
+    replicable = significant_primary & significant_followup
     return replicable
 
 def partial_conjuction(pvals_primary, pvals_followup, method, alpha=0.05):
