@@ -194,11 +194,16 @@ def fwer_replicability_rft(tstat_primary, tstat_followup, method, emph_primary,
                         ' in (0, 1)!')
     emph_followup = 1-emph_primary
 
+    """Compute the new critical levels."""
+    alpha_primary, alpha_followup = (emph_primary * alpha, emph_followup
+                                                           * alpha)
     if (method.__name__ == 'rft_2d'):
-        significant_primary = method(tstat_primary, fwhm=fwhm, alpha=alpha,
+        significant_primary = method(tstat_primary, fwhm=fwhm,
+                                     alpha=alpha_primary,
                                      verbose=verbose)[0]
         significant_followup = method(tstat_followup, fwhm=fwhm,
-                                      alpha=alpha, verbose=verbose)[0]
+                                      alpha=alpha_followup,
+                                      verbose=verbose)[0]
     else:
         raise Exception('Unsupported correction method!')
 
