@@ -25,7 +25,10 @@ from permutation import tfr_permutation_test
 
 from reproducibility import (fdr_rvalue, fwer_replicability,
                              fwer_replicability_permutation as fwer_prep,
+                             fwer_replicability_rft as fwer_rftrep,
                              partial_conjuction)
+
+from rft import rft_2d
 
 from scipy.optimize import curve_fit
 
@@ -440,16 +443,17 @@ def permutation_test_fwer_replicability(effect_sizes, emphasis_primary,
 
     """Estimate reproducibility at each effect size."""
     for ind in np.ndindex(n_effect_sizes, n_emphasis, n_iter):
-        print ind
-
         # Generate new raw data.
         delta, emphasis = effect_sizes[ind[0]], emphasis_primary[ind[1]]
-        X_raw_p, Y_raw_p = square_grid_model(nl, sl, N, delta)[2:4]
-        X_raw_f, Y_raw_f = square_grid_model(nl, sl, N, delta)[2:4]
+        T_primary = square_grid_model(nl, sl, N, delta)[1]
+        T_followup = square_grid_model(nl, sl, N, delta)[1]
+        ## X_raw_p, Y_raw_p = square_grid_model(nl, sl, N, delta)[2:4]
+        ## X_raw_f, Y_raw_f = square_grid_model(nl, sl, N, delta)[2:4]
 
         # Here *_p = primary study, *_f = follow-up study.
-        R = fwer_prep(X_raw_p, Y_raw_p, X_raw_f, Y_raw_f,
-                      tfr_permutation_test, emphasis, alpha)
+        ## R = fwer_prep(X_raw_p, Y_raw_p, X_raw_f, Y_raw_f,
+        ##               tfr_permutation_test, emphasis, alpha)
+        R = fwer_rftrep(T_primary, T_followup, rft_2d, emphasis, alpha)
         tp, _, _, fn = grid_model_counts(R, nl, sl)
         reproducibility[ind] = tp / float(tp+fn)
 
@@ -469,3 +473,6 @@ def simulate_permutation_fwer_replicability():
     effect_sizes = np.linspace(0.2, 2.4, 12)
     emphasis = np.asarray([0.02, 0.5, 0.98], dtype='float')
     permutation_test_fwer_replicability(effect_sizes, emphasis)
+
+def rft_fwer_replicability():
+    pass
