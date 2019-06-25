@@ -174,7 +174,7 @@ def fwer_replicability_rft(tstat_primary, tstat_followup, method, emph_primary,
     tstat_primary, tstat_followup : ndarray
         T-statistics from the primary and follow-up experiments.
 
-    method : str
+    method : function
         The applied correction method. For now, only 'rft_2d' is supported.
 
     emph_primary : float
@@ -195,9 +195,9 @@ def fwer_replicability_rft(tstat_primary, tstat_followup, method, emph_primary,
     emph_followup = 1-emph_primary
 
     if (method.__name__ == 'rft_2d'):
-        significant_primary = rft_2d(tstat_primary, fwhm=fwhm, alpha=alpha,
+        significant_primary = method(tstat_primary, fwhm=fwhm, alpha=alpha,
                                      verbose=verbose)[0]
-        significant_followup = rft_2d(tstat_followup, fwhm=fwhm,
+        significant_followup = method(tstat_followup, fwhm=fwhm,
                                       alpha=alpha, verbose=verbose)[0]
     else:
         raise Exception('Unsupported correction method!')
