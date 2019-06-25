@@ -19,6 +19,12 @@ References:
 [3] Bogomolov M, Heller R (2013): Discovering findings that replicate from
     a primary study of high dimension to a follow-up study. Journal of the
     American Statistical Association 108(504):1480-1492.
+
+TODO: consider somehow unifying the FWER replicability methods into one
+function and several helper functions. The issue here is that the method
+is needed to be applied to different inputs: t-statistics, p-values, or
+the original data.
+
 """
 
 import numpy as np
@@ -130,6 +136,7 @@ def fwer_replicability_permutation(rvs_a_primary, rvs_b_primary,
     """
 
     """Settings."""
+    # TODO: consider making these adjustable parameters.
     n_permutations, t_threshold = 100, 1.0
 
     """Compute emphasis given to the follow-up study."""
@@ -155,6 +162,34 @@ def fwer_replicability_permutation(rvs_a_primary, rvs_b_primary,
 
     """Decide which tests are replicable."""
     replicable = significant_primary & significant_followup
+    return replicable
+
+def fwer_replicability_rft(tstat, method, emph_primary, alpha=0.05):
+    """The FWER replicability method for random field theory (RFT) based
+    approaches.
+
+    Input arguments:
+    ================
+    tstat : ndarray
+        T-statistic for each variable.
+
+    method : str
+        The applied correction method. For now, only 'rft_2d' is supported.
+
+    emph_primary : float
+        Amount of emphasis placed on the primary study.
+
+    alpha : float
+        The desired critical level. Set as 0.05 by default.
+    """
+
+    """Compute emphasis given to the follow-up study."""
+    if ((emph_primary < 0) or (emph_primary > 1)):
+        raise Exception('Emphasis given to the primary study must be' +
+                        ' in (0, 1)!')
+    emph_followup = 1-emph_primary
+
+    # TODO: find which are replicable.
     return replicable
 
 def partial_conjuction(pvals_primary, pvals_followup, method, alpha=0.05):
