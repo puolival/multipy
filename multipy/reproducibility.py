@@ -196,9 +196,9 @@ def fwer_replicability_rft(tstat_primary, tstat_followup, method, emph_primary,
 
     if (method.__name__ == 'rft_2d'):
         significant_primary = rft_2d(tstat_primary, fwhm=fwhm, alpha=alpha,
-                                     verbose=verbose)
+                                     verbose=verbose)[0]
         significant_followup = rft_2d(tstat_followup, fwhm=fwhm,
-                                      alpha=alpha, verbose=verbose)
+                                      alpha=alpha, verbose=verbose)[0]
     else:
         raise Exception('Unsupported correction method!')
 
