@@ -30,7 +30,7 @@ import seaborn as sns
 
 from scipy.stats import norm, zscore
 
-from skimage.filters import gaussian as gaussian_filter
+from scipy.ndimage.filters import gaussian_filter
 from skimage.measure import label
 
 def _n_resels(X, fwhm):
@@ -203,8 +203,7 @@ def _smooth(X, fwhm):
 
     """Smooth the data."""
     # TODO: consider which filter mode should be used
-    Y = gaussian_filter(X, sigma=sd, mode='nearest',
-                        multichannel=False, preserve_range=False)
+    Y = gaussian_filter(X, sigma=sd, mode='wrap')
     return Y
 
 def rft_2d(X, fwhm, alpha=0.05, verbose=True):
