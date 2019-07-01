@@ -26,7 +26,7 @@ import numpy as np
 
 import seaborn as sns
 
-from scipy.stats import zscore
+from scipy.stats import norm, zscore
 
 from skimage.filters import gaussian as gaussian_filter
 from skimage.measure import label
@@ -234,6 +234,12 @@ def rft_2d(X, fwhm, alpha=0.05, verbose=True):
     ec : float
       The empirical Euler characteristic.
     """
+
+    """Print what the Bonferroni threshold would be."""
+    n_tests = np.prod(np.shape(X))
+    thr_bonferroni = norm.ppf(1 - alpha / n_tests)
+    if (verbose):
+        print('The Bonferroni threshold is Z = %2.2f' % thr_bonferroni)
 
     """Estimate the number of resolution elements."""
     R = _n_resels(X, fwhm)
