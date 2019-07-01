@@ -17,6 +17,8 @@ Worsley KJ, Evans AC, Marrett S, Neelin P (1992): A three-dimensional
 statistical analysis for CBF activation studies in human brain. Journal of
 Cerebral Blood Flow and Metabolism 12:900-918.
 
+http://matthew-brett.github.io/teaching/random_fields.html
+
 WARNING: These functions have not been entirely validated yet.
 """
 
