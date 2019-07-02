@@ -201,7 +201,7 @@ def plot_grid_model(X, nl, sl):
     """
     sns.set_style('white')
     fig = plt.figure(figsize=(5, 5), facecolor='white')
-    ax = fig.add_subplot(111, axisbg='black')
+    ax = fig.add_subplot(111, facecolor='black') # axisbg='black'
 
     """Plot indices of p-values declared significant."""
     for i, j in np.ndindex(nl, nl):
