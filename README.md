@@ -139,7 +139,7 @@ plot_qvalue_diagnostics(tstats, pvals, qvals)
 
 ## Citation
 
-A manuscript of the software is currently being prepared.
+A pre-print of the software is available on <a href="https://www.biorxiv.org/content/10.1101/488353v2">BioRxiv</a>.
 
 ### Poster presentations:
 
