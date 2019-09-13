@@ -10,6 +10,8 @@ family-wise error rate (FWER) and the false discovery rate (FDR).
 
 ## News
 
+* A new pre-print of the software is now available on <a href="https://www.biorxiv.org/content/10.1101/488353v2">BioRxiv</a> (11th September 2019)
+
 * MultiPy is presented as a poster in the <a href="https://megnord.org/">MEG Nord</a> conference at Jyväskylä, Finland (8–10th May 2019)
 
 * MultiPy is presented in a neuroscience seminar at the <a href="https://cibr.jyu.fi/en">Jyväskylä Centre for Interdisciplinary Brain Research</a>, Jyväskylä, Finland (30th November 2018)
