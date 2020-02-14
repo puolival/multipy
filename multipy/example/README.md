@@ -1,7 +1,5 @@
 # Example analyses on the Open Access Series of Imaging Studies (OASIS) data
 
-This is work in progress. Check again later on.
-
 ## Introduction
 
 In this example, we perform mass-univariate analyzes on magnetic resonance (MR) images 
