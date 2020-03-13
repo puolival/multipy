@@ -10,7 +10,7 @@ family-wise error rate (FWER) and the false discovery rate (FDR).
 
 ## News
 
-* A manuscript of the software is now published in the <a href="https://www.sciencedirect.com/science/article/pii/S0165027020300765">Journal of Neuroscience Methods</a>
+* A paper of the software is now published in the <a href="https://www.sciencedirect.com/science/article/pii/S0165027020300765">Journal of Neuroscience Methods</a>
 
 * A new pre-print of the software is now available on <a href="https://www.biorxiv.org/content/10.1101/488353v2">BioRxiv</a> (11th September 2019)
 
