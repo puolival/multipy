@@ -10,6 +10,8 @@ family-wise error rate (FWER) and the false discovery rate (FDR).
 
 ## News
 
+* A manuscript of the software is now published in the <a href="https://www.sciencedirect.com/science/article/pii/S0165027020300765">Journal of Neuroscience Methods</a>
+
 * A new pre-print of the software is now available on <a href="https://www.biorxiv.org/content/10.1101/488353v2">BioRxiv</a> (11th September 2019)
 
 * MultiPy is presented as a poster in the <a href="https://megnord.org/">MEG Nord</a> conference at Jyväskylä, Finland (8–10th May 2019)
@@ -139,7 +141,9 @@ plot_qvalue_diagnostics(tstats, pvals, qvals)
 
 ## Citation
 
-A pre-print of the software is available on <a href="https://www.biorxiv.org/content/10.1101/488353v2">BioRxiv</a>.
+Puoliväli T, Palva S, Palva JM (2020): Influence of multiple hypothesis testing on reproducibility in neuroimaging research: A simulation study and Python-based software. *Journal of Neuroscience Methods* 337:108654.
+
+A pre-print of the manuscript is available on <a href="https://www.biorxiv.org/content/10.1101/488353v2">BioRxiv</a>.
 
 ### Poster presentations:
 
