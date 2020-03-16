@@ -339,7 +339,7 @@ def plot_logistic(x, y, ax, legend=None, xlabel=None, ylabel=None, xlim=None,
         x = x[:, None]
     if (len(np.shape(y)) == 1):
         y = y[:, None]
-    print np.shape(x), np.shape(y)
+    # print(np.shape(x), np.shape(y))
     n_samples, n_vars = np.shape(y)
 
     """Fit a logistic function to the data."""
