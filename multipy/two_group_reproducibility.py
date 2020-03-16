@@ -220,7 +220,7 @@ def rvalue_test(effect_sizes=np.linspace(0.2, 2.4, 12),
     reproducibility = np.zeros([n_iter, n_effect_sizes, n_emphasis])
 
     for ind in np.ndindex(n_iter, n_effect_sizes, n_emphasis):
-        print ind
+        print(ind)
         """Simulate primary and follow-up experiments."""
         delta, emph = effect_sizes[ind[1]], emphasis[ind[2]]
         p1 = square_grid_model(delta=delta, nl=nl, sl=sl, N=N)[0]
