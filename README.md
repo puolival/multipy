@@ -188,7 +188,7 @@ and MEG-data. *Journal of Neuroscience Methods* 164(1):177–190.
 theory. *Human Brain Function* (2nd edition). 
 [<a href="https://www.fil.ion.ucl.ac.uk/spm/doc/books/hbf2/">full text</a>]
 
-[10] Phipson B, Smyth GK (2010): Permutation p-values should never ber zero:
+[10] Phipson B, Smyth GK (2010): Permutation p-values should never be zero:
 Calculating exact p-values when permutations are randomly drawn. *Statistical
 Applications in Genetics and Molecular Biology* 9:article39.
 
