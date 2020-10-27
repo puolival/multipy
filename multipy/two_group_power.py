@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """Function for visualizing empirical power as a function of effect size
 in the spatial two-group model.
 

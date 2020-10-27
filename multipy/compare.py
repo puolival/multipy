@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """Compare different correction techniques using data generated
 according to the Bennett et al. model.
 

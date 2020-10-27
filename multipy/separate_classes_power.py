@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """Programs for computing and visualizing empirical power as a function of
 effect size in the spatial separate-classes model.
 

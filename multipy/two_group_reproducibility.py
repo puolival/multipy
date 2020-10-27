@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """Programs for visualizing reproducibility of true effects as a function
 of effect size in the spatial two-group model.
 

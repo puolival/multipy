@@ -1,4 +1,4 @@
-# -*- encoding: utf8 -*-
+# -*- coding: utf8 -*-
 """Script for testing Efron's separate classes model using parameters that
 one could have in a typical time-frequency M/EEG data analysis situation.
 

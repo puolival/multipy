@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """Methods for FDR control with independent hypothesis weighting (IHW).
 
 Author: Tuomas Puoliväli

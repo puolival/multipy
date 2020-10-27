@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """Functions for controlling family-wise error rate (FWER) using random
 field theory (RFT) techniques and drawing diagnostic plots.
 
