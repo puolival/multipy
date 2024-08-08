@@ -197,7 +197,8 @@ def qvalue(pvals, threshold=0.05, verbose=True):
     """
     if (pi0 < 0 or pi0 > 1):
         pi0 = 1
-        print('Smoothing estimator did not converge in [0, 1]')
+        if (verbose):
+              print('Smoothing estimator did not converge in [0, 1]')
 
     # Compute the q-values.
     qvals = np.zeros(np.shape(pvals))
